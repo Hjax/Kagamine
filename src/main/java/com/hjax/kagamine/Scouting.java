@@ -1,0 +1,142 @@
+package com.hjax.kagamine;
+
+import java.util.ArrayList;
+
+import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.game.raw.StartRaw;
+import com.github.ocraft.s2client.protocol.spatial.Point2d;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
+import com.github.ocraft.s2client.protocol.unit.Unit;
+
+public class Scouting {
+	public static UnitInPool scout = null;
+	public static UnitInPool patrol_scout = null;
+	public static ArrayList<Point2d> spawns = new ArrayList<>();
+	public static int patrol_base = 2;
+	public static int overlord_base = 5;
+	
+	public static boolean scared = false;
+	public static boolean has_pulled_back = false;
+	
+	public static void start_frame() {
+		
+	}
+	public static void on_frame() {
+		if (spawns.size() == 0) {
+			Game.get_game_info().getStartRaw().ifPresent(StartRaw -> spawns = new ArrayList<>(StartRaw.getStartLocations()));
+		}
+		if (spawns.size() > 1) {
+			for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (Game.is_structure(u.unit().getType())) {
+					spawns = new ArrayList<>();
+					spawns.add(closest_enemy_spawn(u.unit().getPosition().toPoint2d()));
+					break;
+				}
+			}
+		}
+		if (spawns.size() > 1) {
+			outer: for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF)) {
+				for (Point2d s: spawns) {
+					if (s.distance(u.unit().getPosition().toPoint2d()) < 8) {
+						spawns.remove(s);
+						break outer;
+					}
+				}
+			}
+		}
+		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 16 && Build.should_scout()) {
+			assign_scout();
+		}
+		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 12 && spawns.size() >= 3 && Build.should_scout()) {
+			assign_scout();
+		}
+		if (Wisdom.confused() && Game.army_supply() < 20 && patrol_base < 7) {
+			if (patrol_scout == null) {
+				assign_patrol_scout();
+			}
+		} else {
+			if (patrol_scout != null) {
+				if (patrol_scout.isAlive()) {
+					Game.unit_command(patrol_scout, Abilities.STOP);
+				}
+				patrol_scout = null;
+			}
+		}
+		
+		if (scout != null) {
+			if (scout.unit().orders().size() == 0 || scout.unit().getOrders().get(0).getAbility() != Abilities.MOVE) {
+				Game.unit_command(scout, Abilities.MOVE, BaseManager.get_placement_location(enemy_spawn(scout.unit().getPosition())));
+			}
+		}
+		
+		if (patrol_scout != null) {
+			Point2d target = BaseManager.get_base(patrol_base);
+			if (target.distance(patrol_scout.unit().getPosition().toPoint2d()) < 4) {
+				patrol_base++;
+			} else if (patrol_scout.unit().getOrders().size() == 0 || patrol_scout.unit().getOrders().get(0).getAbility() != Abilities.MOVE) {
+				Game.unit_command(patrol_scout, Abilities.MOVE, target);
+			}
+		}
+
+		if (!has_pulled_back) {
+			if (Wisdom.proxy_detected() || Wisdom.all_in_detected() || Wisdom.air_detected()) {
+				has_pulled_back = true;
+				for (UnitInPool overlord: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
+					Game.unit_command(overlord, Abilities.MOVE, BaseManager.main_base().location());
+				}
+			}
+		}
+		
+	}
+	public static void end_frame() {
+		
+	}
+	
+	public static Point2d closest_enemy_spawn(Point2d s) {
+		Point2d best = null;
+		for (Point2d p: spawns) {
+			if (best == null || s.distance(p) < s.distance(best)) {
+				best = p;
+			}
+		} 
+		return best;
+	}
+	
+	public static Point2d closest_enemy_spawn() {
+		return closest_enemy_spawn(BaseManager.main_base());
+	}
+	
+	public static void overlord_scout(Unit u) {
+		// TODO make sure spawns get initialized first
+		if (overlord_base == 5 && spawns.size() == 1) {
+			Game.unit_command(u, Abilities.MOVE, closest_enemy_spawn());
+		} 
+		else if (overlord_base >= 0) {
+			Game.unit_command(u, Abilities.MOVE, BaseManager.get_base(overlord_base));
+		}
+		if (overlord_base > 0) overlord_base--;
+		
+	}
+	
+	public static void assign_scout() {
+		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+			if (Drone.is_free(unit)) {
+				scout = unit;
+				return;
+			}
+		}
+	}
+	
+	public static void assign_patrol_scout() {
+		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+			if (Drone.is_free(unit)) {
+				patrol_scout = unit;
+				return;
+			}
+		}
+	}
+	
+	
+}
