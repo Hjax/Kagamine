@@ -92,6 +92,26 @@ public class BaseManager {
 				}
 			}
 		}
+		// worker transfer code
+		for (Base b : bases) {
+			if (!b.has_command_structure()) continue;
+			if (b.command_structure.unit().getAssignedHarvesters().orElse(0) > 16) {
+				for (Base target: bases) {
+					if (!target.has_command_structure()) continue;
+					if (target.minerals.size() == 0) continue;
+					if (target.command_structure.unit().getAssignedHarvesters().orElse(0) + GameInfoCache.production.get(Units.ZERG_DRONE) < 16) {
+						for (UnitInPool worker : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+							if (worker.unit().getPosition().toPoint2d().distance(b.location) < 10) {
+								if (worker.unit().getOrders().get(0).getAbility() == Abilities.HARVEST_GATHER && Game.get_unit(worker.unit().getOrders().get(0).getTargetedUnitTag().get()).unit().getMineralContents().orElse(0) > 0) {
+									Game.unit_command(worker, Abilities.SMART, target.minerals.get(0).unit());
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 	
 	static boolean is_walking_drone(UnitInPool u) {
@@ -112,6 +132,31 @@ public class BaseManager {
 			}
 		}
 		return best;
+	}
+	
+	static void assign_worker(UnitInPool u) {
+		for (Base b : bases) {
+			if (b.has_command_structure()) {
+				// TODO dont use hard coded 16
+				if (b.command_structure.unit().getAssignedHarvesters().orElse(0) < 16) {
+					if (b.minerals.size() > 0) {
+						Game.unit_command(u, Abilities.SMART, b.minerals.get(0).unit());
+						return;
+					}
+				}
+			}
+		}
+		for (Base b : bases) {
+			if (b.has_command_structure()) {
+				// TODO dont use hard coded 16
+				if (b.command_structure.unit().getAssignedHarvesters().orElse(0) < 24) {
+					if (b.minerals.size() > 0) {
+						Game.unit_command(u, Abilities.SMART, b.minerals.get(0).unit());
+						return;
+					}
+				}
+			}
+		}
 	}
 	
 	static Base get_next_base() {
@@ -158,12 +203,126 @@ public class BaseManager {
 	}
 	
 	static UnitInPool get_free_worker(Point2d location) {
+		UnitInPool best = null;
 		unitloop: for (UnitInPool u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 			for (Base b: bases) {
 				if (b.walking_drone == u) continue unitloop;
 			}
-			if (Drone.can_build())
+			if (Drone.can_build(u)) {
+				if (best == null || location.distance(u.unit().getPosition().toPoint2d()) < location.distance(best.unit().getPosition().toPoint2d())) {
+					best = u;
+				}
+			}
 		}
+		return best;
+	}
+	
+	static int active_extractors() {
+		int total = 0;
+		for (UnitInPool u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_EXTRACTOR)) {
+			if (u.unit().getVespeneContents().orElse(0) > 0) {
+				total++;
+			}
+		}
+		return total;
+	}
+	
+	static Point2d get_base(int n) {
+		ArrayList<Point2d> found = new ArrayList<>();
+		for (int i = 0; i < 20; i++) {
+			Point2d best = Point2d.of(0, 0);
+			double best_dist = -1;
+			for (Base b: bases) {
+				if (best_dist < 0 || main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location) < best_dist) {
+					if (!found.contains(b.location)) {
+						best = b.location;
+						best_dist = main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location);
+					}
+				}
+			}
+			found.add(best);
+			if (found.size() >= n) break;
+		}
+		return found.get(found.size() - 1);
+	}
+	
+	static void build_defensive_spores() {
+		outer: for (Base b: bases) {
+			if (Game.minerals() < 75) {
+				return;
+			}
+			if (b.has_command_structure() && !(b.command_structure.unit().getBuildProgress() < .999)) {
+				for (UnitInPool spore: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
+					if (spore.unit().getPosition().toPoint2d().distance(b.location) <= 9) {
+						continue outer;
+					}
+				}
+				Point2d spore = get_spore_placement_location(b);
+				if (spore.distance(Point2d.of(0, 0)) < 5) continue outer;
+				UnitInPool worker = get_free_worker(spore);
+				if (worker != null) {
+					Game.unit_command(worker, Abilities.BUILD_SPORE_CRAWLER, spore);
+					Game.spend(75, 0);
+					return;
+				}
+			}
+		}
+	}
+	
+	static Point2d get_spine_placement_location(Base b) {
+		Point2d target = Scouting.closest_enemy_spawn();
+		target = Point2d.of(target.getX() + 4, target.getY());
+		Point2d result = Point2d.of(0, 0);
+		for (int i = 0; i < 200; i++) {
+			double rx = Math.random();
+			double ry = Math.random();
+			Point2d test = Point2d.of((float) (b.location.getX() + rx * 10), (float) (b.location.getY() + ry * 10));
+			if (Game.can_place(Abilities.BUILD_SPINE_CRAWLER, test)) {
+				if (result == Point2d.of(0, 0) || Game.pathing_distance(result,  target) > Game.pathing_distance(test, target)) {
+					result = test;
+				}
+			}
+		}
+		return result;
+	}
+	
+	static Base get_forward_base() {
+		Base best = null;
+		Point2d target = Scouting.closest_enemy_spawn();
+		target = Point2d.of(target.getX() + 5, target.getY() + 5);
+		for (Base b: bases) {
+			if (b.has_command_structure() && !(b.command_structure.unit().getBuildProgress() < 0.999)) {
+				if (best == null || Game.pathing_distance(b.location, target) < Game.pathing_distance(best.location, target)) {
+					best = b;
+				}
+			}
+		}
+		return best;
+	}
+	
+	static Point2d get_spore_placement_location(Base b) {
+		float x = 0;
+		float y = 0;
+		int total = 0;
+		for (UnitInPool min: GameInfoCache.get_units(Alliance.NEUTRAL)) {
+			if (min.unit().getMineralContents() .orElse(0)> 0 && min.unit().getPosition().toPoint2d().distance(b.location) < 8) {
+				x += min.unit().getPosition().getX();
+				y += min.unit().getPosition().getY();
+				total++;
+			}
+		}
+		x /= total;
+		y /= total;
+		x = b.location.getX() - x;
+		y = b.location.getY() - y;
+		Point2d offset = Utilities.normalize(Point2d.of(x, y));
+		for (int i = 0; i < 20; i++) {
+			Point2d p = Point2d.of((float) (b.location.getX() - (2.5 + 0.1 * i) * offset.getX()), (float) (b.location.getY() - (2.5 * 0.1 * i) * offset.getY()));
+			if (Game.can_place(Abilities.BUILD_SPORE_CRAWLER, p)) {
+				return p;
+			}
+		}
+		return Point2d.of(0, 0);
 	}
 	
 	static void calculate_expansions() {

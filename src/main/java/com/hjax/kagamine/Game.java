@@ -216,8 +216,12 @@ public class Game {
 		return observation.isPathable(p);
 	}
 	
-	public float height(Point2d p) {
+	public static float height(Point2d p) {
 		return observation.terrainHeight(p);
+	}
+	
+	public static float pathing_distance(Point2d a, Point2d b) {
+		return query.pathingDistance(a, b);
 	}
 	
 	public static boolean can_afford(UnitType u) {

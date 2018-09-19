@@ -46,10 +46,10 @@ public class Scouting {
 				}
 			}
 		}
-		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 16 && Build.should_scout()) {
+		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 16 && Build.scout) {
 			assign_scout();
 		}
-		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 12 && spawns.size() >= 3 && Build.should_scout()) {
+		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 12 && spawns.size() >= 3 && Build.scout) {
 			assign_scout();
 		}
 		if (Wisdom.confused() && Game.army_supply() < 20 && patrol_base < 7) {
@@ -66,8 +66,8 @@ public class Scouting {
 		}
 		
 		if (scout != null) {
-			if (scout.unit().orders().size() == 0 || scout.unit().getOrders().get(0).getAbility() != Abilities.MOVE) {
-				Game.unit_command(scout, Abilities.MOVE, BaseManager.get_placement_location(enemy_spawn(scout.unit().getPosition())));
+			if (scout.unit().getOrders().size() == 0 || scout.unit().getOrders().get(0).getAbility() != Abilities.MOVE) {
+				Game.unit_command(scout, Abilities.MOVE, BaseManager.get_placement_location(Units.PROTOSS_PYLON, closest_enemy_spawn(scout.unit().getPosition().toPoint2d()), 5, 15));
 			}
 		}
 		
@@ -84,7 +84,7 @@ public class Scouting {
 			if (Wisdom.proxy_detected() || Wisdom.all_in_detected() || Wisdom.air_detected()) {
 				has_pulled_back = true;
 				for (UnitInPool overlord: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
-					Game.unit_command(overlord, Abilities.MOVE, BaseManager.main_base().location());
+					Game.unit_command(overlord, Abilities.MOVE, BaseManager.main_base().location);
 				}
 			}
 		}
@@ -105,7 +105,7 @@ public class Scouting {
 	}
 	
 	public static Point2d closest_enemy_spawn() {
-		return closest_enemy_spawn(BaseManager.main_base());
+		return closest_enemy_spawn(BaseManager.main_base().location);
 	}
 	
 	public static void overlord_scout(Unit u) {
@@ -122,7 +122,7 @@ public class Scouting {
 	
 	public static void assign_scout() {
 		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-			if (Drone.is_free(unit)) {
+			if (Drone.can_build(unit)) {
 				scout = unit;
 				return;
 			}
@@ -131,7 +131,7 @@ public class Scouting {
 	
 	public static void assign_patrol_scout() {
 		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-			if (Drone.is_free(unit)) {
+			if (Drone.can_build(unit)) {
 				patrol_scout = unit;
 				return;
 			}
