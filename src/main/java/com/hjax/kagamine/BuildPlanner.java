@@ -131,7 +131,7 @@ public class BuildPlanner {
 						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
 								if (BaseManager.base_count() >= 3 && count(Units.ZERG_DRONE) > 30) {
-									if (Game.minerals() < 150 && Game.gas() < 100) return;
+									if (Game.minerals() < 150 && Game.gas() > 100) return;
 									if (Game.can_afford(Balance.next_tech_requirement(u))) {
 										for (Base b: BaseManager.bases) {
 											if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0) {

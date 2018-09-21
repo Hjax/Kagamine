@@ -16,7 +16,7 @@ public class Main {
 	                .loadSettings(args)
 	                .setParticipants(
 	                        S2Coordinator.createParticipant(Race.ZERG, bot),
-	                        S2Coordinator.createComputer(Race.ZERG, Difficulty.MEDIUM))
+	                        S2Coordinator.createComputer(Race.PROTOSS, Difficulty.MEDIUM))
 	                .launchStarcraft()
 	                .startGame(LocalMap.of(Paths.get("C:\\Program Files (x86)\\StarCraft II\\Maps\\CatalystLE.SC2Map")));
 

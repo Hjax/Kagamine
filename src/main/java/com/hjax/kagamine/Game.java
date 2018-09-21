@@ -180,6 +180,7 @@ public class Game {
 		if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
 			minerals = Math.max(minerals - 50, 0);
 		}
+		if (u == Units.ZERG_LAIR) minerals -= 300;
 		spend(minerals, gas);
 	}
 	
@@ -246,6 +247,7 @@ public class Game {
 		if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
 			minerals = Math.max(minerals - 50, 0);
 		}
+		if (u == Units.ZERG_LAIR) minerals -= 300;
 		return minerals <= minerals() && gas <= gas();
 	}
 	

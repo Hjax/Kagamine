@@ -17,22 +17,40 @@ public class Kagamine extends S2Agent{
 
 	@Override
 	public void onStep() {
-		long startTime = System.nanoTime();
 		Game.start_frame(observation(), actions(), query(), debug());
 		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
+			System.out.println("---------------------------");
+			long startTime = System.nanoTime();
 			GameInfoCache.start_frame();
+			System.out.println("GameInfoCache " + (System.nanoTime() - startTime) / 1000000);
+			startTime = System.nanoTime();
 			Larva.start_frame();
+			System.out.println("Larva " + (System.nanoTime() - startTime) / 1000000);
+			startTime = System.nanoTime();
 			Scouting.on_frame();
+			System.out.println("Scouting " + (System.nanoTime() - startTime) / 1000000);
+			startTime = System.nanoTime();
 			ArmyManager.on_frame();
+			System.out.println("ArmyManager " + (System.nanoTime() - startTime) / 1000000);
+			startTime = System.nanoTime();
 			ThreatManager.on_frame();
+			System.out.println("ThreatManager " + (System.nanoTime() - startTime) / 1000000);
+			startTime = System.nanoTime();
 			BaseManager.on_frame();
+			System.out.println("BaseManager " + (System.nanoTime() - startTime) / 1000000);
+			startTime = System.nanoTime();
 			BuildPlanner.on_frame();
+			System.out.println("BuildPlanner " + (System.nanoTime() - startTime) / 1000000);
+			startTime = System.nanoTime();
 			UnitManager.on_frame();
+			System.out.println("UnitManager " + (System.nanoTime() - startTime) / 1000000);
+			startTime = System.nanoTime();
 			GameInfoCache.end_frame();
+			System.out.println("GameInfoCache end " + (System.nanoTime() - startTime) / 1000000);
 		}
 		
 		Game.debug.sendDebug();
-		System.out.println((System.nanoTime() - startTime) / 1000000);
+		
 	}
 	
 	@Override

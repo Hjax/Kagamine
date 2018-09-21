@@ -65,13 +65,13 @@ public class Scouting {
 			}
 		}
 		
-		if (scout != null) {
+		if (scout != null && scout.isAlive()) {
 			if (scout.unit().getOrders().size() == 0 || scout.unit().getOrders().get(0).getAbility() != Abilities.MOVE) {
 				Game.unit_command(scout, Abilities.MOVE, BaseManager.get_placement_location(Units.PROTOSS_PYLON, closest_enemy_spawn(scout.unit().getPosition().toPoint2d()), 5, 15));
 			}
 		}
 		
-		if (patrol_scout != null) {
+		if (patrol_scout != null && patrol_scout.isAlive()) {
 			Point2d target = BaseManager.get_base(patrol_base);
 			if (target.distance(patrol_scout.unit().getPosition().toPoint2d()) < 4) {
 				patrol_base++;
