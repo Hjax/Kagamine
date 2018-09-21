@@ -10,6 +10,9 @@ public class Wisdom {
 	public static boolean all_in_detected() {
 		return false;
 	}
+	public static boolean play_safe() {
+		return false;
+	}
 	public static boolean cannon_rush() {
 		return false;
 	}

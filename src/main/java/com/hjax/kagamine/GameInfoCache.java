@@ -60,7 +60,7 @@ public class GameInfoCache {
 	static void on_frame() {}
 	static void end_frame() {}
 	
-	static int count_friendly(UnitType type) {
+	public static int count_friendly(UnitType type) {
 		int total = 0;
 		for (UnitInPool unit: visible_units.values()) {
 			if (unit.unit().getType() == type) total++;
@@ -88,7 +88,7 @@ public class GameInfoCache {
 		return units;
 	}
 	
-	static ArrayList<UnitInPool> get_units(Alliance team) {
+	public static ArrayList<UnitInPool> get_units(Alliance team) {
 		ArrayList<UnitInPool> units = new ArrayList<>();
 		for (UnitInPool u: visible_units.values()) {
 			if (u.unit().getAlliance() == team) units.add(u);
@@ -96,12 +96,22 @@ public class GameInfoCache {
 		return units;
 	}
 	
-	static ArrayList<UnitInPool> get_units(Alliance team, UnitType type) {
+	public static ArrayList<UnitInPool> get_units(Alliance team, UnitType type) {
 		ArrayList<UnitInPool> units = new ArrayList<>();
 		for (UnitInPool u: visible_units.values()) {
 			if (u.unit().getAlliance() == team && u.unit().getType() == type) units.add(u);
 		}
 		return units;
+	}
+	
+	// TODO add claimed geysers?
+	public static boolean geyser_is_free(UnitInPool u) {
+		for (UnitInPool e : get_units(Alliance.SELF, Units.ZERG_EXTRACTOR)) {
+			if (e.unit().getPosition().toPoint2d().distance(u.unit().getPosition().toPoint2d()) < 1) {
+				return false;
+			}
+		}
+		return true;
 	}
 	
 }

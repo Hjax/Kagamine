@@ -11,10 +11,11 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
+import com.hjax.kagamine.UnitControllers.Drone;
 
 
 public class BaseManager {
-	static ArrayList<Base> bases;
+	public static ArrayList<Base> bases;
 	static ArrayList<Point2d> expos;
 	static {
 		bases = new ArrayList<>();
@@ -134,7 +135,7 @@ public class BaseManager {
 		return best;
 	}
 	
-	static void assign_worker(UnitInPool u) {
+	public static void assign_worker(UnitInPool u) {
 		for (Base b : bases) {
 			if (b.has_command_structure()) {
 				// TODO dont use hard coded 16
@@ -159,7 +160,18 @@ public class BaseManager {
 		}
 	}
 	
-	static Base get_next_base() {
+	public static float larva_rate() {
+		int total = 0;
+		for (Base b: bases) {
+			if (b.has_command_structure()) {
+				total++;
+				if (b.has_queen()) total++;
+			}
+		}
+		return total;
+	}
+	
+	public static Base get_next_base() {
 		Base best = null;
 		double best_dist = -1;
 		for (Base b: bases) {
@@ -172,7 +184,7 @@ public class BaseManager {
 		return best;
 	}
 	
-	static int base_count() {
+	public static int base_count() {
 		int result = 0;
 		for (Base b: bases) {
 			if (b.has_command_structure()) result++;
@@ -197,12 +209,44 @@ public class BaseManager {
 			if (get_next_base().has_walking_drone()) {
 				Game.unit_command(get_next_base().walking_drone, Game.get_unit_type_data().get(structure).getAbility().orElse(Abilities.INVALID), get_next_base().location);
 			} else {
-				
+				UnitInPool worker = get_free_worker(get_next_base().location);
+				if (worker != null) {
+					Game.unit_command(worker, Abilities.BUILD_HATCHERY, get_next_base().location);
+					return;
+				}
+			}
+		} else if (structure == Units.ZERG_EXTRACTOR) {
+			for (Base b: BaseManager.bases) {
+				if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+					for (UnitInPool gas: b.gases) {
+						if (GameInfoCache.geyser_is_free(gas)) {
+							UnitInPool worker = get_free_worker(get_next_base().location);
+							if (worker != null) {
+								Game.unit_command(worker, Abilities.BUILD_EXTRACTOR, gas.unit());
+								return;
+							}
+						}
+					}
+				}
+			}
+		} else if (structure == Units.ZERG_SPINE_CRAWLER) {
+			Point2d location = get_spine_placement_location(get_forward_base());
+			UnitInPool worker = get_free_worker(location);
+			if (worker != null) {
+				Game.unit_command(worker, Abilities.BUILD_SPINE_CRAWLER, location);
+				return;
+			}
+		} else {
+			Point2d location = get_placement_location(structure, main_base().location, 15, 5);
+			UnitInPool worker = get_free_worker(location);
+			if (worker != null) {
+				Game.unit_command(worker, Game.get_unit_type_data().get(structure).getAbility().get(), location);
+				return;
 			}
 		}
 	}
 	
-	static UnitInPool get_free_worker(Point2d location) {
+	public static UnitInPool get_free_worker(Point2d location) {
 		UnitInPool best = null;
 		unitloop: for (UnitInPool u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 			for (Base b: bases) {
@@ -286,7 +330,7 @@ public class BaseManager {
 		return result;
 	}
 	
-	static Base get_forward_base() {
+	public static Base get_forward_base() {
 		Base best = null;
 		Point2d target = Scouting.closest_enemy_spawn();
 		target = Point2d.of(target.getX() + 5, target.getY() + 5);
@@ -370,4 +414,5 @@ public class BaseManager {
 			}
 		}
 	}
+
 }

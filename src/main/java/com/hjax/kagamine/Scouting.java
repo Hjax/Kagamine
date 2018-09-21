@@ -9,6 +9,7 @@ import com.github.ocraft.s2client.protocol.game.raw.StartRaw;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Unit;
+import com.hjax.kagamine.UnitControllers.Drone;
 
 public class Scouting {
 	public static UnitInPool scout = null;

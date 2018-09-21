@@ -167,6 +167,22 @@ public class Game {
 		spending[1] += g;
 	}
 	
+	public static void purchase(Upgrade u) {
+		int minerals = Game.get_upgrade_data().get(u).getMineralCost().orElse(0);
+		int gas = Game.get_upgrade_data().get(u).getVespeneCost().orElse(0);
+		spend(minerals, gas);
+	}
+	
+	// TODO deal with morphs
+	public static void purchase(UnitType u) {
+		int minerals = Game.get_unit_type_data().get(u).getMineralCost().orElse(0);
+		int gas = Game.get_unit_type_data().get(u).getVespeneCost().orElse(0);
+		if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
+			minerals = Math.min(minerals - 50, 0);
+		}
+		spend(minerals, gas);
+	}
+	
 	public static Map<UnitType, UnitTypeData> get_unit_type_data() {
 		if (unit_type_data == null) {
 			unit_type_data = observation.getUnitTypeData(false);
@@ -233,6 +249,12 @@ public class Game {
 		return minerals <= minerals() && gas <= gas();
 	}
 	
+	public static boolean can_afford(Upgrade u) {
+		int minerals = get_upgrade_data().get(u).getMineralCost().orElse(0);
+		int gas = get_upgrade_data().get(u).getVespeneCost().orElse(0);
+		return minerals <= minerals() && gas <= gas();
+	}
+	
 	public static boolean is_town_hall(UnitType u) {
 		return u.equals(Units.PROTOSS_NEXUS) ||
 				u.equals(Units.TERRAN_COMMAND_CENTER) ||
@@ -258,4 +280,6 @@ public class Game {
 				(get_unit_type_data().get(u).getMineralCost().orElse(0) > 0 || get_unit_type_data().get(u).getVespeneCost().orElse(0) > 0)) ||
 				(get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) != Race.ZERG && get_unit_type_data().get(u).getFoodProvided().orElse((float) 0) > 0);
 	}
+
+
 }

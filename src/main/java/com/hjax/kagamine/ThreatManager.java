@@ -33,7 +33,7 @@ public class ThreatManager {
 			}
 		}
 	}
-	public static boolean under_attacK() {
+	public static boolean under_attack() {
 		return seen.size() > 1;
 	}
 }

@@ -12,13 +12,14 @@ public class Kagamine extends S2Agent{
 
 	@Override
 	public void onStep() {
-		
 		Game.start_frame(observation(), actions(), query(), debug());
-		GameInfoCache.start_frame();
-		
-		for (UnitInPool u: GameInfoCache.all_units.values()) {
-			if (!u.isAlive()) {
-				System.out.println("Dead " + u.unit().getType().toString());
+		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
+			GameInfoCache.start_frame();
+			
+			for (UnitInPool u: GameInfoCache.all_units.values()) {
+				if (!u.isAlive()) {
+					System.out.println("Dead " + u.unit().getType().toString());
+				}
 			}
 		}
 	}

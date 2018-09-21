@@ -59,4 +59,11 @@ public class Balance {
 		}
 		return result;
 	}
+
+	public static UnitType get_tech_structure(UnitType u) {
+		if (overrides.containsKey(u)) {
+			return overrides.get(u);
+		}
+		return Game.get_unit_type_data().get(u).getTechRequirement().get();
+	}
 }

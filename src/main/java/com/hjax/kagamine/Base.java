@@ -7,7 +7,7 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 
 public class Base {
-	Point2d location;
+	public Point2d location;
 	ArrayList<UnitInPool> gases;
 	ArrayList<UnitInPool> minerals;
 	
