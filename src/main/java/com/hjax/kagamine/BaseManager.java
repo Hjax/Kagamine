@@ -2,7 +2,6 @@ package com.hjax.kagamine;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
@@ -100,7 +99,7 @@ public class BaseManager {
 				for (Base target: bases) {
 					if (!target.has_command_structure()) continue;
 					if (target.minerals.size() == 0) continue;
-					if (target.command_structure.unit().getAssignedHarvesters().orElse(0) + GameInfoCache.production.get(Units.ZERG_DRONE) < 16) {
+					if (target.command_structure.unit().getAssignedHarvesters().orElse(0) + GameInfoCache.in_progress(Units.ZERG_DRONE) < 16) {
 						for (UnitInPool worker : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 							if (worker.unit().getPosition().toPoint2d().distance(b.location) < 10) {
 								if (worker.unit().getOrders().get(0).getAbility() == Abilities.HARVEST_GATHER && Game.get_unit(worker.unit().getOrders().get(0).getTargetedUnitTag().get()).unit().getMineralContents().orElse(0) > 0) {

@@ -3,7 +3,6 @@ package com.hjax.kagamine;
 import java.nio.file.Paths;
 
 import com.github.ocraft.s2client.bot.S2Coordinator;
-import com.github.ocraft.s2client.protocol.game.BattlenetMap;
 import com.github.ocraft.s2client.protocol.game.Difficulty;
 import com.github.ocraft.s2client.protocol.game.LocalMap;
 import com.github.ocraft.s2client.protocol.game.Race;

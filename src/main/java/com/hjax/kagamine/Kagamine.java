@@ -1,13 +1,14 @@
 package com.hjax.kagamine;
 
 import com.github.ocraft.s2client.bot.S2Agent;
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 
 public class Kagamine extends S2Agent{
 
 	@Override
 	public void onGameStart() {
-		System.out.println("Hello world of Starcraft II bots!");
+		Game.start_frame(observation(), actions(), query(), debug());
+		Game.chat("Kagamine 1.0 BETA");
+		BuildPlanner.decide_build();
 	}
 
 	@Override
@@ -15,12 +16,13 @@ public class Kagamine extends S2Agent{
 		Game.start_frame(observation(), actions(), query(), debug());
 		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
 			GameInfoCache.start_frame();
-			
-			for (UnitInPool u: GameInfoCache.all_units.values()) {
-				if (!u.isAlive()) {
-					System.out.println("Dead " + u.unit().getType().toString());
-				}
-			}
+			Scouting.on_frame();
+			ArmyManager.on_frame();
+			ThreatManager.on_frame();
+			BaseManager.on_frame();
+			BuildPlanner.on_frame();
+			UnitManager.on_frame();
+			GameInfoCache.end_frame();
 		}
 	}
 
