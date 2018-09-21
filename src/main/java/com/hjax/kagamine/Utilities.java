@@ -1,15 +1,13 @@
 package com.hjax.kagamine;
 
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
-
 public class Utilities {
-	public static Point2d normalize(Point2d v) {
-		double length = Math.sqrt(v.getX() * v.getX() + v.getY() * v.getY());
-		return Point2d.of((float) (v.getX() / length), (float) (v.getY() / length));
+	public static Vector2d normalize(Vector2d v) {
+		double length = Math.sqrt(v.x * v.x + v.y * v.y);
+		return new Vector2d((float) (v.x / length), (float) (v.y / length));
 	}
 	
-	public static Point2d direction_to(Point2d a, Point2d b) {
-		return normalize(Point2d.of(b.getX() - a.getX(), b.getY() - a.getY()));
+	public static Vector2d direction_to(Vector2d a, Vector2d b) {
+		return normalize(new Vector2d(b.x - a.x, b.y - a.y));
 	}
 }
  

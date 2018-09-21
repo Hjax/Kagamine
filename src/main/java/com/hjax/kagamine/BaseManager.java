@@ -1,13 +1,17 @@
 package com.hjax.kagamine;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.debug.Color;
+import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.Drone;
@@ -27,6 +31,17 @@ public class BaseManager {
 		for (Point2d e: expos) {
 			bases.add(new Base(e));
 		}
+		
+		UnitInPool main = GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY).get(0);
+		
+		// Fix the placement for our main base
+		for (Base b : bases) {
+			if (b.location.distance(main.unit().getPosition().toPoint2d()) < 10) {
+				b.location = main.unit().getPosition().toPoint2d();
+			}
+		}
+		
+		on_unit_created(main);
 	}
 	
 	static void on_unit_created(UnitInPool u) {
@@ -127,8 +142,10 @@ public class BaseManager {
 	static Base main_base() {
 		Base best = null;
 		for (Base b: bases) {
-			if (best == null || best.location.distance(Scouting.closest_enemy_spawn()) < b.location.distance(Scouting.closest_enemy_spawn())) {
-				best = b;
+			if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+				if (best == null || best.location.distance(Scouting.closest_enemy_spawn(best.location)) < b.location.distance(Scouting.closest_enemy_spawn(b.location))) {
+					best = b;
+				}
 			}
 		}
 		return best;
@@ -358,9 +375,9 @@ public class BaseManager {
 		y /= total;
 		x = b.location.getX() - x;
 		y = b.location.getY() - y;
-		Point2d offset = Utilities.normalize(Point2d.of(x, y));
+		Vector2d offset = Utilities.normalize(new Vector2d(x, y));
 		for (int i = 0; i < 20; i++) {
-			Point2d p = Point2d.of((float) (b.location.getX() - (2.5 + 0.1 * i) * offset.getX()), (float) (b.location.getY() - (2.5 * 0.1 * i) * offset.getY()));
+			Point2d p = Point2d.of((float) (b.location.getX() - (2.5 + 0.1 * i) * offset.x), (float) (b.location.getY() - (2.5 * 0.1 * i) * offset.y));
 			if (Game.can_place(Abilities.BUILD_SPORE_CRAWLER, p)) {
 				return p;
 			}
@@ -372,11 +389,13 @@ public class BaseManager {
 		expos.clear();
 		ArrayList<Set<UnitInPool>> mineral_lines = new ArrayList<>();
 		outer: for (UnitInPool unit: GameInfoCache.get_units(Alliance.NEUTRAL)) {
-			if (unit.unit().getDisplayType().toString().toLowerCase().contains("mineral")) {
+			if (unit.unit().getType().toString().toLowerCase().contains("mineral")) {
 				for (Set<UnitInPool> lines : mineral_lines) {
-					if (lines.iterator().next().unit().getPosition().distance(unit.unit().getPosition()) < 10) {
-						lines.add(unit);
-						continue outer;
+					for (UnitInPool patch : lines) {
+						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 10) {
+							lines.add(unit);
+							continue outer;
+						}
 					}
 				}
 				Set<UnitInPool> adder = new HashSet<>();
@@ -395,21 +414,28 @@ public class BaseManager {
 			}
 			x = x/count;
 			y = y/count;
-			float offset_x = 0;
-			float offset_y = 0;
-			count = 0;
-			for (UnitInPool patch : new ArrayList<>(line)) {
-				offset_x += patch.unit().getPosition().getX() - x;
-				offset_y += patch.unit().getPosition().getY() - y;
-				count++;
-			}
-			offset_x /= count;
-			offset_y /= count;
-			for (int i = 0; i < 10; i++) {
-				Point2d current = Point2d.of(x + i * offset_x, y + i * offset_y);
-				if (Game.query.placement(Abilities.BUILD_HATCHERY, current)) {
-					expos.add(current);
+			Vector2d average = new Vector2d(x, y);
+			
+			Point2d best = null;
+			
+			
+			for (int x_offset = -10; x_offset < 11; x_offset++) {
+				for (int y_offset = -10; y_offset < 11; y_offset++) {
+					Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
+					if (best == null || average.toPoint2d().distance(current) < average.toPoint2d().distance(best)) {
+						if (Game.query.placement(Abilities.BUILD_HATCHERY, current)) {
+							best = current;
+							//Game.debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), Color.GREEN);
+						}
+						else {
+							//Game.debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), Color.RED);
+						}
+					}
 				}
+			}
+			
+			if (best != null) {
+				expos.add(best);
 			}
 		}
 	}

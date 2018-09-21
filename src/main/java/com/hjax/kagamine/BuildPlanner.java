@@ -22,7 +22,7 @@ public class BuildPlanner {
 	public static boolean pulled_off_gas = false;
 	
 	public static void on_frame() {
-		if (build_completed()) execute_build();
+		if (!build_completed()) execute_build();
 		else {
 			//if (!is_all_in && count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) do_ravager_all_in();
 			//if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) hunter_killer();
@@ -184,8 +184,10 @@ public class BuildPlanner {
 					}
 				}
 				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
-					Game.purchase(next_army_unit());
-					Larva.produce_unit(next_army_unit());
+					if (next_army_unit() != Units.INVALID) {
+						Game.purchase(next_army_unit());
+						Larva.produce_unit(next_army_unit());
+					}
 				}
 			}
 			else if (should_build_drones()) {
@@ -311,7 +313,7 @@ public class BuildPlanner {
 	public static boolean should_build_drones() {
 		boolean should_drone = false;
 		for (Base b: BaseManager.bases) {
-			if (b.has_command_structure() && (b.command_structure.unit().getIdealHarvesters().orElse(0) - b.command_structure.unit().getAssignedHarvesters().orElse(0)) > 0 || (b.command_structure.unit().getBuildProgress() > 0.8)) {
+			if (b.has_command_structure() && ((b.command_structure.unit().getIdealHarvesters().orElse(0) - b.command_structure.unit().getAssignedHarvesters().orElse(0)) > 0 || (b.command_structure.unit().getBuildProgress() > 0.8))) {
 				should_drone = true;
 				break;
 			}

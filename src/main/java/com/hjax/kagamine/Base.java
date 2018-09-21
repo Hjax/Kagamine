@@ -12,8 +12,8 @@ public class Base {
 	ArrayList<UnitInPool> minerals;
 	
 	UnitInPool walking_drone = null;
-	UnitInPool queen = null;
-	UnitInPool command_structure = null;
+	public UnitInPool queen = null;
+	public UnitInPool command_structure = null;
 	
 	public Base(Point2d l) {
 		location = l;

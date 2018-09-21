@@ -10,11 +10,13 @@ import com.hjax.kagamine.Game;
 
 public class Extractor {
 	public static void on_frame(UnitInPool u) {
-		if (!BuildPlanner.pulled_off_gas && is_near_base(u.unit().getPosition().toPoint2d())) {
-			if (u.unit().getAssignedHarvesters().get() < u.unit().getIdealHarvesters().get()) {
-				UnitInPool best = BaseManager.get_free_worker(u.unit().getPosition().toPoint2d());
-				if (best != null) {
-					Game.unit_command(best, Abilities.SMART, u.unit());
+		if (u.unit().getBuildProgress() > 0.999) {
+			if (!BuildPlanner.pulled_off_gas && is_near_base(u.unit().getPosition().toPoint2d())) {
+				if (u.unit().getAssignedHarvesters().get() < u.unit().getIdealHarvesters().get()) {
+					UnitInPool best = BaseManager.get_free_worker(u.unit().getPosition().toPoint2d());
+					if (best != null) {
+						Game.unit_command(best, Abilities.SMART, u.unit());
+					}
 				}
 			}
 		}

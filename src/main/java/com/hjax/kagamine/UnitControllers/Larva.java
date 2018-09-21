@@ -25,6 +25,7 @@ public class Larva {
 		
 	}
 	public static void produce_unit(UnitType type) {
-		Game.unit_command(larva.get(larva_index++), Game.get_unit_type_data().get(type).getAbility().get());
+		Game.unit_command(larva.get(larva_index), Game.get_unit_type_data().get(type).getAbility().get());
+		larva_index++;
 	}
 }

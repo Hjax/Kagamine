@@ -63,6 +63,7 @@ public class GameInfoCache {
 	public static int count_friendly(UnitType type) {
 		int total = 0;
 		for (UnitInPool unit: visible_units.values()) {
+			if (unit.unit().getBuildProgress() < 0.999) continue;
 			if (unit.unit().getType() == type) total++;
 		}
 		return total;

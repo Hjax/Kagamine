@@ -178,7 +178,7 @@ public class Game {
 		int minerals = Game.get_unit_type_data().get(u).getMineralCost().orElse(0);
 		int gas = Game.get_unit_type_data().get(u).getVespeneCost().orElse(0);
 		if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
-			minerals = Math.min(minerals - 50, 0);
+			minerals = Math.max(minerals - 50, 0);
 		}
 		spend(minerals, gas);
 	}
@@ -244,7 +244,7 @@ public class Game {
 		int minerals = get_unit_type_data().get(u).getMineralCost().orElse(0);
 		int gas = get_unit_type_data().get(u).getVespeneCost().orElse(0);
 		if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
-			minerals = Math.min(minerals - 50, 0);
+			minerals = Math.max(minerals - 50, 0);
 		}
 		return minerals <= minerals() && gas <= gas();
 	}

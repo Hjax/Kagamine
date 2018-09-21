@@ -21,7 +21,7 @@ public class ArmyManager {
 			if (target.distance(u.unit().getPosition().toPoint2d()) < 4) {
 				for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
 					if (e.unit().getType() != Units.PROTOSS_ADEPT_PHASE_SHIFT) {
-						if (u.unit().getPosition().distance(e.unit().getPosition()) < 10) {
+						if (u.unit().getPosition().distance(e.unit().getPosition()) < 4) {
 							break outer;
 						}
 					}
@@ -33,9 +33,11 @@ public class ArmyManager {
 		if (!has_target) {
 			for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (e.unit().getType() != Units.PROTOSS_ADEPT_PHASE_SHIFT) {
-					target = e.unit().getPosition().toPoint2d();
-					has_target = true;
-					break;
+					if (!e.unit().getFlying().orElse(false) || GameInfoCache.count_friendly(Units.ZERG_MUTALISK) > 0) {
+						target = e.unit().getPosition().toPoint2d();
+						has_target = true;
+						break;
+					}
 				}
 			}
 		}
