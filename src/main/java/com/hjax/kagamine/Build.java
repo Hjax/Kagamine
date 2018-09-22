@@ -18,7 +18,7 @@ public class Build {
 	public static int max_queens = -1;
 	public static boolean scout = true;
 	public static boolean pull_off_gas = true;
-	public static Set<UnitType> composition = new HashSet<>();
+	public static List<UnitType> composition = new ArrayList<>();
 	public static Set<Upgrade> upgrades = new HashSet<>();
 	public static List<Pair<Integer, UnitType>> build = new ArrayList<>();
 }

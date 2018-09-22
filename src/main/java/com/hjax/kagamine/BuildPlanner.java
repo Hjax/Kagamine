@@ -33,7 +33,7 @@ public class BuildPlanner {
 					GameInfoCache.count_enemy(Units.PROTOSS_MOTHERSHIP) > 0 ||
 					GameInfoCache.count_enemy(Units.PROTOSS_STARGATE) > 0) {
 					if (Build.composition.contains(Units.ZERG_ROACH)) {
-						Build.composition = new HashSet<>(Arrays.asList(Units.ZERG_HYDRALISK, Units.ZERG_ZERGLING));
+						Build.composition = Arrays.asList(Units.ZERG_HYDRALISK, Units.ZERG_ZERGLING);
 						Build.ideal_workers = 70;
 						Build.max_queens = 4;
 					}
@@ -340,7 +340,7 @@ public class BuildPlanner {
 															new Pair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 															new Pair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 															new Pair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = new HashSet<>(Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK));
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.push_supply = 185;
@@ -352,7 +352,7 @@ public class BuildPlanner {
 						new Pair<Integer, UnitType>(14, Units.ZERG_EXTRACTOR),
 						new Pair<Integer, UnitType>(14, Units.ZERG_SPAWNING_POOL),
 						new Pair<Integer, UnitType>(14, Units.ZERG_OVERLORD)));
-				Build.composition = new HashSet<>(Arrays.asList(Units.ZERG_ZERGLING));
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
 				Build.ideal_hatches = 2;
 				Build.scout = false;
 				Build.push_supply = 30;
@@ -365,7 +365,7 @@ public class BuildPlanner {
 						new Pair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new Pair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new Pair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = new HashSet<>(Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK));
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.push_supply = 190;

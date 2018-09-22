@@ -19,8 +19,15 @@ import com.github.ocraft.s2client.protocol.unit.UnitOrder;
 public class GameInfoCache {
 	
 	static Map<Ability, Integer> production = new HashMap<>();
-	static Map<Tag, UnitInPool> visible_units = new HashMap<>();
 	static Map<Tag, UnitInPool> all_units = new HashMap<>();
+	
+	static Map<UnitType, Integer> counts_friendly = new HashMap<>();
+	static Map<UnitType, Integer> counts_enemy = new HashMap<>();
+	
+	static Map<Tag, UnitInPool> visible_friendly = new HashMap<>();
+	static Map<Tag, UnitInPool> visible_enemy = new HashMap<>();
+	static Map<Tag, UnitInPool> visible_neutral = new HashMap<>();
+	
 	static Set<Tag> morphing_drones = new HashSet<>();
 	
 	static void start_frame() {
@@ -29,78 +36,89 @@ public class GameInfoCache {
 		}
 		
 		morphing_drones.clear();
-		visible_units.clear();
+		visible_friendly.clear();
+		visible_enemy.clear();
 		
-		for (UnitInPool u: Game.get_units()) {
-			visible_units.put(u.getTag(), u);
-		}
+		counts_friendly.clear();
+		counts_enemy.clear();
+		visible_neutral.clear();
 		
 		for (UnitInPool u: Game.get_units()) {
 			all_units.put(u.getTag(), u);
+	
+			
 			if (u.isAlive()) {
-				visible_units.put(u.getTag(),  u);
+				if (u.unit().getAlliance() == Alliance.SELF) {
+					if (u.unit().getBuildProgress() > 0.999) {
+						counts_friendly.put(u.unit().getType(), counts_friendly.getOrDefault(u.unit().getType(), 0) + 1);
+					}
+					visible_friendly.put(u.getTag(), u);
+				} else if (u.unit().getAlliance() == Alliance.ENEMY) {
+					if (u.unit().getBuildProgress() > 0.999) {
+						counts_enemy.put(u.unit().getType(), counts_enemy.getOrDefault(u.unit().getType(), 0) + 1);
+					}
+					visible_enemy.put(u.getTag(), u);
+				} else {
+					visible_neutral.put(u.getTag(), u);
+				}
 				if (u.unit().getBuildProgress() < Constants.DONE) {
 					production.put(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 
-								   production.get(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID)) + 1);
+					production.get(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID)) + 1);
 				}
 				for (UnitOrder o: u.unit().getOrders()) {
-					for (UnitTypeData t: Game.get_unit_type_data().values()) {
-						if (o.getAbility() == t.getAbility().orElse(Abilities.INVALID)) {
-							production.put(o.getAbility(), production.get(o.getAbility()) + 1);
-							if (u.unit().getType() == Units.ZERG_DRONE) {
+					production.put(o.getAbility(), production.get(o.getAbility()) + 1);
+					if (u.unit().getType() == Units.ZERG_DRONE) {
+						for (UnitTypeData t: Game.get_unit_type_data().values()) {
+							if (o.getAbility() == t.getAbility().orElse(Abilities.INVALID)) {
 								morphing_drones.add(u.getTag());
 							}
 						}
+						break;
 					}
 				}
-				
 			}
+
 		}
 	}
 	static void on_frame() {}
 	static void end_frame() {}
 	
 	public static int count_friendly(UnitType type) {
-		int total = 0;
-		for (UnitInPool unit: visible_units.values()) {
-			if (unit.unit().getBuildProgress() < 0.999) continue;
-			if (unit.unit().getType() == type) total++;
-		}
-		return total;
+		return counts_friendly.getOrDefault(type, 0);
 	}
 	
 	static int count_enemy(UnitType type) {
-		int total = 0;
-		for (UnitInPool unit: all_units.values()) {
-			if (unit.isAlive() && unit.unit().getAlliance() == Alliance.ENEMY && unit.unit().getType() == type) total++;
-		}
-		return total;
-	}
-	
-	static ArrayList<UnitInPool> get_units() {
-		return new ArrayList<UnitInPool>(visible_units.values());
+		return counts_enemy.getOrDefault(type, 0);
 	}
 	
 	static ArrayList<UnitInPool> get_units(UnitType type) {
 		ArrayList<UnitInPool> units = new ArrayList<>();
-		for (UnitInPool u: visible_units.values()) {
+		for (UnitInPool u: Game.get_units()) {
 			if (u.unit().getType() == type) units.add(u);
 		}
 		return units;
 	}
 	
 	public static ArrayList<UnitInPool> get_units(Alliance team) {
-		ArrayList<UnitInPool> units = new ArrayList<>();
-		for (UnitInPool u: visible_units.values()) {
-			if (u.unit().getAlliance() == team) units.add(u);
-		}
-		return units;
+		if (team == Alliance.SELF) return new ArrayList<>(visible_friendly.values());
+		if (team == Alliance.NEUTRAL) return new ArrayList<>(visible_neutral.values());
+		return new ArrayList<>(visible_enemy.values());
 	}
 	
 	public static ArrayList<UnitInPool> get_units(Alliance team, UnitType type) {
 		ArrayList<UnitInPool> units = new ArrayList<>();
-		for (UnitInPool u: visible_units.values()) {
-			if (u.unit().getAlliance() == team && u.unit().getType() == type) units.add(u);
+		if (team == Alliance.SELF) {
+			for (UnitInPool u: visible_friendly.values()) {
+				if (u.unit().getType() == type) units.add(u);
+			}
+		} else if (team == Alliance.ENEMY){
+			for (UnitInPool u: visible_enemy.values()) {
+				if (u.unit().getType() == type) units.add(u);
+			}
+		} else {
+			for (UnitInPool u: visible_neutral.values()) {
+				if (u.unit().getType() == type) units.add(u);
+			}
 		}
 		return units;
 	}

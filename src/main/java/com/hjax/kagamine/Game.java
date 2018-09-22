@@ -19,6 +19,7 @@ import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.Unit;
 
@@ -119,7 +120,7 @@ public class Game {
 	public static List<UnitInPool> get_units() {
 		return observation.getUnits();
 	}
-	
+
 	public static UnitInPool get_unit(Tag t) {
 		return observation.getUnit(t);
 	}

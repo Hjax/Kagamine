@@ -1,17 +1,13 @@
 package com.hjax.kagamine;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.debug.Color;
-import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.Drone;
@@ -193,17 +189,24 @@ public class BaseManager {
 		return total;
 	}
 	
+	
+	public static long next_base_frame = -1;
+	public static Base next_base = null;
 	public static Base get_next_base() {
-		Base best = null;
-		double best_dist = -1;
-		for (Base b: bases) {
-			if (b.has_command_structure()) continue;
-			if (best == null || (main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location)) < best_dist) {
-				best = b;
-				best_dist = main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location);
+		if (next_base_frame != Game.get_frame()) {
+			Base best = null;
+			double best_dist = -1;
+			for (Base b: bases) {
+				if (b.has_command_structure()) continue;
+				if (best == null || (main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location)) < best_dist) {
+					best = b;
+					best_dist = main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location);
+				}
 			}
+			next_base = best;
+			next_base_frame = Game.get_frame();
 		}
-		return best;
+		return next_base;
 	}
 	
 	public static int base_count() {
@@ -352,18 +355,24 @@ public class BaseManager {
 		return result;
 	}
 	
+	public static long forward_base_frame = -1;
+	public static Base forward_base = null;
 	public static Base get_forward_base() {
-		Base best = null;
-		Point2d target = Scouting.closest_enemy_spawn();
-		target = Point2d.of(target.getX() + 5, target.getY() + 5);
-		for (Base b: bases) {
-			if (b.has_command_structure() && !(b.command_structure.unit().getBuildProgress() < 0.999)) {
-				if (best == null || Game.pathing_distance(b.location, target) < Game.pathing_distance(best.location, target)) {
-					best = b;
+		if (forward_base_frame != Game.get_frame()) {
+			Base best = null;
+			Point2d target = Scouting.closest_enemy_spawn();
+			target = Point2d.of(target.getX() + 5, target.getY() + 5);
+			for (Base b: bases) {
+				if (b.has_command_structure() && !(b.command_structure.unit().getBuildProgress() < 0.999)) {
+					if (best == null || Game.pathing_distance(b.location, target) < Game.pathing_distance(best.location, target)) {
+						best = b;
+					}
 				}
 			}
+			forward_base = best;
+			forward_base_frame = Game.get_frame();
 		}
-		return best;
+		return forward_base;
 	}
 	
 	static Point2d get_spore_placement_location(Base b) {

@@ -1,6 +1,7 @@
 package com.hjax.kagamine;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
@@ -8,6 +9,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 public class ArmyManager {
 	public static Point2d target;
 	public static boolean has_target = false;
+	public static Point2d defend = null;
 	static {
 		target = Game.get_game_info().findRandomLocation();
 	}
@@ -43,7 +45,17 @@ public class ArmyManager {
 				}
 			}
 		}
-		
+		defend = null;
+		for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
+			for (Base b: BaseManager.bases) {
+				if (b.has_command_structure() || b.location.distance(BaseManager.get_next_base().location) < 5 && !Wisdom.confused()) {
+					if (e.unit().getPosition().toPoint2d().distance(b.location) < 20) {
+						defend = e.unit().getPosition().toPoint2d();
+					}
+				}
+			}
+		}
+
 	}
 	
 	public static void end_frame() {

@@ -10,23 +10,18 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.*;
 
 public class UnitManager {
-	public interface Function  {
-		   public void apply(UnitInPool u);
-		}
-	static Map<UnitType, Function> controllers = new HashMap<>();
-	static {
-		controllers.put(Units.ZERG_QUEEN, (UnitInPool u) -> Queen.on_frame(u));
-		controllers.put(Units.ZERG_DRONE, (UnitInPool u) -> Drone.on_frame(u));
-		controllers.put(Units.ZERG_LARVA, (UnitInPool u) -> Larva.on_frame(u));
-		controllers.put(Units.ZERG_EXTRACTOR, (UnitInPool u) -> Extractor.on_frame(u));
-		controllers.put(Units.INVALID, (UnitInPool u) -> GenericUnit.on_frame(u));
-	}
 	public static void on_frame() {
 		for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF)) {
-			if (controllers.containsKey(u.unit().getType())) {
-				controllers.get(u.unit().getType()).apply(u);
-			} else if (!Game.is_structure(u.unit().getType())){
-				controllers.get(Units.INVALID).apply(u);
+			if (u.unit().getType() == Units.ZERG_QUEEN) {
+				Queen.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_DRONE) {
+				Drone.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_LARVA) {
+				Larva.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_EXTRACTOR) {
+				Extractor.on_frame(u);
+			} else if (!Game.is_structure(u.unit().getType())) {
+				GenericUnit.on_frame(u);
 			}
 		}
 	}
