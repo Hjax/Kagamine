@@ -59,6 +59,10 @@ public class Balance {
 		}
 		return result;
 	}
+	
+	public static boolean is_production_structure(UnitType u) {
+		return u == Units.TERRAN_BARRACKS || u == Units.TERRAN_FACTORY || u == Units.TERRAN_STARPORT || u == Units.PROTOSS_GATEWAY || u == Units.PROTOSS_ROBOTICS_FACILITY || u == Units.PROTOSS_STARGATE || u == Units.ZERG_HATCHERY;
+	}
 
 	public static UnitType get_tech_structure(UnitType u) {
 		if (overrides.containsKey(u)) {

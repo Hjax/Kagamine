@@ -355,7 +355,7 @@ public class BuildPlanner {
 				Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
 				Build.ideal_hatches = 2;
 				Build.scout = false;
-				Build.push_supply = 30;
+				Build.push_supply = 35;
 				Build.ideal_workers = 16;
 				Build.max_queens = 1;
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED));
