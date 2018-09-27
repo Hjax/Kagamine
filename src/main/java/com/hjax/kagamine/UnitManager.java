@@ -1,10 +1,6 @@
 package com.hjax.kagamine;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
-import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.*;
@@ -22,6 +18,10 @@ public class UnitManager {
 				Extractor.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_OVERLORD) {
 				Overlord.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_MUTALISK) {
+				Mutalisk.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_RAVAGER) {
+				Ravager.on_frame(u);
 			} else if (!Game.is_structure(u.unit().getType())) {
 				GenericUnit.on_frame(u);
 			}

@@ -15,4 +15,12 @@ public class Vector2d {
 	public Point2d toPoint2d() {
 		return Point2d.of(x, y);
 	}
+	
+	public Vector2d add(Vector2d v) {
+		return new Vector2d(x + v.x, y + v.y);
+	}
+	
+	public Vector2d scale(float i) {
+		return new Vector2d(x * i, y * i);
+	}
 }

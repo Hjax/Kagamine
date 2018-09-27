@@ -11,7 +11,7 @@ public class TechManager {
 		for (Upgrade u : Build.upgrades) {
 			if (Game.can_afford(u) && !(Game.has_upgrade(u))) {
 				for (UnitType t: Game.get_unit_type_data().keySet()) {
-					if (t.getAbilities().contains(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID))) {
+					if (t.getAbilities().contains(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)) || t.getAbilities().contains(Game.get_abliity_data().get(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)).getRemapsToAbility().orElse(Abilities.INVALID))) {
 						for (UnitInPool up: GameInfoCache.get_units(Alliance.SELF, t)) {
 							if (up.unit().getOrders().size() == 0) {
 								Game.purchase(u);
