@@ -1,7 +1,9 @@
 package com.hjax.kagamine;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
@@ -108,11 +110,11 @@ public class BaseManager {
 		// worker transfer code
 		for (Base b : bases) {
 			if (!b.has_command_structure()) continue;
-			if (b.command_structure.unit().getAssignedHarvesters().orElse(0) > 16) {
+			if (b.command_structure.unit().getAssignedHarvesters().orElse(0) > b.command_structure.unit().getIdealHarvesters().orElse(0)) {
 				for (Base target: bases) {
 					if (!target.has_command_structure()) continue;
 					if (target.minerals.size() == 0) continue;
-					if (target.command_structure.unit().getAssignedHarvesters().orElse(0) + GameInfoCache.in_progress(Units.ZERG_DRONE) < 16) {
+					if (target.command_structure.unit().getAssignedHarvesters().orElse(0) + GameInfoCache.in_progress(Units.ZERG_DRONE) < target.command_structure.unit().getIdealHarvesters().orElse(0)) {
 						for (UnitInPool worker : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 							if (worker.unit().getPosition().toPoint2d().distance(b.location) < 10) {
 								// TODO remove try catch, fix crashing
@@ -296,23 +298,27 @@ public class BaseManager {
 		return total;
 	}
 	
+	private static Map<Integer, Point2d> get_numbers = new HashMap<>();
 	static Point2d get_base(int n) {
-		ArrayList<Point2d> found = new ArrayList<>();
-		for (int i = 0; i < 20; i++) {
-			Point2d best = Point2d.of(0, 0);
-			double best_dist = -1;
-			for (Base b: bases) {
-				if (best_dist < 0 || main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location) < best_dist) {
-					if (!found.contains(b.location)) {
-						best = b.location;
-						best_dist = main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location);
+		if (!get_numbers.containsKey(n)) {
+			ArrayList<Point2d> found = new ArrayList<>();
+			for (int i = 0; i < 20; i++) {
+				Point2d best = Point2d.of(0, 0);
+				double best_dist = -1;
+				for (Base b: bases) {
+					if (best_dist < 0 || main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location) < best_dist) {
+						if (!found.contains(b.location)) {
+							best = b.location;
+							best_dist = main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location);
+						}
 					}
 				}
+				found.add(best);
+				if (found.size() >= n) break;
 			}
-			found.add(best);
-			if (found.size() >= n) break;
+			get_numbers.put(n, found.get(found.size() - 1));
 		}
-		return found.get(found.size() - 1);
+		return get_numbers.get(n);
 	}
 	
 	static void build_defensive_spores() {

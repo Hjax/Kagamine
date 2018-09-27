@@ -20,6 +20,8 @@ public class UnitManager {
 				Larva.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_EXTRACTOR) {
 				Extractor.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_OVERLORD) {
+				Overlord.on_frame(u);
 			} else if (!Game.is_structure(u.unit().getType())) {
 				GenericUnit.on_frame(u);
 			}

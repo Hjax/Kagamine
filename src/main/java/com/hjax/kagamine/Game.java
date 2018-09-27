@@ -15,9 +15,12 @@ import com.github.ocraft.s2client.protocol.data.UnitTypeData;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrade;
 import com.github.ocraft.s2client.protocol.data.UpgradeData;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
+import com.github.ocraft.s2client.protocol.query.AvailableAbilities;
 import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
+import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -284,5 +287,16 @@ public class Game {
 				(get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) != Race.ZERG && get_unit_type_data().get(u).getFoodProvided().orElse((float) 0) > 0);
 	}
 
+	public static boolean is_placeable(Point2d p) {
+		return Game.observation.isPlacable(p);
+	}
+	
+	public static AvailableAbilities availible_abilities(UnitInPool u) {
+		return query.getAbilitiesForUnit(u.unit(), false);
+	}
+	
+	public static void draw_box(Point2d current, Color c) {
+		debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), c);
+	}
 
 }

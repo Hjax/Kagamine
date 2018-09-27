@@ -6,51 +6,46 @@ import com.hjax.kagamine.UnitControllers.Larva;
 
 public class Kagamine extends S2Agent{
 
+	public static double time_sum = 0;
+	public static int frame = 0;
+	public static double max = -1;
+	
 	@Override
 	public void onGameFullStart() {
+		long startTime = System.nanoTime();
 		Game.start_frame(observation(), actions(), query(), debug());
 		GameInfoCache.start_frame();
 		Game.chat("Kagamine 1.0 BETA");
 		BaseManager.start_game();
 		BuildPlanner.decide_build();
+		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
 	@Override
 	public void onStep() {
+		long startTime = System.nanoTime();
 		Game.start_frame(observation(), actions(), query(), debug());
 		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
-			System.out.println("---------------------------");
-			long startTime = System.nanoTime();
 			GameInfoCache.start_frame();
-			System.out.println("GameInfoCache " + (System.nanoTime() - startTime) / 1000000);
-			startTime = System.nanoTime();
 			Larva.start_frame();
-			System.out.println("Larva " + (System.nanoTime() - startTime) / 1000000);
-			startTime = System.nanoTime();
 			Scouting.on_frame();
-			System.out.println("Scouting " + (System.nanoTime() - startTime) / 1000000);
-			startTime = System.nanoTime();
+			Creep.on_frame();
 			ArmyManager.on_frame();
-			System.out.println("ArmyManager " + (System.nanoTime() - startTime) / 1000000);
-			startTime = System.nanoTime();
 			ThreatManager.on_frame();
-			System.out.println("ThreatManager " + (System.nanoTime() - startTime) / 1000000);
-			startTime = System.nanoTime();
 			BaseManager.on_frame();
-			System.out.println("BaseManager " + (System.nanoTime() - startTime) / 1000000);
-			startTime = System.nanoTime();
 			BuildPlanner.on_frame();
-			System.out.println("BuildPlanner " + (System.nanoTime() - startTime) / 1000000);
-			startTime = System.nanoTime();
 			UnitManager.on_frame();
-			System.out.println("UnitManager " + (System.nanoTime() - startTime) / 1000000);
-			startTime = System.nanoTime();
 			GameInfoCache.end_frame();
-			System.out.println("GameInfoCache end " + (System.nanoTime() - startTime) / 1000000);
 		}
-		
 		Game.debug.sendDebug();
-		
+		time_sum += ((System.nanoTime() - startTime) / 1000000.0);
+		if (((System.nanoTime() - startTime) / 1000000.0) > max) {
+			max = (System.nanoTime() - startTime) / 1000000.0;
+		}
+		frame++;
+		System.out.println("Average " + (time_sum / frame));
+		System.out.println("Max " + max);
+		System.out.println("----------------------------------");
 	}
 	
 	@Override

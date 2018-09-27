@@ -10,7 +10,7 @@ public class Vector2d {
 		y = my;
 	}
 	public static Vector2d of(Point2d p) {
-		return new Vector2d(p.getX(), p.getX());
+		return new Vector2d(p.getX(), p.getY());
 	}
 	public Point2d toPoint2d() {
 		return Point2d.of(x, y);
