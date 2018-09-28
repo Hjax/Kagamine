@@ -68,12 +68,15 @@ public class GameInfoCache {
 				for (UnitOrder o: u.unit().getOrders()) {
 					production.put(o.getAbility(), production.get(o.getAbility()) + 1);
 					if (u.unit().getType() == Units.ZERG_DRONE) {
-						for (UnitTypeData t: Game.get_unit_type_data().values()) {
-							if (o.getAbility() == t.getAbility().orElse(Abilities.INVALID)) {
-								morphing_drones.add(u.getTag());
+						if (o.getAbility() != Abilities.HARVEST_GATHER && o.getAbility() != Abilities.HARVEST_RETURN) {
+							for (UnitTypeData t: Game.get_unit_type_data().values()) {
+								if (o.getAbility() == t.getAbility().orElse(Abilities.INVALID)) {
+									morphing_drones.add(u.getTag());
+									break;
+								}
 							}
+							break;
 						}
-						break;
 					}
 				}
 			}

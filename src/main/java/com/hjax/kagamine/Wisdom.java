@@ -6,6 +6,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 
 public class Wisdom {
 	public static boolean proxy_detected() {
+		if (Game.army_supply() >= 30) return false;
 		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.is_structure(u.unit().getType())) {
 				if (u.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) < u.unit().getPosition().toPoint2d().distance(Scouting.closest_enemy_spawn())) {
@@ -24,6 +25,7 @@ public class Wisdom {
 		return false;
 	}
 	public static boolean all_in_detected() {
+		if (Game.army_supply() >= 30) return false;
 		return enemy_production() >= 3 * enemy_bases() && enemy_bases() != 0;
 	}
 	public static int enemy_bases() {

@@ -247,10 +247,14 @@ public class Game {
 	public static boolean can_afford(UnitType u) {
 		int minerals = get_unit_type_data().get(u).getMineralCost().orElse(0);
 		int gas = get_unit_type_data().get(u).getVespeneCost().orElse(0);
-		if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
+		if (u == Units.ZERG_LAIR) minerals -= get_unit_type_data().get(Units.ZERG_HATCHERY).getMineralCost().orElse(0);
+		else if (u == Units.ZERG_HIVE) {
+			minerals -= get_unit_type_data().get(Units.ZERG_LAIR).getMineralCost().orElse(0);
+			gas -= get_unit_type_data().get(Units.ZERG_LAIR).getVespeneCost().orElse(0);
+		}
+		else if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
 			minerals = Math.max(minerals - 50, 0);
 		}
-		if (u == Units.ZERG_LAIR) minerals -= 300;
 		return minerals <= minerals() && gas <= gas();
 	}
 	
