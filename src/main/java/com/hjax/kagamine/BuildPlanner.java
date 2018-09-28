@@ -362,6 +362,7 @@ public class BuildPlanner {
 				Build.scout = true;
 				Build.push_supply = 185;
 				Build.ideal_workers = 70;
+				Build.ideal_gases = 6;
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2));
 				break;
 			case ZERG:
@@ -373,6 +374,7 @@ public class BuildPlanner {
 				Build.ideal_hatches = 2;
 				Build.scout = false;
 				Build.push_supply = 35;
+				Build.ideal_gases = 1;
 				Build.ideal_workers = 16;
 				Build.max_queens = 1;
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED));
@@ -385,6 +387,7 @@ public class BuildPlanner {
 				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
+				Build.ideal_gases = 8;
 				Build.push_supply = 190;
 				Build.ideal_workers = 70;
 				Build.pull_off_gas = true;

@@ -9,7 +9,7 @@ import com.github.ocraft.s2client.protocol.game.Race;
 import com.hjax.kagamine.Kagamine;
 
 public class Main {
-		private static boolean ladder = false;
+		private static boolean ladder = true;
 	    public static void main(String[] args) {
 	        Kagamine bot = new Kagamine();
 	        S2Coordinator s2Coordinator;
