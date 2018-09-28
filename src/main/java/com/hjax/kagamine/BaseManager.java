@@ -10,6 +10,7 @@ import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.Drone;
@@ -347,13 +348,13 @@ public class BaseManager {
 	static Point2d get_spine_placement_location(Base b) {
 		Point2d target = Scouting.closest_enemy_spawn();
 		target = Point2d.of(target.getX() + 4, target.getY());
-		Point2d result = Point2d.of(0, 0);
+		Point2d result = null;
 		for (int i = 0; i < 200; i++) {
-			double rx = Math.random();
-			double ry = Math.random();
+			double rx = Math.random() * 2 - 1;
+			double ry = Math.random() * 2 - 1;
 			Point2d test = Point2d.of((float) (b.location.getX() + rx * 10), (float) (b.location.getY() + ry * 10));
-			if (Game.can_place(Abilities.BUILD_SPINE_CRAWLER, test)) {
-				if (result == Point2d.of(0, 0) || Game.pathing_distance(result,  target) > Game.pathing_distance(test, target)) {
+			if (Game.can_place(Abilities.MORPH_SPINE_CRAWLER_ROOT, test)) {
+				if (result == null || Game.pathing_distance(result,  target) > Game.pathing_distance(test, target)) {
 					result = test;
 				}
 			}
@@ -399,7 +400,7 @@ public class BaseManager {
 		Vector2d offset = Utilities.normalize(new Vector2d(x, y));
 		for (int i = 0; i < 20; i++) {
 			Point2d p = Point2d.of((float) (b.location.getX() - (2.5 + 0.1 * i) * offset.x), (float) (b.location.getY() - (2.5 * 0.1 * i) * offset.y));
-			if (Game.can_place(Abilities.BUILD_SPORE_CRAWLER, p)) {
+			if (Game.can_place(Abilities.MORPH_SPORE_CRAWLER_ROOT, p)) {
 				return p;
 			}
 		}

@@ -24,7 +24,7 @@ public class Wisdom {
 		return false;
 	}
 	public static boolean all_in_detected() {
-		return enemy_production() >= 3 * enemy_bases() || enemy_bases() != 0;
+		return enemy_production() >= 3 * enemy_bases() && enemy_bases() != 0;
 	}
 	public static int enemy_bases() {
 		int result = 0;

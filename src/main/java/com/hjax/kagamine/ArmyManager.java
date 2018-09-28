@@ -10,7 +10,8 @@ public class ArmyManager {
 	public static boolean has_target = false;
 	public static Point2d defend = null;
 	static {
-		target = Game.get_game_info().findRandomLocation();
+		target = Scouting.closest_enemy_spawn();
+		has_target = true;
 	}
 	
 	public static void start_frame() {
