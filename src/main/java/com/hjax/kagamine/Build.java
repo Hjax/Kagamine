@@ -14,6 +14,7 @@ public class Build {
 	public static int build_index = 0;
 	public static int ideal_hatches = 0;
 	public static int ideal_workers = 20;
+	public static int ideal_gases = 6;
 	public static int push_supply = 20;
 	public static int max_queens = -1;
 	public static boolean scout = true;

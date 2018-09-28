@@ -46,16 +46,17 @@ public class ArmyManager {
 			}
 		}
 		defend = null;
-		for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
-			for (Base b: BaseManager.bases) {
-				if (b.has_command_structure() || b.location.distance(BaseManager.get_next_base().location) < 5 && !Wisdom.confused()) {
-					if (e.unit().getPosition().toPoint2d().distance(b.location) < 20) {
-						defend = e.unit().getPosition().toPoint2d();
+		if (!Wisdom.cannon_rush()) {
+			for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
+				for (Base b: BaseManager.bases) {
+					if (b.has_command_structure() || b.location.distance(BaseManager.get_next_base().location) < 5 && !Wisdom.confused()) {
+						if (e.unit().getPosition().toPoint2d().distance(b.location) < 20) {
+							defend = e.unit().getPosition().toPoint2d();
+						}
 					}
 				}
 			}
 		}
-
 	}
 	
 	public static void end_frame() {

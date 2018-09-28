@@ -24,7 +24,7 @@ public class BuildPlanner {
 	public static void on_frame() {
 		if (!build_completed()) execute_build();
 		else {
-			//if (!is_all_in && count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) do_ravager_all_in();
+			if (!is_all_in && count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) do_ravager_all_in();
 			//if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) hunter_killer();
 			if (Game.get_opponent_race() == Race.PROTOSS) {
 				if (GameInfoCache.count_enemy(Units.PROTOSS_CARRIER) > 0 ||
@@ -210,9 +210,26 @@ public class BuildPlanner {
 					Game.purchase(Units.ZERG_EXTRACTOR);
 				}
 			}
+			if (count(Units.ZERG_DRONE) >= Build.ideal_workers && BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
+				if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
+					BaseManager.build(Units.ZERG_EXTRACTOR);
+					Game.purchase(Units.ZERG_EXTRACTOR);
+				}
+			}
 		}
 	}
 	
+	private static void do_ravager_all_in() {
+		Build.build = new ArrayList<>();
+				Build.composition = Arrays.asList(Units.ZERG_ROACH, Units.ZERG_RAVAGER);
+				Build.ideal_gases = 2;
+				Build.ideal_hatches = 1;
+				Build.scout = true;
+				Build.push_supply = 40;
+				Build.ideal_workers = 22;
+				Build.upgrades = new HashSet<>();
+	}
+
 	public static void execute_build() {
 		if (Build.build.get(Build.build_index).getKey() <= Game.supply()) {
 			if (Build.build.get(Build.build_index).getValue() == Units.ZERG_HATCHERY && !(BaseManager.get_next_base().has_walking_drone()) && Game.minerals() > 150) {
