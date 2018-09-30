@@ -105,7 +105,7 @@ public class BuildExecutor {
 			
 			TechManager.on_frame();
 			
-			if (!pulled_off_gas && (count(Units.ZERG_DRONE) > 30 || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25))) {
+			if (!pulled_off_gas && (count(Units.ZERG_DRONE) > Build.tech_drones || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25))) {
 				if (ThreatManager.is_safe(BaseManager.get_next_base().location)) {
 					for (UnitType u: Build.composition) {
 						if (Balance.has_tech_requirement(u)) {
@@ -192,7 +192,7 @@ public class BuildExecutor {
 					Game.purchase(Units.ZERG_EXTRACTOR);
 				}
 			}
-			if (count(Units.ZERG_DRONE) >= Build.ideal_workers && BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
+			if (!should_build_drones() && BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
 				if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
 					BaseManager.build(Units.ZERG_EXTRACTOR);
 					Game.purchase(Units.ZERG_EXTRACTOR);

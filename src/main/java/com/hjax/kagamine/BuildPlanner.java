@@ -16,6 +16,7 @@ import javafx.util.Pair;
 
 public class BuildPlanner {
 	private static boolean worker_rush = false;
+	private static boolean is_all_in = false;
 	public static void on_frame() {
 		if (Wisdom.worker_rush() && !worker_rush) {
 			worker_rush = true;
@@ -30,7 +31,7 @@ public class BuildPlanner {
 			Build.ideal_workers = 14;
 			Build.upgrades = new HashSet<>();
 		}
-		if ((BuildExecutor.count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) || Game.get_opponent_race() == Race.PROTOSS && Wisdom.proxy_detected()) {
+		if ((BuildExecutor.count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) || (Game.get_opponent_race() == Race.TERRAN && Wisdom.proxy_detected())) {
 			do_ravager_all_in();
 			if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {
 				for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
@@ -40,7 +41,7 @@ public class BuildPlanner {
 				}
 			}
 		}
-		//if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) hunter_killer();
+		if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) hunter_killer();
 		if (Game.get_opponent_race() == Race.PROTOSS) {
 			if (GameInfoCache.count_enemy(Units.PROTOSS_CARRIER) > 0 ||
 				GameInfoCache.count_enemy(Units.PROTOSS_VOIDRAY) > 0 || 
@@ -58,13 +59,29 @@ public class BuildPlanner {
 	
 	
 	private static void do_ravager_all_in() {
+		is_all_in = true;
 		Build.build = new ArrayList<>();
-				Build.composition = Arrays.asList(Units.ZERG_ROACH, Units.ZERG_RAVAGER);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 				Build.ideal_gases = 2;
 				Build.ideal_hatches = 1;
+				Build.tech_drones = 16;
 				Build.scout = true;
 				Build.push_supply = 40;
 				Build.ideal_workers = 22;
+				Build.pull_off_gas = false;
+				Build.upgrades = new HashSet<>();
+	}
+	
+	private static void hunter_killer() {
+		Build.build = new ArrayList<>();
+				Build.composition = Arrays.asList(Units.ZERG_MUTALISK);
+				Build.ideal_gases = 6;
+				Build.ideal_hatches = -1;
+				Build.tech_drones = 40;
+				Build.scout = true;
+				Build.push_supply = 40;
+				Build.ideal_workers = 60;
+				Build.pull_off_gas = false;
 				Build.upgrades = new HashSet<>();
 	}
 	
