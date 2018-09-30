@@ -155,6 +155,7 @@ public class BaseManager {
 				}
 			}
 		}
+		if (best == null) best = bases.get(0);
 		return best;
 	}
 	

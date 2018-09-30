@@ -105,7 +105,10 @@ public class Scouting {
 	}
 	
 	public static Point2d closest_enemy_spawn() {
-		return closest_enemy_spawn(BaseManager.main_base().location);
+		if (BaseManager.main_base() != null) {
+			return closest_enemy_spawn(BaseManager.main_base().location);
+		}
+		return closest_enemy_spawn(Point2d.of(0, 0));
 	}
 	
 	public static void overlord_scout(Unit u) {

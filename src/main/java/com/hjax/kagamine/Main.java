@@ -8,7 +8,7 @@ import com.github.ocraft.s2client.protocol.game.Race;
 import com.hjax.kagamine.Kagamine;
 
 public class Main {
-		public static boolean ladder = true;
+		public static boolean ladder = false;
 	    public static void main(String[] args) {
 	        Kagamine bot = new Kagamine();
 	        Nothing bot2 = new Nothing();
@@ -26,7 +26,7 @@ public class Main {
 		                .loadSettings(args)
 		                .setRealtime(true)
 		                .setParticipants(
-		                        S2Coordinator.createParticipant(Race.PROTOSS, bot2),
+		                        S2Coordinator.createParticipant(Race.TERRAN, bot2),
 		                        S2Coordinator.createParticipant(Race.ZERG, bot))
 		                        //S2Coordinator.createComputer(Race.TERRAN, Difficulty.CHEAT_INSANE))
 		                .launchStarcraft()

@@ -137,7 +137,7 @@ public class GameInfoCache {
 	}
 	
 	public static int in_progress(UnitType t) {
-		return production.get(Game.unit_type_data.get(t).getAbility().orElse(Abilities.INVALID));
+		return production.get(Game.get_unit_type_data().get(t).getAbility().orElse(Abilities.INVALID));
 	}
 	
 }

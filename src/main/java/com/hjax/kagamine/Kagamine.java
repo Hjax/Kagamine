@@ -34,6 +34,7 @@ public class Kagamine extends S2Agent{
 			ThreatManager.on_frame();
 			BaseManager.on_frame();
 			BuildPlanner.on_frame();
+			BuildExecutor.on_frame();
 			UnitManager.on_frame();
 			GameInfoCache.end_frame();
 		}
