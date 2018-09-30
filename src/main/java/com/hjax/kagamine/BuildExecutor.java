@@ -274,6 +274,7 @@ public class BuildExecutor {
 		} else {
 			queen_target = Build.max_queens;
 		}
+		if (Game.supply() > 120) queen_target = Math.min(BaseManager.base_count(), 6);
 		if (Wisdom.proxy_detected()) {
 			queen_target = 1;
 			if (Game.minerals() > 400) {
@@ -319,7 +320,7 @@ public class BuildExecutor {
 	}
 	
 	public static int worker_cap() {
-		int drone_target = 70;
+		int drone_target = 100;
 		return Math.min(drone_target, Build.ideal_workers);
 	}
 	

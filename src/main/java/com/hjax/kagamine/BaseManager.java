@@ -97,7 +97,7 @@ public class BaseManager {
 	static void on_frame() {
 		for (Base b: bases) {
 			b.update();
-			if (b.has_walking_drone() && Drone.can_build(b.walking_drone)) {
+			if (b.has_walking_drone() && b.walking_drone.unit().getPosition().toPoint2d().distance(b.location) > 4) {
 				Game.unit_command(b.walking_drone, Abilities.MOVE, b.location);
 			}
 		}
@@ -282,7 +282,7 @@ public class BaseManager {
 				return;
 			}
 		} else {
-			Point2d location = get_placement_location(structure, main_base().location, 5, 15);
+			Point2d location = get_placement_location(structure, main_base().location, 6, 15);
 			UnitInPool worker = get_free_worker(location);
 			if (worker != null) {
 				Game.unit_command(worker, Game.get_unit_type_data().get(structure).getAbility().get(), location);
