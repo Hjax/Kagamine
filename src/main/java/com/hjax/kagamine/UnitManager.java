@@ -22,6 +22,11 @@ public class UnitManager {
 				Mutalisk.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_RAVAGER) {
 				Ravager.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_EGG) {
+			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR) {
+			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR_QUEEN) {
+			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR_BURROWED) {
+				Creep.on_frame(u);
 			} else if (!Game.is_structure(u.unit().getType())) {
 				GenericUnit.on_frame(u);
 			}

@@ -146,7 +146,7 @@ public class BaseManager {
 	}
 	
 	// TODO this will cause crashes if all of our bases get sniped 
-	static Base main_base() {
+	public static Base main_base() {
 		Base best = null;
 		for (Base b: bases) {
 			if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
@@ -317,7 +317,7 @@ public class BaseManager {
 	}
 	
 	private static Map<Integer, Point2d> get_numbers = new HashMap<>();
-	static Point2d get_base(int n) {
+	public static Point2d get_base(int n) {
 		if (!get_numbers.containsKey(n)) {
 			ArrayList<Point2d> found = new ArrayList<>();
 			for (int i = 0; i < 20; i++) {

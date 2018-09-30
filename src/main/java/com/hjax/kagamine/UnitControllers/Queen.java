@@ -8,7 +8,6 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.ArmyManager;
 import com.hjax.kagamine.Base;
 import com.hjax.kagamine.BaseManager;
-import com.hjax.kagamine.Creep;
 import com.hjax.kagamine.Game;
 import com.hjax.kagamine.GameInfoCache;
 import com.hjax.kagamine.ThreatManager;

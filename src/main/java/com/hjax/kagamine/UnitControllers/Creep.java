@@ -1,4 +1,4 @@
-package com.hjax.kagamine;
+package com.hjax.kagamine.UnitControllers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,6 +15,14 @@ import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
+import com.hjax.kagamine.Base;
+import com.hjax.kagamine.BaseManager;
+import com.hjax.kagamine.Game;
+import com.hjax.kagamine.GameInfoCache;
+import com.hjax.kagamine.Scouting;
+import com.hjax.kagamine.Utilities;
+import com.hjax.kagamine.Vector2d;
+import com.hjax.kagamine.Constants;
 
 import javafx.util.Pair;
 
@@ -38,9 +46,8 @@ public class Creep {
 		}
 	}
 	
-	public static void on_frame() {
+	public static void start_frame() {
 		calculate();
-		spread();
 	}
 	
 	static void calculate() {
@@ -101,37 +108,31 @@ public class Creep {
 		}
 		if (creep_points.size() == 0) creep_points.addAll(alt);
 	}
-	
-	public static void spread() {
-		List<UnitInPool> tumors = new ArrayList<>();
-		tumors.addAll(GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR));
-		tumors.addAll(GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR_BURROWED));
-		tumors.addAll(GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR_QUEEN));
-		for (UnitInPool u: tumors) {
-			if (!used.contains(u.getTag())) {
-				for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
-					if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
-						Point2d closest = u.unit().getPosition().toPoint2d();
+
+	public static void on_frame(UnitInPool u) {
+		if (!used.contains(u.getTag())) {
+			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
+				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
+					Point2d closest = u.unit().getPosition().toPoint2d();
+					for (Point2d p: creep_points) {
+						if (p.distance(u.unit().getPosition().toPoint2d()) <= 12 && closest.distance(Scouting.closest_enemy_spawn()) > p.distance(Scouting.closest_enemy_spawn())) {
+							closest = p;
+						}
+					}
+					if (closest.distance(u.unit().getPosition().toPoint2d()) < 1) {
+						closest = Scouting.closest_enemy_spawn();
 						for (Point2d p: creep_points) {
-							if (p.distance(u.unit().getPosition().toPoint2d()) <= 12 && closest.distance(Scouting.closest_enemy_spawn()) > p.distance(Scouting.closest_enemy_spawn())) {
+							if (closest.distance(u.unit().getPosition().toPoint2d()) > p.distance(u.unit().getPosition().toPoint2d())) {
 								closest = p;
 							}
 						}
-						if (closest.distance(u.unit().getPosition().toPoint2d()) < 1) {
-							closest = Scouting.closest_enemy_spawn();
-							for (Point2d p: creep_points) {
-								if (closest.distance(u.unit().getPosition().toPoint2d()) > p.distance(u.unit().getPosition().toPoint2d())) {
-									closest = p;
-								}
-							}
-						}
-						spread_towards(u, closest);
 					}
+					spread_towards(u, closest);
 				}
-				for (int i = creep_points.size() - 1; i > 0; i--) {
-					if (creep_points.get(i).distance(u.unit().getPosition().toPoint2d()) <= Constants.CREEP_RESOLUTION) {
-						creep_points.remove(i);
-					}
+			}
+			for (int i = creep_points.size() - 1; i > 0; i--) {
+				if (creep_points.get(i).distance(u.unit().getPosition().toPoint2d()) <= Constants.CREEP_RESOLUTION) {
+					creep_points.remove(i);
 				}
 			}
 		}

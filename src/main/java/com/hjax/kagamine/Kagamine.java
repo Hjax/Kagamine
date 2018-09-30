@@ -2,6 +2,7 @@ package com.hjax.kagamine;
 
 import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.hjax.kagamine.UnitControllers.Creep;
 import com.hjax.kagamine.UnitControllers.Larva;
 
 public class Kagamine extends S2Agent{
@@ -29,10 +30,10 @@ public class Kagamine extends S2Agent{
 			GameInfoCache.start_frame();
 			Larva.start_frame();
 			Scouting.on_frame();
-			Creep.on_frame();
 			ArmyManager.on_frame();
 			ThreatManager.on_frame();
 			BaseManager.on_frame();
+			Creep.start_frame();
 			BuildPlanner.on_frame();
 			BuildExecutor.on_frame();
 			UnitManager.on_frame();
