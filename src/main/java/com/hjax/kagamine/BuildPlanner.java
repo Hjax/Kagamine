@@ -96,6 +96,7 @@ public class BuildPlanner {
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.push_supply = 185;
+				Build.pull_off_gas = true;
 				Build.ideal_workers = 70;
 				Build.ideal_gases = 6;
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2));
@@ -105,12 +106,14 @@ public class BuildPlanner {
 						new Pair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new Pair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new Pair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_ROACH);
 				Build.ideal_hatches = -1;
 				Build.scout = false;
 				Build.push_supply = 160;
 				Build.ideal_gases = 4;
 				Build.ideal_workers = 65;
+				Build.pull_off_gas = false;
+				Build.tech_drones = 22;
 				Build.max_queens = -1;
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL1));
 				break;			

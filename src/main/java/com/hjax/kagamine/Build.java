@@ -19,7 +19,7 @@ public class Build {
 	public static int max_queens = -1;
 	public static int tech_drones = 30;
 	public static boolean scout = true;
-	public static boolean pull_off_gas = true;
+	public static boolean pull_off_gas = false;
 	public static List<UnitType> composition = new ArrayList<>();
 	public static Set<Upgrade> upgrades = new HashSet<>();
 	public static List<Pair<Integer, UnitType>> build = new ArrayList<>();

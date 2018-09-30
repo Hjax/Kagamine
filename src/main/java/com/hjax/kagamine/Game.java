@@ -15,6 +15,8 @@ import com.github.ocraft.s2client.protocol.data.UnitTypeData;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrade;
 import com.github.ocraft.s2client.protocol.data.UpgradeData;
+import com.github.ocraft.s2client.protocol.data.Weapon;
+import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
@@ -310,4 +312,10 @@ public class Game {
 		return Game.observation.getScore().getDetails().getLostMinerals().getArmy() + Game.observation.getScore().getDetails().getLostVespene().getArmy();
 	}
 
+	public static boolean hits_air(UnitType u) {
+		for (Weapon w: get_unit_type_data().get(u).getWeapons()) {
+			if (w.getTargetType().equals(TargetType.AIR) || w.getTargetType().equals(TargetType.ANY)) return true;
+		}
+		return false;
+	}
 }

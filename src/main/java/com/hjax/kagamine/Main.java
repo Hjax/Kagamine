@@ -29,7 +29,7 @@ public class Main {
 		                .setParticipants(
 		                       // S2Coordinator.createParticipant(Race.TERRAN, bot2),
 		                        S2Coordinator.createParticipant(Race.ZERG, bot),
-		                        S2Coordinator.createComputer(Race.TERRAN, Difficulty.CHEAT_INSANE))
+		                        S2Coordinator.createComputer(Race.ZERG, Difficulty.VERY_HARD))
 		                .launchStarcraft()
 		                .startGame(LocalMap.of(Paths.get("C:\\Program Files (x86)\\StarCraft II\\Maps\\CatalystLE.SC2Map")));
 	        }

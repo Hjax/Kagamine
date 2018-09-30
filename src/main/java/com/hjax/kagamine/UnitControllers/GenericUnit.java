@@ -51,8 +51,10 @@ public class GenericUnit {
 			}
 		} else if (Game.army_supply() > ThreatManager.seen.size()){
 			if (ArmyManager.defend != null) {
-				Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit());
-				return;
+				if (!ArmyManager.defend.unit().getFlying().get() || Game.hits_air(u.unit().getType())) {
+					Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit());
+					return;
+				}
 			}
 		}
 		if (Game.supply() >= Build.push_supply || Wisdom.ahead()) {
