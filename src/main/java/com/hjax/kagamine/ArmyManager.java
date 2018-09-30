@@ -11,7 +11,7 @@ import com.hjax.kagamine.UnitControllers.Drone;
 public class ArmyManager {
 	public static Point2d target;
 	public static boolean has_target = false;
-	public static Point2d defend = null;
+	public static UnitInPool defend = null;
 	static {
 		target = Scouting.closest_enemy_spawn();
 		has_target = true;
@@ -111,7 +111,7 @@ public class ArmyManager {
 				if (!Game.is_structure(e.unit().getType())) {
 					for (UnitInPool spine : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
 						if (spine.unit().getPosition().toPoint2d().distance(e.unit().getPosition().toPoint2d()) <= 7) {
-							defend = e.unit().getPosition().toPoint2d();
+							defend = e;
 							break outer;
 						}
 					}
@@ -124,7 +124,7 @@ public class ArmyManager {
 						for (Base b: BaseManager.bases) {
 							if (b.has_command_structure() || (b.location.distance(BaseManager.get_next_base().location) < 5 && !Wisdom.confused())) {
 								if (e.unit().getPosition().toPoint2d().distance(b.location) < 20) {
-									defend = e.unit().getPosition().toPoint2d();
+									defend = e;
 									break outer2;
 								}
 							}

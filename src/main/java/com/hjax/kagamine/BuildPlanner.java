@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
+import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.game.Race;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
 
 import javafx.util.Pair;
 
@@ -27,7 +30,16 @@ public class BuildPlanner {
 			Build.ideal_workers = 14;
 			Build.upgrades = new HashSet<>();
 		}
-		if (BuildExecutor.count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) do_ravager_all_in();
+		if ((BuildExecutor.count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) || Game.get_opponent_race() == Race.PROTOSS && Wisdom.proxy_detected()) {
+			do_ravager_all_in();
+			if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {
+				for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
+					if (u.unit().getBuildProgress() < 0.999) {
+						Game.unit_command(u, Abilities.CANCEL);
+					}
+				}
+			}
+		}
 		//if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) hunter_killer();
 		if (Game.get_opponent_race() == Race.PROTOSS) {
 			if (GameInfoCache.count_enemy(Units.PROTOSS_CARRIER) > 0 ||

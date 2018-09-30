@@ -1,14 +1,10 @@
 package com.hjax.kagamine;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.CloakState;
@@ -51,7 +47,7 @@ public class BuildExecutor {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;
 			}
-			if (Game.army_supply() < 30 && BaseManager.base_count() < 3) {
+			if (Game.army_supply() >= 4 && Game.army_supply() < 30 && BaseManager.base_count() < 3) {
 				if (count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
 					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count() > 1 || Wisdom.proxy_detected())) {
 						if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
@@ -80,7 +76,7 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (count(Units.ZERG_DRONE) >= 35) {
+			if (count(Units.ZERG_DRONE) >= 20) {
 				boolean needs_spores = Wisdom.air_detected();
 				for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
 					if (u.unit().getCloakState().orElse(CloakState.NOT_CLOAKED) == CloakState.CLOAKED_DETECTED || u.unit().getFlying().orElse(false)) {
@@ -162,7 +158,7 @@ public class BuildExecutor {
 						break;
 					}
 				}
-				if (Game.minerals() > 25 && Game.gas() > 25 && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > 0 && Build.composition.contains(Units.ZERG_BANELING)) {
+				if (Game.minerals() > 25 && Game.gas() > 25 && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) >= 40 && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > 0 && Build.composition.contains(Units.ZERG_BANELING)) {
 					for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ZERGLING)) {
 						Game.unit_command(u, Abilities.TRAIN_BANELING);
 						Game.spend(25, 25);
@@ -267,9 +263,12 @@ public class BuildExecutor {
 		int queen_target = 0;
 		if (Build.max_queens == -1) {
 			if (BaseManager.base_count() < 3) {
-				queen_target = BaseManager.base_count();
+				queen_target = BaseManager.base_count() - 1;
 			} else {
 				queen_target = Math.min(BaseManager.base_count() + 4, 12);
+			}
+			if (Game.minerals() > 400) {
+				queen_target += 1;
 			}
 		} else {
 			queen_target = Build.max_queens;
@@ -292,7 +291,7 @@ public class BuildExecutor {
 		if (Game.get_opponent_race() == Race.ZERG) target = 10;
 		if (Wisdom.all_in_detected()) target = 10;
 		if (Wisdom.proxy_detected()) target = 20;
-		if (Game.army_supply() < target || (ThreatManager.under_attack() || Game.army_supply() < 4 * ThreatManager.seen.size())) {
+		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < 4 * ThreatManager.seen.size())) {
 			if (next_army_unit() != Units.INVALID) {
 				return true;
 			}

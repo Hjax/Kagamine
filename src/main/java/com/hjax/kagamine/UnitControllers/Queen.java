@@ -23,26 +23,9 @@ public class Queen {
 						if (u.unit().getEnergy().get() >= 25) {
 							Game.unit_command(u, Abilities.EFFECT_INJECT_LARVA, b.command_structure.unit());
 						}
+						return;
 					}
 				}
-			}
-		}
-		if (Wisdom.proxy_detected() || Wisdom.all_in_detected() && GameInfoCache.count_friendly(Units.ZERG_SPINE_CRAWLER) > 0 && BaseManager.base_count() < 2 && Game.army_supply() < ThreatManager.seen.size() * 4 && Game.army_supply() < 25) {
-			for (UnitInPool s: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
-				if (s.unit().getPosition().toPoint2d().distance(u.unit().getPosition().toPoint2d()) <= 7) {
-					Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend);
-					return;
-				}
-			}
-			Base forward = BaseManager.get_forward_base();
-			if (forward.location.distance(u.unit().getPosition().toPoint2d()) > 10) {
-				Game.unit_command(u, Abilities.MOVE, forward.location);
-				return;
-			}
-		} else if (Game.army_supply() > ThreatManager.seen.size() * 2){
-			if (ArmyManager.defend != null) {
-				Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend);
-				return;
 			}
 		}
 		if (u.unit().getEnergy().get() > 50) {
@@ -58,7 +41,9 @@ public class Queen {
 			Point2d p = Creep.get_creep_point();
 			if (p != null) {
 				Game.unit_command(u, Abilities.BUILD_CREEP_TUMOR, p);
+				return;
 			}
 		}
+		GenericUnit.on_frame(u);
 	}
 }
