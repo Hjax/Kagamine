@@ -55,7 +55,7 @@ public class Queen {
 				}
 			}
 		}
-		if (u.unit().getOrders().size() == 0 && u.unit().getEnergy().get() >= 25) {
+		if (u.unit().getOrders().size() == 0 && ((u.unit().getEnergy().get() >= 25 && GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) < 25) || u.unit().getEnergy().get() >= 75)) {
 			Point2d p = Creep.get_creep_point();
 			if (p != null) {
 				Game.unit_command(u, Abilities.BUILD_CREEP_TUMOR, p);

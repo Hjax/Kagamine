@@ -301,5 +301,13 @@ public class Game {
 	public static void draw_box(Point2d current, Color c) {
 		debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), c);
 	}
+	
+	public static float army_killed() { 
+		return Game.observation.getScore().getDetails().getKilledMinerals().getArmy() + Game.observation.getScore().getDetails().getKilledVespene().getArmy();
+	}
+	
+	public static float army_lost() {
+		return Game.observation.getScore().getDetails().getLostMinerals().getArmy() + Game.observation.getScore().getDetails().getLostVespene().getArmy();
+	}
 
 }

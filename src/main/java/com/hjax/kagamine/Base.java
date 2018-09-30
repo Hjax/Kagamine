@@ -11,7 +11,7 @@ public class Base {
 	ArrayList<UnitInPool> gases;
 	ArrayList<UnitInPool> minerals;
 	
-	UnitInPool walking_drone = null;
+	public UnitInPool walking_drone = null;
 	public UnitInPool queen = null;
 	public UnitInPool command_structure = null;
 	

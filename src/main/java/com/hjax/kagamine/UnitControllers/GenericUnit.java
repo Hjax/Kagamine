@@ -21,18 +21,20 @@ import com.hjax.kagamine.Wisdom;
 public class GenericUnit {
 	public static void on_frame(UnitInPool u) {
 		if (Wisdom.proxy_detected() || Wisdom.all_in_detected() && GameInfoCache.count_friendly(Units.ZERG_SPINE_CRAWLER) > 0 && BaseManager.base_count() < 2 && Game.army_supply() < ThreatManager.seen.size() * 4 && Game.army_supply() < 25) {
-			for (UnitInPool s: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
-				if (s.unit().getPosition().toPoint2d().distance(u.unit().getPosition().toPoint2d()) <= 7) {
-					Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend);
-					return;
+			if (ArmyManager.defend != null) {
+				for (UnitInPool s: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
+					if (s.unit().getPosition().toPoint2d().distance(ArmyManager.defend) <= 7) {
+						Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend);
+						return;
+					}
 				}
 			}
 			Base forward = BaseManager.get_forward_base();
-			if (forward.location.distance(u.unit().getPosition().toPoint2d()) > 10) {
+			if (forward.location.distance(u.unit().getPosition().toPoint2d()) > 10 && !Wisdom.ahead()) {
 				Game.unit_command(u, Abilities.MOVE, forward.location);
 				return;
 			}
-		} else if (Game.army_supply() > ThreatManager.seen.size() * 2){
+		} else if (Game.army_supply() > ThreatManager.seen.size()){
 			if (ArmyManager.defend != null) {
 				Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend);
 				return;

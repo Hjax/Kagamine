@@ -22,12 +22,12 @@ public class Ravager {
 		if (best != null) {
 			for (AvailableAbility ab : Game.availible_abilities(rav).getAbilities()) {
 				if (ab.getAbility() == Abilities.EFFECT_CORROSIVE_BILE) {
-					Game.unit_command(rav, Abilities.EFFECT_CORROSIVE_BILE, best.unit());
+					Game.unit_command(rav, Abilities.EFFECT_CORROSIVE_BILE, best.unit().getPosition().toPoint2d());
 					return;
 				}
 			}
 			Vector2d diff = Utilities.direction_to(Vector2d.of(best.unit().getPosition().toPoint2d()), Vector2d.of(rav.unit().getPosition().toPoint2d()));
-			Game.unit_command(rav, Abilities.MOVE, Point2d.of(rav.unit().getPosition().getX() + diff.x, rav.unit().getPosition().getY() + diff.y));
+			Game.unit_command(rav, Abilities.MOVE, Point2d.of(best.unit().getPosition().getX() + diff.x * 15, best.unit().getPosition().getY() + diff.y * 15));
 			return;
 		}
 		if (rav.unit().getOrders().size() == 0) GenericUnit.on_frame(rav);

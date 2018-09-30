@@ -7,16 +7,14 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Base;
 import com.hjax.kagamine.BaseManager;
 import com.hjax.kagamine.BuildPlanner;
+import com.hjax.kagamine.ProxyManager;
+import com.hjax.kagamine.ThreatManager;
 import com.hjax.kagamine.Game;
 import com.hjax.kagamine.GameInfoCache;
 
 public class Extractor {
 	public static void on_frame(UnitInPool u) {
-		for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (e.unit().getPosition().toPoint2d().distance(u.unit().getPosition().toPoint2d()) < 15) {
-				return;
-			}
-		}
+		if (!ThreatManager.is_safe(u.unit().getPosition().toPoint2d())) return;
 		if (u.unit().getBuildProgress() > 0.999) {
 			if (!BuildPlanner.pulled_off_gas && is_near_base(u.unit().getPosition().toPoint2d())) {
 				if (u.unit().getAssignedHarvesters().get() < u.unit().getIdealHarvesters().get()) {

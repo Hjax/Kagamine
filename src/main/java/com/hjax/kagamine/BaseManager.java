@@ -244,6 +244,22 @@ public class BaseManager {
 				}
 			}
 		} else if (structure == Units.ZERG_EXTRACTOR) {
+			// try to build at safe bases first
+			for (Base b: BaseManager.bases) {
+				if (ThreatManager.is_safe(b.location)) {
+					if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+						for (UnitInPool gas: b.gases) {
+							if (GameInfoCache.geyser_is_free(gas)) {
+								UnitInPool worker = get_free_worker(get_next_base().location);
+								if (worker != null) {
+									Game.unit_command(worker, Abilities.BUILD_EXTRACTOR, gas.unit());
+									return;
+								}
+							}
+						}
+					}
+				}
+			}
 			for (Base b: BaseManager.bases) {
 				if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
 					for (UnitInPool gas: b.gases) {
@@ -304,13 +320,11 @@ public class BaseManager {
 		if (!get_numbers.containsKey(n)) {
 			ArrayList<Point2d> found = new ArrayList<>();
 			for (int i = 0; i < 20; i++) {
-				Point2d best = Point2d.of(0, 0);
-				double best_dist = -1;
+				Point2d best = null;
 				for (Base b: bases) {
-					if (best_dist < 0 || main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location) < best_dist) {
+					if (best == null|| ((main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location)) < (main_base().location.distance(best) - Scouting.closest_enemy_spawn().distance(best)))) {
 						if (!found.contains(b.location)) {
 							best = b.location;
-							best_dist = main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location);
 						}
 					}
 				}
@@ -460,6 +474,17 @@ public class BaseManager {
 				expos.add(best);
 			}
 		}
+	}
+	
+	public static boolean needs_expand() {
+		int patches = 0;
+		int gases = BaseManager.active_extractors();
+		for (Base b : BaseManager.bases) {
+			if (b.has_command_structure()) {
+				patches += b.minerals.size();
+			}
+		}
+		return GameInfoCache.count_friendly(Units.ZERG_DRONE) > (3 * gases + 2 * patches);
 	}
 
 }

@@ -37,15 +37,17 @@ public class Kagamine extends S2Agent{
 			UnitManager.on_frame();
 			GameInfoCache.end_frame();
 		}
-		Game.debug.sendDebug();
-		time_sum += ((System.nanoTime() - startTime) / 1000000.0);
-		if (((System.nanoTime() - startTime) / 1000000.0) > max) {
-			max = (System.nanoTime() - startTime) / 1000000.0;
+		if (!Main.ladder) {
+			Game.debug.sendDebug();
+			time_sum += ((System.nanoTime() - startTime) / 1000000.0);
+			if (((System.nanoTime() - startTime) / 1000000.0) > max) {
+				max = (System.nanoTime() - startTime) / 1000000.0;
+			}
+			frame++;
+			System.out.println("Average " + (time_sum / frame));
+			System.out.println("Max " + max);
+			System.out.println("----------------------------------");
 		}
-		frame++;
-		System.out.println("Average " + (time_sum / frame));
-		System.out.println("Max " + max);
-		System.out.println("----------------------------------");
 	}
 	
 	@Override

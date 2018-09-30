@@ -20,8 +20,22 @@ import javafx.util.Pair;
 public class BuildPlanner {
 	public static boolean is_all_in = false;
 	public static boolean pulled_off_gas = false;
+	public static boolean worker_rush = false;
 	
 	public static void on_frame() {
+		if (Wisdom.worker_rush() && !worker_rush) {
+			worker_rush = true;
+			Game.chat("Sorry im not tycklish");
+			Build.build = new ArrayList<>(Arrays.asList(new Pair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
+					new Pair<Integer, UnitType>(14, Units.ZERG_SPAWNING_POOL)));
+			Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
+			Build.ideal_gases = 0;
+			Build.ideal_hatches = 1;
+			Build.scout = false;
+			Build.push_supply = 30;
+			Build.ideal_workers = 14;
+			Build.upgrades = new HashSet<>();
+		}
 		if (!build_completed()) execute_build();
 		else {
 			if (!is_all_in && count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) do_ravager_all_in();
@@ -126,26 +140,28 @@ public class BuildPlanner {
 			TechManager.on_frame();
 			
 			if (!pulled_off_gas && (!is_all_in || count(Units.ZERG_DRONE) > 30 || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25))) {
-				for (UnitType u: Build.composition) {
-					if (Balance.has_tech_requirement(u)) {
-						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
-							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
-								if (BaseManager.base_count() >= 3 && count(Units.ZERG_DRONE) > 30) {
-									if (Game.minerals() < 150 && Game.gas() > 100) return;
-									if (Game.can_afford(Balance.next_tech_requirement(u))) {
-										for (Base b: BaseManager.bases) {
-											if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0) {
-												Game.unit_command(b.command_structure, Abilities.MORPH_LAIR);
-												break;
+				if (ThreatManager.is_safe(BaseManager.get_next_base().location)) {
+					for (UnitType u: Build.composition) {
+						if (Balance.has_tech_requirement(u)) {
+							if (!(count(Balance.next_tech_requirement(u)) > 0)) {
+								if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
+									if (BaseManager.base_count() >= 3 && count(Units.ZERG_DRONE) > 30) {
+										if (Game.minerals() < 150 && Game.gas() > 100) return;
+										if (Game.can_afford(Balance.next_tech_requirement(u))) {
+											for (Base b: BaseManager.bases) {
+												if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0) {
+													Game.unit_command(b.command_structure, Abilities.MORPH_LAIR);
+													break;
+												}
 											}
 										}
 									}
+								} else {
+									if (Game.can_afford(Balance.next_tech_requirement(u))) {
+										Game.purchase(Balance.next_tech_requirement(u));
+										BaseManager.build(Balance.next_tech_requirement(u));
+									} else if (BaseManager.active_extractors() > 2) return;
 								}
-							} else {
-								if (Game.can_afford(Balance.next_tech_requirement(u))) {
-									Game.purchase(Balance.next_tech_requirement(u));
-									BaseManager.build(Balance.next_tech_requirement(u));
-								} else if (BaseManager.active_extractors() > 2) return;
 							}
 						}
 					}
@@ -176,7 +192,7 @@ public class BuildPlanner {
 						break;
 					}
 				}
-				if (Game.minerals() > 25 && Game.gas() > 25 && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > 0 && Build.composition.contains(Units.ZERG_BANELING)) {
+				if (Game.minerals() > 25 && Game.gas() > 25 && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > 0 && Build.composition.contains(Units.ZERG_BANELING)) {
 					for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ZERGLING)) {
 						Game.unit_command(u, Abilities.TRAIN_BANELING);
 						Game.spend(25, 25);
@@ -273,6 +289,7 @@ public class BuildPlanner {
 		UnitType best = Units.INVALID;
 		for (UnitType u: Build.composition) {
 			if (u == Units.ZERG_BANELING) continue;
+			if (u == Units.ZERG_RAVAGER) continue;
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
 				if (best == Units.INVALID) best = u;
 				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {
@@ -286,13 +303,14 @@ public class BuildPlanner {
 	}
 	
 	public static boolean should_build_queens() {
+		if (Wisdom.worker_rush()) return false;
 		if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) return false;
 		int queen_target = 0;
 		if (Build.max_queens == -1) {
 			if (BaseManager.base_count() < 3) {
 				queen_target = BaseManager.base_count();
 			} else {
-				queen_target = Math.min(BaseManager.base_count() + 4, 6);
+				queen_target = Math.min(BaseManager.base_count() + 4, 12);
 			}
 		} else {
 			queen_target = Build.max_queens;
@@ -366,17 +384,17 @@ public class BuildPlanner {
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2));
 				break;
 			case ZERG:
-				Build.build = new ArrayList<>(Arrays.asList(new Pair<Integer, UnitType>(14, Units.ZERG_HATCHERY),
-						new Pair<Integer, UnitType>(14, Units.ZERG_EXTRACTOR),
-						new Pair<Integer, UnitType>(14, Units.ZERG_SPAWNING_POOL),
-						new Pair<Integer, UnitType>(14, Units.ZERG_OVERLORD)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
-				Build.ideal_hatches = 2;
+				Build.build = new ArrayList<>(Arrays.asList(new Pair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
+						new Pair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
+						new Pair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL),
+						new Pair<Integer, UnitType>(17, Units.ZERG_HATCHERY)));
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH);
+				Build.ideal_hatches = -1;
 				Build.scout = false;
-				Build.push_supply = 35;
-				Build.ideal_gases = 1;
-				Build.ideal_workers = 16;
-				Build.max_queens = 1;
+				Build.push_supply = 140;
+				Build.ideal_gases = 4;
+				Build.ideal_workers = 55;
+				Build.max_queens = -1;
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED));
 				break;			
 			case TERRAN:
@@ -384,14 +402,14 @@ public class BuildPlanner {
 						new Pair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new Pair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new Pair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_MUTALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.ideal_gases = 8;
 				Build.push_supply = 190;
 				Build.ideal_workers = 70;
 				Build.pull_off_gas = true;
-				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_FLYER_WEAPONS_LEVEL1, Upgrades.ZERG_FLYER_WEAPONS_LEVEL2));
+				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.CENTRIFICAL_HOOKS, Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_FLYER_WEAPONS_LEVEL1, Upgrades.ZERG_FLYER_WEAPONS_LEVEL2));
 				break;
 			default:
 				
