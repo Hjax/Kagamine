@@ -93,14 +93,15 @@ public class ArmyManager {
 			if (Scouting.is_scout(ally)) continue;
 			double best = 9999;
 			if (!(ally.unit().getOrders().size() == 0)) {
-				if (ally.unit().getOrders().get(0).getAbility() == Abilities.HARVEST_GATHER || ally.unit().getOrders().get(0).getAbility() == Abilities.HARVEST_RETURN) continue;
-				for (Base b : BaseManager.bases) {
-					if (b.has_command_structure()) {
-						if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
+				if (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK) {
+					for (Base b : BaseManager.bases) {
+						if (b.has_command_structure()) {
+							if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
+						}
 					}
+					if (best > 25) Game.unit_command(ally, Abilities.STOP);
 				}
 			}
-			if (best > 25) Game.unit_command(ally, Abilities.STOP);
 		}
 		
 		defend = null;

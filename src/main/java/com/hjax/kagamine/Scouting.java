@@ -142,7 +142,7 @@ public class Scouting {
 	}
 	
 	public static boolean is_scout(UnitInPool a) {
-		return (scout != null && !a.getTag().equals(scout.getTag())) && (patrol_scout != null && a.getTag().equals(patrol_scout.getTag()));
+		return (scout != null && a.getTag().equals(scout.getTag())) || (patrol_scout != null && a.getTag().equals(patrol_scout.getTag()));
 	}
 	
 	
