@@ -50,7 +50,7 @@ public class BuildExecutor {
 			if (Game.army_supply() >= 4 && Game.army_supply() < 30 && BaseManager.base_count() < 3) {
 				if ((count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) || (count(Units.ZERG_SPINE_CRAWLER) < 1 && Game.get_opponent_race() == Race.ZERG)) {
 					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count() > 1 || Wisdom.proxy_detected())) {
-						if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
+						if (Wisdom.all_in_detected() || Wisdom.proxy_detected() || Game.get_opponent_race() == Race.ZERG) {
 							if (!Game.can_afford(Units.ZERG_SPINE_CRAWLER)) return;
 							Game.purchase(Units.ZERG_SPINE_CRAWLER);
 							BaseManager.build(Units.ZERG_SPINE_CRAWLER);
@@ -102,38 +102,36 @@ public class BuildExecutor {
 					break;
 				}
 			}
-			
+
 			TechManager.on_frame();
-			
+
 			if (!pulled_off_gas && (count(Units.ZERG_DRONE) > Build.tech_drones || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25))) {
-				if (ThreatManager.is_safe(BaseManager.get_next_base().location)) {
-					for (UnitType u: Build.composition) {
-						if (Balance.has_tech_requirement(u)) {
-							if (!(count(Balance.next_tech_requirement(u)) > 0)) {
-								if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
-									if (BaseManager.base_count() >= 3 && count(Units.ZERG_DRONE) > 30) {
-										if (Game.minerals() < 150 && Game.gas() > 100) return;
-										if (Game.can_afford(Balance.next_tech_requirement(u))) {
-											for (Base b: BaseManager.bases) {
-												if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0) {
-													Game.unit_command(b.command_structure, Abilities.MORPH_LAIR);
-													break;
-												}
+				for (UnitType u: Build.composition) {
+					if (Balance.has_tech_requirement(u)) {
+						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
+							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
+								if (BaseManager.base_count() >= 3 && count(Units.ZERG_DRONE) > 30) {
+									if (Game.minerals() < 150 && Game.gas() > 100) return;
+									if (Game.can_afford(Balance.next_tech_requirement(u))) {
+										for (Base b: BaseManager.bases) {
+											if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0) {
+												Game.unit_command(b.command_structure, Abilities.MORPH_LAIR);
+												break;
 											}
 										}
 									}
-								} else {
-									if (Game.can_afford(Balance.next_tech_requirement(u))) {
-										Game.purchase(Balance.next_tech_requirement(u));
-										BaseManager.build(Balance.next_tech_requirement(u));
-									} else if (!pulled_off_gas && BaseManager.active_extractors() > 0) return;
 								}
+							} else {
+								if (Game.can_afford(Balance.next_tech_requirement(u))) {
+									Game.purchase(Balance.next_tech_requirement(u));
+									BaseManager.build(Balance.next_tech_requirement(u));
+								} else if (!pulled_off_gas && BaseManager.active_extractors() > 0) return;
 							}
 						}
 					}
 				}
 			}
-			
+
 			if (should_build_queens()) {
 				if (Game.supply_cap() - Game.supply() >= 2) {
 					if (Game.can_afford(Units.ZERG_QUEEN)) {
@@ -252,6 +250,9 @@ public class BuildExecutor {
 	}
 	
 	public static UnitType next_army_unit() {
+		if (Game.get_opponent_race() == Race.ZERG) {
+			if (count(Units.ZERG_BANELING) == 0 && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return Units.ZERG_ZERGLING;
+		}
 		UnitType best = Units.INVALID;
 		for (UnitType u: Build.composition) {
 			if (u == Units.ZERG_BANELING) continue;
@@ -298,6 +299,9 @@ public class BuildExecutor {
 	}
 	
 	public static boolean should_build_army() {
+		if (Game.get_opponent_race() == Race.ZERG) {
+			if (count(Units.ZERG_BANELING) == 0 && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
+		}
 		int target = 2 + 2 * count(Units.ZERG_QUEEN);
 		if (Game.get_opponent_race() == Race.ZERG) target = 10;
 		if (Wisdom.all_in_detected()) target = 10;

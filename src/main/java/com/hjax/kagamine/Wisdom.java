@@ -2,6 +2,7 @@ package com.hjax.kagamine;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 
 public class Wisdom {
@@ -59,6 +60,7 @@ public class Wisdom {
 	}
 	
 	public static boolean confused() {
+		if (Game.get_opponent_race() == Race.ZERG) return false;
 		return enemy_production() == 0 && enemy_bases() >= 1;
 	}
 	
