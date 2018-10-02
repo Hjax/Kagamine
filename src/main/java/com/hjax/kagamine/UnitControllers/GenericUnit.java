@@ -39,7 +39,7 @@ public class GenericUnit {
 				for (UnitInPool s: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
 					if (s.unit().getPosition().toPoint2d().distance(ArmyManager.defend.unit().getPosition().toPoint2d()) <= 7) {
 						if (u.unit().getOrders().size() != 0) return;
-						Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit());
+						Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit().getPosition().toPoint2d());
 						return;
 					}
 				}
@@ -52,7 +52,7 @@ public class GenericUnit {
 		} else if (Game.army_supply() > ThreatManager.seen.size()){
 			if (ArmyManager.defend != null) {
 				if (!ArmyManager.defend.unit().getFlying().get() || Game.hits_air(u.unit().getType())) {
-					Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit());
+					Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit().getPosition().toPoint2d());
 					return;
 				}
 			}
