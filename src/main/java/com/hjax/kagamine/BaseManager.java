@@ -15,14 +15,13 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.Drone;
 
+import javafx.util.Pair;
 
 public class BaseManager {
-	public static ArrayList<Base> bases;
-	static ArrayList<Point2d> expos;
-	static {
-		bases = new ArrayList<>();
-		expos = new ArrayList<>();
-	}
+	// the index of bases must never change
+	public static ArrayList<Base> bases = new ArrayList<>();
+	static ArrayList<Point2d> expos = new ArrayList<>();
+	private static Map<Pair<Integer, Integer>, Float> distances = new HashMap<>();
 	
 	static void start_game() {
 		bases.clear();
@@ -37,6 +36,23 @@ public class BaseManager {
 		for (Base b : bases) {
 			if (b.location.distance(main.unit().getPosition().toPoint2d()) < 10) {
 				b.location = main.unit().getPosition().toPoint2d();
+			}
+		}
+		
+		for (int i = 0; i < bases.size(); i++) {
+			for (int j = 0; j < bases.size(); j++) {
+				Point2d first = bases.get(i).location;
+				Point2d second = bases.get(j).location;
+				float dist = Game.pathing_distance(first, second);
+				if (i != j) {
+					while (Math.abs(dist) < 0.1) {
+						first = Point2d.of(first.getX() + 1, first.getY());
+						second = Point2d.of(second.getX() + 1, second.getY());
+						dist = Game.pathing_distance(first, second);
+					}
+				}
+				distances.put(new Pair<>(i, j), dist);
+				distances.put(new Pair<>(j, i), dist);
 			}
 		}
 		
@@ -96,7 +112,7 @@ public class BaseManager {
 	
 	static void on_frame() {
 		for (Base b: bases) {
-			b.update();
+			if (b.has_command_structure()) b.update();
 			if (b.has_walking_drone() && b.walking_drone.unit().getPosition().toPoint2d().distance(b.location) > 4) {
 				Game.unit_command(b.walking_drone, Abilities.MOVE, b.location);
 			}
@@ -193,6 +209,9 @@ public class BaseManager {
 		return total;
 	}
 	
+	public static float get_distance(Base b1, Base b2) {
+		return distances.get(new Pair<>(bases.indexOf(b1), bases.indexOf(b2)));
+	}
 	
 	public static long next_base_frame = -1;
 	public static Base next_base = null;
@@ -202,9 +221,9 @@ public class BaseManager {
 			double best_dist = -1;
 			for (Base b: bases) {
 				if (b.has_command_structure()) continue;
-				if (best == null || (main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location)) < best_dist) {
+				if (best == null || (get_distance(main_base(), b) - get_distance(closest_base(Scouting.closest_enemy_spawn()), b)) < best_dist) {
 					best = b;
-					best_dist = main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location);
+					best_dist = (get_distance(main_base(), b) - get_distance(closest_base(Scouting.closest_enemy_spawn()), b));
 				}
 			}
 			next_base = best;
@@ -321,15 +340,15 @@ public class BaseManager {
 		if (!get_numbers.containsKey(n)) {
 			ArrayList<Point2d> found = new ArrayList<>();
 			for (int i = 0; i < 20; i++) {
-				Point2d best = null;
+				Base best = null;
 				for (Base b: bases) {
-					if (best == null|| ((main_base().location.distance(b.location) - Scouting.closest_enemy_spawn().distance(b.location)) < (main_base().location.distance(best) - Scouting.closest_enemy_spawn().distance(best)))) {
+					if (best == null|| (get_distance(main_base(), b) - get_distance(closest_base(Scouting.closest_enemy_spawn()), b)) < (get_distance(main_base(), best) - (get_distance(closest_base(Scouting.closest_enemy_spawn()), best)))) {
 						if (!found.contains(b.location)) {
-							best = b.location;
+							best = b;
 						}
 					}
 				}
-				found.add(best);
+				found.add(best.location);
 				if (found.size() >= n) break;
 			}
 			get_numbers.put(n, found.get(found.size() - 1));
@@ -360,6 +379,16 @@ public class BaseManager {
 		}
 	}
 	
+	static Base closest_base(Point2d p) {
+		Base best = null;
+		for (Base b: bases) {
+			if (best == null || p.distance(best.location) > b.location.distance(p)) {
+				best = b;
+			}
+		}
+		return best;
+	}
+	
 	static Point2d get_spine_placement_location(Base b) {
 		Point2d target = Scouting.closest_enemy_spawn();
 		target = Point2d.of(target.getX() + 4, target.getY());
@@ -382,16 +411,17 @@ public class BaseManager {
 	public static Base get_forward_base() {
 		if (forward_base_frame != Game.get_frame()) {
 			Base best = null;
-			Point2d target = Scouting.closest_enemy_spawn();
-			target = Point2d.of(target.getX() + 5, target.getY() + 5);
+			Base target = closest_base(Scouting.closest_enemy_spawn());
 			for (Base b: bases) {
 				if (b.has_command_structure() && !(b.command_structure.unit().getBuildProgress() < 0.999)) {
-					if (best == null || Game.pathing_distance(b.location, target) < Game.pathing_distance(best.location, target)) {
+					if (best == null || get_distance(b, target) < get_distance(best, target)) {
 						best = b;
 					}
 				}
 			}
+
 			if (best == null) best = bases.get(0);
+			Game.draw_box(best.location, Color.GREEN);
 			forward_base = best;
 			forward_base_frame = Game.get_frame();
 		}
