@@ -54,9 +54,7 @@ public class GameInfoCache {
 					}
 					visible_friendly.put(u.getTag(), u);
 				} else if (u.unit().getAlliance() == Alliance.ENEMY) {
-					if (u.unit().getBuildProgress() > 0.999) {
-						counts_enemy.put(u.unit().getType(), counts_enemy.getOrDefault(u.unit().getType(), 0) + 1);
-					}
+					counts_enemy.put(u.unit().getType(), counts_enemy.getOrDefault(u.unit().getType(), 0) + 1);
 					visible_enemy.put(u.getTag(), u);
 				} else {
 					visible_neutral.put(u.getTag(), u);
