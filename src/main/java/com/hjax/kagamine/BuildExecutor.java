@@ -95,7 +95,7 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (Game.minerals() > 50 && Game.gas() > 50 && GameInfoCache.count_friendly(Units.ZERG_LAIR) > 0 && count(Units.ZERG_OVERLORD) + count(Units.ZERG_OVERLORD_COCOON) < 2) {
+			if (Game.minerals() > 50 && Game.gas() > 50 && GameInfoCache.count_friendly(Units.ZERG_LAIR) > 0 && count(Units.ZERG_OVERSEER) + count(Units.ZERG_OVERLORD_COCOON) < 2) {
 				for (UnitInPool ovie: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
 					Game.spend(50, 50);
 					Game.unit_command(ovie, Abilities.MORPH_OVERSEER);
