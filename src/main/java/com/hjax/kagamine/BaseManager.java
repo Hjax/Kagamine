@@ -116,6 +116,7 @@ public class BaseManager {
 			if (b.has_walking_drone() && b.walking_drone.unit().getPosition().toPoint2d().distance(b.location) > 4) {
 				Game.unit_command(b.walking_drone, Abilities.MOVE, b.location);
 			}
+			if (b.has_walking_drone() && !b.walking_drone.isAlive()) b.walking_drone = null;
 		}
 		for (UnitInPool ling : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ZERGLING_BURROWED)) {
 			for (UnitInPool drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {

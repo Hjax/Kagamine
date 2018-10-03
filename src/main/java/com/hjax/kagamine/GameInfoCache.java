@@ -88,7 +88,7 @@ public class GameInfoCache {
 		return counts_friendly.getOrDefault(type, 0);
 	}
 	
-	static int count_enemy(UnitType type) {
+	public static int count_enemy(UnitType type) {
 		return counts_enemy.getOrDefault(type, 0);
 	}
 	

@@ -135,11 +135,13 @@ public class BuildExecutor {
 			if (should_build_queens()) {
 				if (Game.supply_cap() - Game.supply() >= 2) {
 					if (Game.can_afford(Units.ZERG_QUEEN)) {
-						// TODO lairs and hives cant make queens
-						for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
-							if (u.unit().getOrders().size() == 0) {
-								Game.purchase(Units.ZERG_QUEEN);
-								Game.unit_command(u, Abilities.TRAIN_QUEEN);
+						for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF)) {
+							if (Game.is_town_hall(u.unit().getType())) {
+								if (u.unit().getOrders().size() == 0) {
+									Game.purchase(Units.ZERG_QUEEN);
+									Game.unit_command(u, Abilities.TRAIN_QUEEN);
+									break;
+								}
 							}
 						}
 					} else if (count(Units.ZERG_QUEEN) < BaseManager.base_count()) {
