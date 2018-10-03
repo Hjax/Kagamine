@@ -324,7 +324,7 @@ public class BuildExecutor {
 	public static boolean should_build_drones() {
 		boolean should_drone = false;
 		for (Base b: BaseManager.bases) {
-			if (b.has_command_structure() && ((b.command_structure.unit().getIdealHarvesters().orElse(0) - b.command_structure.unit().getAssignedHarvesters().orElse(0)) > 0 || (b.command_structure.unit().getBuildProgress() > 0.8))) {
+			if (b.has_command_structure() && ((b.command_structure.unit().getIdealHarvesters().orElse(0) - b.command_structure.unit().getAssignedHarvesters().orElse(0)) > 0 || (b.command_structure.unit().getBuildProgress() > 0.8 && b.command_structure.unit().getBuildProgress() < 0.999))) {
 				should_drone = true;
 				break;
 			}

@@ -9,7 +9,7 @@ public class Wisdom {
 	public static boolean proxy_detected() {
 		if (Game.army_supply() >= 30) return false;
 		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_structure(u.unit().getType())) {
+			if (Game.is_structure(u.unit().getType()) && u.unit().getType() != Units.PROTOSS_PYLON) {
 				if (u.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) < u.unit().getPosition().toPoint2d().distance(Scouting.closest_enemy_spawn())) {
 					return true;
 				}

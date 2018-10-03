@@ -79,8 +79,10 @@ public class ArmyManager {
 					if (Game.is_worker(enemy.unit().getType())) {
 						if (enemy.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) <= 20) {
 							for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-								if (Drone.can_build(ally)) {
-									Game.unit_command(ally, Abilities.ATTACK, enemy.unit().getPosition().toPoint2d());
+								if (ally.unit().getHealth().orElse((float) 0) > 10) {
+									if (Drone.can_build(ally)) {
+										Game.unit_command(ally, Abilities.ATTACK, enemy.unit().getPosition().toPoint2d());
+									}
 								}
 							}
 						}
@@ -99,7 +101,8 @@ public class ArmyManager {
 							if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
 						}
 					}
-					if (best > 25) Game.unit_command(ally, Abilities.STOP);
+					if (best > 15) Game.unit_command(ally, Abilities.STOP);
+					if (ally.unit().getHealth().orElse((float) 0) < 6) Game.unit_command(ally, Abilities.STOP);
 				}
 			}
 		}
