@@ -245,8 +245,8 @@ public class BaseManager {
 		Point2d result = Point2d.of(0, 0);
 		int limit = 0;
 		while (!Game.can_place(Game.get_unit_type_data().get(structure).getAbility().orElse(Abilities.INVALID), result) || base.distance(result) < min_dist) {
-			float rx = (float) Math.random();
-			float ry = (float) Math.random();
+			float rx = (float) Math.random() * 2 - 1;
+			float ry = (float) Math.random() * 2 - 1;
 			result = Point2d.of(base.getX() + rx * max_dist, base.getY() + ry * max_dist);
 			if (++limit == 500) break;
 		}
@@ -256,7 +256,9 @@ public class BaseManager {
 	static void build(UnitType structure) {
 		if (Game.is_town_hall(structure)) {
 			if (get_next_base().has_walking_drone()) {
-				Game.unit_command(get_next_base().walking_drone, Game.get_unit_type_data().get(structure).getAbility().orElse(Abilities.INVALID), get_next_base().location);
+				if (get_next_base().walking_drone.unit().getOrders().size() == 0 || get_next_base().walking_drone.unit().getOrders().get(0).getAbility() != Abilities.BUILD_HATCHERY) {
+					Game.unit_command(get_next_base().walking_drone, Game.get_unit_type_data().get(structure).getAbility().orElse(Abilities.INVALID), get_next_base().location);
+				}
 			} else {
 				UnitInPool worker = get_free_worker(get_next_base().location);
 				if (worker != null) {

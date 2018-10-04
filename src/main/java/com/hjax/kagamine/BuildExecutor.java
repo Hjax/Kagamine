@@ -32,6 +32,13 @@ public class BuildExecutor {
 				}
 			}
 			
+			if (count(Units.ZERG_DRONE) > 45 || count(Units.ZERG_EXTRACTOR) == 0) {
+				if (((BaseManager.active_extractors() | GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < ((count(Units.ZERG_DRONE) - 15) / 8)) && Game.can_afford(Units.ZERG_EXTRACTOR)) {
+					BaseManager.build(Units.ZERG_EXTRACTOR);
+					Game.purchase(Units.ZERG_EXTRACTOR);
+				}
+			}
+			
 			// TODO make this less of a hack
 			if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && !(GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPAWNING_POOL).get(0).unit().getOrders().size() == 0) && Build.pull_off_gas) {
 				pulled_off_gas = true;
@@ -195,12 +202,6 @@ public class BuildExecutor {
 						BaseManager.build(Units.ZERG_EVOLUTION_CHAMBER);
 						Game.purchase(Units.ZERG_EVOLUTION_CHAMBER);
 					}
-				}
-			}
-			if (count(Units.ZERG_DRONE) > 45 || count(Units.ZERG_EXTRACTOR) == 0) {
-				if (((BaseManager.active_extractors() | GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < ((count(Units.ZERG_DRONE) - 15) / 8)) && Game.can_afford(Units.ZERG_EXTRACTOR)) {
-					BaseManager.build(Units.ZERG_EXTRACTOR);
-					Game.purchase(Units.ZERG_EXTRACTOR);
 				}
 			}
 			if (!should_build_drones() && BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
