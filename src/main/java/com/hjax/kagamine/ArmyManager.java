@@ -111,6 +111,7 @@ public class ArmyManager {
 		if (!Wisdom.cannon_rush()) {
 			outer: for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (e.unit().getType() == Units.PROTOSS_ADEPT_PHASE_SHIFT) continue;
+				if (e.unit().getType() == Units.ZERG_CHANGELING) continue;
 				if (!Game.is_structure(e.unit().getType())) {
 					for (UnitInPool spine : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
 						if (spine.unit().getPosition().toPoint2d().distance(e.unit().getPosition().toPoint2d()) <= 7) {
@@ -123,6 +124,7 @@ public class ArmyManager {
 			if (defend == null) {
 				outer2: for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
 					if (e.unit().getType() == Units.PROTOSS_ADEPT_PHASE_SHIFT) continue;
+					if (e.unit().getType() == Units.ZERG_CHANGELING) continue;
 					if (!Game.is_structure(e.unit().getType())) {
 						for (Base b: BaseManager.bases) {
 							if (b.has_command_structure() || (b.location.distance(BaseManager.get_next_base().location) < 5 && !Wisdom.confused())) {

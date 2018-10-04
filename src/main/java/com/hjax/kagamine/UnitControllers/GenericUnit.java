@@ -50,12 +50,10 @@ public class GenericUnit {
 				Game.unit_command(u, Abilities.MOVE, forward.location);
 				return;
 			}
-		} else if (Game.army_supply() > ThreatManager.seen.size()){
-			if (ArmyManager.defend != null) {
-				if (!ArmyManager.defend.unit().getFlying().get() || Game.hits_air(u.unit().getType())) {
-					Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit().getPosition().toPoint2d());
-					return;
-				}
+		} else if (ArmyManager.defend != null) {
+			if (!ArmyManager.defend.unit().getFlying().get() || Game.hits_air(u.unit().getType())) {
+				Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit().getPosition().toPoint2d());
+				return;
 			}
 		}
 		if (Game.supply() >= Build.push_supply || Wisdom.ahead()) {

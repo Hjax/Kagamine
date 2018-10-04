@@ -27,11 +27,11 @@ public class Main {
 		                .loadSettings(args)
 		                .setRealtime(false)
 		                .setParticipants(
-		                        //S2Coordinator.createParticipant(Race.TERRAN, bot2),
+		                       // S2Coordinator.createParticipant(Race.PROTOSS, bot2),
 		                        S2Coordinator.createParticipant(Race.ZERG, bot),
-		                        S2Coordinator.createComputer(Race.PROTOSS, Difficulty.VERY_HARD))
+		                        S2Coordinator.createComputer(Race.ZERG, Difficulty.VERY_HARD))
 		                .launchStarcraft()
-		                .startGame(LocalMap.of(Paths.get("C:\\Program Files (x86)\\StarCraft II\\Maps\\AcidPlantLE.SC2Map")));
+		                .startGame(LocalMap.of(Paths.get("C:\\Program Files (x86)\\StarCraft II\\Maps\\DreamcatcherLE.SC2Map")));
 	        }
 	        while (s2Coordinator.update()) {
 	        }

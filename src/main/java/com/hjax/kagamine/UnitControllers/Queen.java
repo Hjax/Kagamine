@@ -37,7 +37,7 @@ public class Queen {
 				}
 			}
 		}
-		if (!Wisdom.cannon_rush()) {
+		if (!Wisdom.cannon_rush() && !ThreatManager.under_attack()) {
 			if (u.unit().getOrders().size() == 0 && ((u.unit().getEnergy().get() >= 25 && GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) < 25) || u.unit().getEnergy().get() >= 75)) {
 				Point2d p = Creep.get_creep_point();
 				if (p != null) {
@@ -45,7 +45,8 @@ public class Queen {
 					return;
 				}
 			}
+		} else {
+			GenericUnit.on_frame(u);
 		}
-		GenericUnit.on_frame(u);
 	}
 }
