@@ -35,7 +35,7 @@ public class GenericUnit {
 		}
 		if (u.unit().getOrders().size() != 0) return;
 		if (Wisdom.cannon_rush() && GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) > 2) return;
-		if (Wisdom.proxy_detected() || Wisdom.all_in_detected() && GameInfoCache.count_friendly(Units.ZERG_SPINE_CRAWLER) > 0 && BaseManager.base_count() < 2 && Game.army_supply() < ThreatManager.seen.size() * 4 && Game.army_supply() < 25) {
+		if ((Wisdom.proxy_detected() || Wisdom.all_in_detected()) && GameInfoCache.count_friendly(Units.ZERG_SPINE_CRAWLER) > 0 && BaseManager.base_count() < 2 && Game.army_supply() < ThreatManager.seen.size() * 4 && Game.army_supply() < 25) {
 			if (ArmyManager.defend != null) {
 				for (UnitInPool s: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
 					if (s.unit().getPosition().toPoint2d().distance(ArmyManager.defend.unit().getPosition().toPoint2d()) <= 7) {

@@ -16,7 +16,7 @@ import com.hjax.kagamine.Wisdom;
 public class Queen {
 	public static void on_frame(UnitInPool u) {
 		int tumors = GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_BURROWED) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_QUEEN);
-		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) != 2) {
+		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) != 2 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) != 2) {
 			for (Base b : BaseManager.bases) {
 				if (GameInfoCache.count_friendly(Units.ZERG_LARVA) < BaseManager.base_count() * 3) {
 					if (b.has_queen() && b.queen == u && b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
