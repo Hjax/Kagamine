@@ -37,6 +37,11 @@ public class BuildPlanner {
 				for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
 					if (u.unit().getBuildProgress() < 0.999) {
 						Game.unit_command(u, Abilities.CANCEL);
+						for (Base b: BaseManager.bases) {
+							if (b.location.distance(u.unit().getPosition().toPoint2d()) < 4) {
+								b.set_walking_drone(null);
+							}
+						}
 					}
 				}
 			}

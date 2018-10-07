@@ -24,15 +24,15 @@ public class Base {
 	public void update() {
 		minerals =  new ArrayList<>();
 		gases =  new ArrayList<>();
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.NEUTRAL)) {
-			if (u.unit().getPosition().toPoint2d().distance(location) < 10) {
-				if (u.unit().getMineralContents().orElse(0) > 0) minerals.add(u);
-				if (u.unit().getVespeneContents().orElse(0) > 0) gases.add(u);
-			}
-		}
-		if (walking_drone != null) {
-			if (!walking_drone.isAlive()) {
-				walking_drone = null;
+		if (has_walking_drone() && !walking_drone.isAlive()) walking_drone = null;
+		if ((has_friendly_command_structure() || has_enemy_command_structure()) && !command_structure.isAlive()) command_structure = null;
+		if (has_queen() && !queen.isAlive()) queen = null;
+		if (has_friendly_command_structure() || has_enemy_command_structure()) {
+			for (UnitInPool u: GameInfoCache.get_units(Alliance.NEUTRAL)) {
+				if (u.unit().getPosition().toPoint2d().distance(location) < 10) {
+					if (u.unit().getMineralContents().orElse(0) > 0) minerals.add(u);
+					if (u.unit().getVespeneContents().orElse(0) > 0) gases.add(u);
+				}
 			}
 		}
 	}
@@ -51,6 +51,14 @@ public class Base {
 	
 	public boolean has_queen() {
 		return queen != null;
+	}
+	
+	public boolean has_friendly_command_structure() {
+		return command_structure != null && command_structure.unit().getAlliance() == Alliance.SELF;
+	}
+	
+	public boolean has_enemy_command_structure() {
+		return command_structure != null && command_structure.unit().getAlliance() == Alliance.ENEMY;
 	}
 	
 	public boolean has_command_structure() {

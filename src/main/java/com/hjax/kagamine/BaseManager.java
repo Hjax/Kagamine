@@ -26,19 +26,14 @@ public class BaseManager {
 	static void start_game() {
 		bases.clear();
 		calculate_expansions();
-		for (Point2d e: expos) {
-			bases.add(new Base(e));
-		}
-		
+		for (Point2d e: expos) bases.add(new Base(e));
 		UnitInPool main = GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY).get(0);
-		
 		// Fix the placement for our main base
 		for (Base b : bases) {
 			if (b.location.distance(main.unit().getPosition().toPoint2d()) < 10) {
 				b.location = main.unit().getPosition().toPoint2d();
 			}
 		}
-		
 		for (int i = 0; i < bases.size(); i++) {
 			for (int j = 0; j < bases.size(); j++) {
 				Point2d first = bases.get(i).location;
@@ -55,22 +50,14 @@ public class BaseManager {
 				distances.put(new Pair<>(j, i), dist);
 			}
 		}
-		
 		on_unit_created(main);
 	}
 	
 	static void on_unit_created(UnitInPool u) {
-		if (u.unit().getType() == Units.ZERG_HATCHERY) {
-			for (Base b : bases) {
-				if (b.location.distance(u.unit().getPosition().toPoint2d()) < 1) {
-					b.set_command_structure(u);
-				}
-			}
-		}
 		if (u.unit().getType() == Units.ZERG_QUEEN) {
 			Base best = null;
 			for (Base b: bases) {
-				if (!b.has_queen() && b.has_command_structure()) {
+				if (!b.has_queen() && b.has_friendly_command_structure()) {
 					if (b.command_structure.unit().getBuildProgress() > 0.999) {
 						if (best == null || best.location.distance(u.unit().getPosition().toPoint2d()) > b.location.distance(u.unit().getPosition().toPoint2d())) {
 							best = b;
@@ -80,39 +67,27 @@ public class BaseManager {
 			}
 			if (best == null) {
 				for (Base b: bases) {
-					if (!b.has_queen() && b.has_command_structure()) {
+					if (!b.has_queen() && b.has_friendly_command_structure()) {
 						if (best == null || best.location.distance(u.unit().getPosition().toPoint2d()) > b.location.distance(u.unit().getPosition().toPoint2d())) {
 							best = b;
 						}
 					}
 				}
 			}
-			if (best != null) {
-				best.set_queen(u);
-			}
-		}
-	}
-	
-	static void on_unit_destroyed(UnitInPool u) {
-		if (u.unit().getType() == Units.ZERG_HATCHERY || u.unit().getType() == Units.ZERG_LAIR|| u.unit().getType() == Units.ZERG_HIVE) {
-			for (Base b : bases) {
-				if (b.has_command_structure() && b.command_structure.getTag() == u.getTag()) {
-					b.set_command_structure(null);
-				}
-			}
-		}
-		if (u.unit().getType() == Units.ZERG_QUEEN) {
-			for (Base b : bases) {
-				if (b.has_queen() && b.queen.getTag() == u.getTag()) {
-					b.set_queen(null);
-				}
-			}
+			if (best != null) best.set_queen(u);
 		}
 	}
 	
 	static void on_frame() {
+		for (UnitInPool u: Game.get_units()) {
+			if (Game.is_town_hall(u.unit().getType())) {
+				for (Base b: bases) {
+					if (b.location.distance(u.unit().getPosition().toPoint2d()) < 5) b.set_command_structure(u);
+				}
+			}
+		}
 		for (Base b: bases) {
-			if (b.has_command_structure()) b.update();
+			b.update();
 			if (b.has_walking_drone() && b.walking_drone.unit().getPosition().toPoint2d().distance(b.location) > 4) {
 				Game.unit_command(b.walking_drone, Abilities.MOVE, b.location);
 			}
@@ -122,32 +97,6 @@ public class BaseManager {
 			for (UnitInPool drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 				if (drone.unit().getPosition().distance(ling.unit().getPosition()) < 10) {
 					Game.unit_command(ling, Abilities.BURROW_UP);
-				}
-			}
-		}
-		// worker transfer code
-		for (Base b : bases) {
-			if (!b.has_command_structure()) continue;
-			if (b.command_structure.unit().getAssignedHarvesters().orElse(0) > b.command_structure.unit().getIdealHarvesters().orElse(0)) {
-				for (Base target: bases) {
-					if (!target.has_command_structure()) continue;
-					if (target.minerals.size() == 0) continue;
-					if (target.command_structure.unit().getAssignedHarvesters().orElse(0) + GameInfoCache.in_progress(Units.ZERG_DRONE) < target.command_structure.unit().getIdealHarvesters().orElse(0)) {
-						for (UnitInPool worker : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-							if (worker.unit().getPosition().toPoint2d().distance(b.location) < 10) {
-								// TODO remove try catch, fix crashing
-								try {
-									if (worker.unit().getOrders().get(0).getAbility() == Abilities.HARVEST_GATHER && Game.get_unit(worker.unit().getOrders().get(0).getTargetedUnitTag().get()).unit().getMineralContents().orElse(0) > 0) {
-										Game.unit_command(worker, Abilities.SMART, target.minerals.get(0).unit());
-										return;
-									}
-								} catch (Exception e) {
-									Game.unit_command(worker, Abilities.SMART, target.minerals.get(0).unit());
-									return;
-								}
-							}
-						}
-					}
 				}
 			}
 		}
@@ -162,11 +111,10 @@ public class BaseManager {
 		return false;
 	}
 	
-	// TODO this will cause crashes if all of our bases get sniped 
 	public static Base main_base() {
 		Base best = null;
 		for (Base b: bases) {
-			if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+			if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
 				if (best == null || best.location.distance(Scouting.closest_enemy_spawn(best.location)) < b.location.distance(Scouting.closest_enemy_spawn(b.location))) {
 					best = b;
 				}
@@ -174,40 +122,6 @@ public class BaseManager {
 		}
 		if (best == null) best = bases.get(0);
 		return best;
-	}
-	
-	public static void assign_worker(UnitInPool u) {
-		for (Base b : bases) {
-			if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
-				if (b.command_structure.unit().getAssignedHarvesters().orElse(0) < b.command_structure.unit().getIdealHarvesters().orElse(0)) {
-					if (b.minerals.size() > 0) {
-						Game.unit_command(u, Abilities.SMART, b.minerals.get(0).unit());
-						return;
-					}
-				}
-			}
-		}
-		for (Base b : bases) {
-			if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
-				if (b.command_structure.unit().getAssignedHarvesters().orElse(0) < b.command_structure.unit().getIdealHarvesters().orElse(0) * 1.5) {
-					if (b.minerals.size() > 0) {
-						Game.unit_command(u, Abilities.SMART, b.minerals.get(0).unit());
-						return;
-					}
-				}
-			}
-		}
-	}
-	
-	public static float larva_rate() {
-		int total = 0;
-		for (Base b: bases) {
-			if (b.has_command_structure()) {
-				total++;
-				if (b.has_queen()) total++;
-			}
-		}
-		return total;
 	}
 	
 	public static float get_distance(Base b1, Base b2) {
@@ -221,7 +135,7 @@ public class BaseManager {
 			Base best = null;
 			double best_dist = -1;
 			for (Base b: bases) {
-				if (b.has_command_structure()) continue;
+				if (b.has_friendly_command_structure()) continue;
 				if (best == null || (get_distance(main_base(), b) - get_distance(closest_base(Scouting.closest_enemy_spawn()), b)) < best_dist) {
 					best = b;
 					best_dist = (get_distance(main_base(), b) - get_distance(closest_base(Scouting.closest_enemy_spawn()), b));
@@ -233,10 +147,10 @@ public class BaseManager {
 		return next_base;
 	}
 	
-	public static int base_count() {
+	public static int base_count(Alliance a) {
 		int result = 0;
 		for (Base b: bases) {
-			if (b.has_command_structure()) result++;
+			if (b.has_command_structure() && b.command_structure.unit().getAlliance() == a) result++;
 		}
 		return result;
 	}
@@ -270,7 +184,7 @@ public class BaseManager {
 			// try to build at safe bases first
 			for (Base b: BaseManager.bases) {
 				if (ThreatManager.is_safe(b.location)) {
-					if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+					if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
 						for (UnitInPool gas: b.gases) {
 							if (GameInfoCache.geyser_is_free(gas)) {
 								UnitInPool worker = get_free_worker(get_next_base().location);
@@ -284,7 +198,7 @@ public class BaseManager {
 				}
 			}
 			for (Base b: BaseManager.bases) {
-				if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+				if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
 					for (UnitInPool gas: b.gases) {
 						if (GameInfoCache.geyser_is_free(gas)) {
 							UnitInPool worker = get_free_worker(get_next_base().location);
@@ -364,7 +278,7 @@ public class BaseManager {
 			if (Game.minerals() < 75) {
 				return;
 			}
-			if (b.has_command_structure() && !(b.command_structure.unit().getBuildProgress() < .999)) {
+			if (b.has_friendly_command_structure() && !(b.command_structure.unit().getBuildProgress() < .999)) {
 				for (UnitInPool spore: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
 					if (spore.unit().getPosition().toPoint2d().distance(b.location) <= 9) {
 						continue outer;
@@ -416,7 +330,7 @@ public class BaseManager {
 			Base best = null;
 			Base target = closest_base(Scouting.closest_enemy_spawn());
 			for (Base b: bases) {
-				if (b.has_command_structure() && !(b.command_structure.unit().getBuildProgress() < 0.999)) {
+				if (b.has_friendly_command_structure() && !(b.command_structure.unit().getBuildProgress() < 0.999)) {
 					if (best == null || get_distance(b, target) < get_distance(best, target)) {
 						best = b;
 					}
@@ -515,7 +429,7 @@ public class BaseManager {
 		int patches = 0;
 		int gases = BaseManager.active_extractors();
 		for (Base b : BaseManager.bases) {
-			if (b.has_command_structure()) {
+			if (b.has_friendly_command_structure()) {
 				patches += b.minerals.size();
 			}
 		}

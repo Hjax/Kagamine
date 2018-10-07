@@ -55,7 +55,7 @@ public class ArmyManager {
 					enemy_loop: for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
 						if (Game.is_worker(u.unit().getType())) {
 							for (Base b : BaseManager.bases) {
-								if (b.has_command_structure() && u.unit().getPosition().toPoint2d().distance(b.location) < 12) {
+								if (b.has_friendly_command_structure() && u.unit().getPosition().toPoint2d().distance(b.location) < 12) {
 									for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 										if (!(ally.unit().getOrders().size() == 0) && (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK || ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK_ATTACK)) {
 											if (ally.unit().getOrders().get(0).getTargetedUnitTag().orElse(Tag.of((long) 0)).equals(u.unit().getTag())) {
@@ -97,7 +97,7 @@ public class ArmyManager {
 			if (!(ally.unit().getOrders().size() == 0)) {
 				if (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK) {
 					for (Base b : BaseManager.bases) {
-						if (b.has_command_structure()) {
+						if (b.has_friendly_command_structure()) {
 							if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
 						}
 					}
@@ -127,7 +127,7 @@ public class ArmyManager {
 					if (e.unit().getType() == Units.ZERG_CHANGELING) continue;
 					if (!Game.is_structure(e.unit().getType())) {
 						for (Base b: BaseManager.bases) {
-							if (b.has_command_structure() || (b.location.distance(BaseManager.get_next_base().location) < 5 && !Wisdom.confused())) {
+							if (b.has_friendly_command_structure() || (b.location.distance(BaseManager.get_next_base().location) < 5 && !Wisdom.confused())) {
 								if (e.unit().getPosition().toPoint2d().distance(b.location) < 20) {
 									defend = e;
 									break outer2;

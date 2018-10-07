@@ -20,7 +20,7 @@ public class BuildExecutor {
 		if (!build_completed()) execute_build();
 		else {
 			if (Game.supply_cap() < 200) {
-				float larva = BaseManager.larva_rate();
+				float larva = EconomyManager.larva_rate();
 				if (should_build_queens()) larva += 2;
 				if (Game.supply_cap() + (GameInfoCache.in_progress(Units.ZERG_OVERLORD) * 8) - Game.supply() <= larva * 1.5) {
 					if (Game.can_afford(Units.ZERG_OVERLORD)) {
@@ -54,9 +54,9 @@ public class BuildExecutor {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;
 			}
-			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count() < 3) {
+			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count(Alliance.SELF) < 3) {
 				if (count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
-					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count() > 1 || Wisdom.proxy_detected())) {
+					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count(Alliance.SELF) > 1 || Wisdom.proxy_detected())) {
 						if (Wisdom.all_in_detected() || Wisdom.proxy_detected() || (count(Units.ZERG_SPINE_CRAWLER) < 1 && Wisdom.aggression_detected())) {
 							if (!Game.can_afford(Units.ZERG_SPINE_CRAWLER)) return;
 							Game.purchase(Units.ZERG_SPINE_CRAWLER);
@@ -66,19 +66,21 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 15 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && should_expand()) {
-				if ((count(Units.ZERG_DRONE) > ((BaseManager.base_count() - 1) * 23) && BaseManager.base_count() < 4) || Game.army_supply() > 100) {
-					if (!Game.can_afford(Units.ZERG_HATCHERY)) {
-						if (!BaseManager.get_next_base().has_walking_drone() && Game.minerals() > 100) {
-							UnitInPool drone = BaseManager.get_free_worker(BaseManager.get_next_base().location);
-							if (drone != null) {
-								BaseManager.get_next_base().set_walking_drone(drone);
+			if (ThreatManager.is_safe(BaseManager.get_next_base().location) ) {
+				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 15 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && should_expand()) {
+					if ((count(Units.ZERG_DRONE) > ((BaseManager.base_count(Alliance.SELF) - 1) * 23) && BaseManager.base_count(Alliance.SELF) < 4) || Game.army_supply() > 100) {
+						if (!Game.can_afford(Units.ZERG_HATCHERY)) {
+							if (!BaseManager.get_next_base().has_walking_drone() && Game.minerals() > 100) {
+								UnitInPool drone = BaseManager.get_free_worker(BaseManager.get_next_base().location);
+								if (drone != null) {
+									BaseManager.get_next_base().set_walking_drone(drone);
+								}
 							}
+							return;
+						} else {
+							BaseManager.build(Units.ZERG_HATCHERY);
+							Game.purchase(Units.ZERG_HATCHERY);
 						}
-						return;
-					} else {
-						BaseManager.build(Units.ZERG_HATCHERY);
-						Game.purchase(Units.ZERG_HATCHERY);
 					}
 				}
 			}
@@ -117,11 +119,11 @@ public class BuildExecutor {
 					if (Balance.has_tech_requirement(u)) {
 						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
-								if (BaseManager.base_count() >= 3 && count(Units.ZERG_DRONE) > 30) {
+								if (BaseManager.base_count(Alliance.SELF) >= 3 && count(Units.ZERG_DRONE) > 30) {
 									if (Game.minerals() < 150 && Game.gas() > 100) return;
 									if (Game.can_afford(Balance.next_tech_requirement(u))) {
 										for (Base b: BaseManager.bases) {
-											if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0) {
+											if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0) {
 												Game.unit_command(b.command_structure, Abilities.MORPH_LAIR);
 												break;
 											}
@@ -151,7 +153,7 @@ public class BuildExecutor {
 								}
 							}
 						}
-					} else if (count(Units.ZERG_QUEEN) < BaseManager.base_count()) {
+					} else if (count(Units.ZERG_QUEEN) < BaseManager.base_count(Alliance.SELF)) {
 						return;
 					}
 				}
@@ -200,7 +202,7 @@ public class BuildExecutor {
 				}
 			}
 			if (count(Units.ZERG_EXTRACTOR) >= 3) {
-				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 2 && count(Units.ZERG_DRONE) > 35 && BaseManager.base_count() > 3) {
+				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 2 && count(Units.ZERG_DRONE) > 35 && BaseManager.base_count(Alliance.SELF) > 3) {
 					if (Game.can_afford(Units.ZERG_EVOLUTION_CHAMBER)) {
 						BaseManager.build(Units.ZERG_EVOLUTION_CHAMBER);
 						Game.purchase(Units.ZERG_EVOLUTION_CHAMBER);
@@ -210,7 +212,6 @@ public class BuildExecutor {
 
 			if ((count(Units.ZERG_DRONE) >= worker_cap() || count(Units.ZERG_HATCHERY) >= Build.ideal_hatches && Build.ideal_hatches > 0) && !should_build_drones() && BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
 				if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
-					System.out.println("asdf");
 					BaseManager.build(Units.ZERG_EXTRACTOR);
 					Game.purchase(Units.ZERG_EXTRACTOR);
 				}
@@ -283,9 +284,9 @@ public class BuildExecutor {
 		int queen_target = 0;
 		if (Build.max_queens == -1) {
 			if (count(Units.ZERG_HATCHERY) < 3) {
-				queen_target = BaseManager.base_count() - 1;
+				queen_target = BaseManager.base_count(Alliance.SELF) - 1;
 			} else {
-				queen_target = Math.min(BaseManager.base_count() + 4, 12);
+				queen_target = Math.min(BaseManager.base_count(Alliance.SELF) + 4, 12);
 			}
 			if (Game.minerals() > 400) {
 				queen_target += 1;
@@ -293,14 +294,14 @@ public class BuildExecutor {
 		} else {
 			queen_target = Build.max_queens;
 		}
-		if (Game.supply() > 120) queen_target = Math.min(BaseManager.base_count(), 6);
+		if (Game.supply() > 120) queen_target = Math.min(BaseManager.base_count(Alliance.SELF), 6);
 		if (Wisdom.proxy_detected()) {
 			queen_target = 1;
 			if (Game.minerals() > 400) {
 				queen_target += 1;
 			}
 		}
-		if (BaseManager.base_count() < 3 && count(Units.ZERG_QUEEN) < queen_target || (BaseManager.base_count() >= 3 && (count(Units.ZERG_QUEEN) < queen_target)) && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
+		if (BaseManager.base_count(Alliance.SELF) < 3 && count(Units.ZERG_QUEEN) < queen_target || (BaseManager.base_count(Alliance.SELF) >= 3 && (count(Units.ZERG_QUEEN) < queen_target)) && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
 			return true;
 		}
 		return false;
@@ -330,7 +331,7 @@ public class BuildExecutor {
 	public static boolean should_build_drones() {
 		boolean should_drone = false;
 		for (Base b: BaseManager.bases) {
-			if (b.has_command_structure() && ((b.command_structure.unit().getIdealHarvesters().orElse(0) - b.command_structure.unit().getAssignedHarvesters().orElse(0)) > 0 || (b.command_structure.unit().getBuildProgress() > 0.8 && b.command_structure.unit().getBuildProgress() < 0.999))) {
+			if (b.has_friendly_command_structure() && ((b.command_structure.unit().getIdealHarvesters().orElse(0) - b.command_structure.unit().getAssignedHarvesters().orElse(0)) > 0 || (b.command_structure.unit().getBuildProgress() > 0.8 && b.command_structure.unit().getBuildProgress() < 0.999))) {
 				should_drone = true;
 				break;
 			}
@@ -347,7 +348,7 @@ public class BuildExecutor {
 	}
 	
 	public static boolean should_expand() {
-		return (BaseManager.base_count() < Build.ideal_hatches) || (Build.ideal_hatches == -1);
+		return (BaseManager.base_count(Alliance.SELF) < Build.ideal_hatches) || (Build.ideal_hatches == -1);
 	}
 	
 	

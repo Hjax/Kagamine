@@ -39,6 +39,7 @@ public class MiningOptimizer {
 									}
 								}
 							}
+							if (current == null) continue;
 							// this worker is worth optimizing
 							// if we havent assigned it to a patch yet
 							if (!assignments.containsKey(u.getTag())) {

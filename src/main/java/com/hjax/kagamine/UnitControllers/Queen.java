@@ -16,10 +16,10 @@ import com.hjax.kagamine.Wisdom;
 public class Queen {
 	public static void on_frame(UnitInPool u) {
 		int tumors = GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_BURROWED) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_QUEEN);
-		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) != 2 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) != 2) {
+		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) != 2 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) != 2 || Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
 			for (Base b : BaseManager.bases) {
-				if (GameInfoCache.count_friendly(Units.ZERG_LARVA) < BaseManager.base_count() * 3) {
-					if (b.has_queen() && b.queen == u && b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+				if (GameInfoCache.count_friendly(Units.ZERG_LARVA) < BaseManager.base_count(Alliance.SELF) * 3) {
+					if (b.has_queen() && b.queen == u && b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
 						if (u.unit().getEnergy().get() >= 25) {
 							Game.unit_command(u, Abilities.EFFECT_INJECT_LARVA, b.command_structure.unit());
 						}

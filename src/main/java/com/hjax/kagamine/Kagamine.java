@@ -33,6 +33,7 @@ public class Kagamine extends S2Agent{
 			ArmyManager.on_frame();
 			ThreatManager.on_frame();
 			BaseManager.on_frame();
+			EconomyManager.on_frame();
 			MiningOptimizer.on_frame();
 			Creep.start_frame();
 			BuildPlanner.on_frame();
@@ -40,7 +41,7 @@ public class Kagamine extends S2Agent{
 			UnitManager.on_frame();
 			GameInfoCache.end_frame();
 		}
-		if (!Main.ladder) {
+		if (!Main.ladder && Constants.DEBUG) {
 			Game.debug.sendDebug();
 			time_sum += ((System.nanoTime() - startTime) / 1000000.0);
 			if (((System.nanoTime() - startTime) / 1000000.0) > max) {
@@ -57,9 +58,5 @@ public class Kagamine extends S2Agent{
 	public void onUnitCreated(UnitInPool u) {
 		BaseManager.on_unit_created(u);
 	}
-	
-	@Override
-	public void onUnitDestroyed(UnitInPool u) {
-		BaseManager.on_unit_destroyed(u);
-	}
+
 }

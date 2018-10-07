@@ -78,7 +78,7 @@ public class Wisdom {
 		outer: for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.is_worker(enemy.unit().getType())) {
 				for (Base b: BaseManager.bases) {
-					if (b.has_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+					if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
 						if (enemy.unit().getPosition().toPoint2d().distance(b.location) < 15) {
 							total++;
 							continue outer;

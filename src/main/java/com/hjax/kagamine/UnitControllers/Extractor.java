@@ -29,7 +29,7 @@ public class Extractor {
 	
 	public static boolean is_near_base(Point2d p) {
 		for (Base b: BaseManager.bases) {
-			if (b.has_command_structure() && b.location.distance(p) < 10) return true;
+			if (b.has_friendly_command_structure() && b.location.distance(p) < 10) return true;
 		}
 		return false;
 	}

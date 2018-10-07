@@ -28,6 +28,8 @@ public class GameInfoCache {
 	static Map<Tag, UnitInPool> visible_enemy = new HashMap<>();
 	static Map<Tag, UnitInPool> visible_neutral = new HashMap<>();
 	
+	
+	static Set<Tag> claimed_gases = new HashSet<>();
 	static Set<Tag> morphing_drones = new HashSet<>();
 	
 	static void start_frame() {
@@ -42,6 +44,8 @@ public class GameInfoCache {
 		counts_friendly.clear();
 		counts_enemy.clear();
 		visible_neutral.clear();
+		
+		claimed_gases.clear(); 
 		
 		for (UnitInPool u: Game.get_units()) {
 			all_units.put(u.getTag(), u);
@@ -65,7 +69,10 @@ public class GameInfoCache {
 				}
 				for (UnitOrder o: u.unit().getOrders()) {
 					production.put(o.getAbility(), production.get(o.getAbility()) + 1);
-					if (u.unit().getType() == Units.ZERG_DRONE) {
+					if (Game.is_worker(u.unit().getType())) {
+						if (o.getAbility() == Abilities.BUILD_EXTRACTOR || o.getAbility() == Abilities.BUILD_REFINERY || o.getAbility() == Abilities.BUILD_ASSIMILATOR) {
+							claimed_gases.add(o.getTargetedUnitTag().get());
+						}
 						if (o.getAbility() != Abilities.HARVEST_GATHER && o.getAbility() != Abilities.HARVEST_RETURN) {
 							for (UnitTypeData t: Game.get_unit_type_data().values()) {
 								if (o.getAbility() == t.getAbility().orElse(Abilities.INVALID)) {
@@ -124,14 +131,13 @@ public class GameInfoCache {
 		return units;
 	}
 	
-	// TODO add claimed geysers?
 	public static boolean geyser_is_free(UnitInPool u) {
 		for (UnitInPool e : get_units(Alliance.SELF, Units.ZERG_EXTRACTOR)) {
 			if (e.unit().getPosition().toPoint2d().distance(u.unit().getPosition().toPoint2d()) < 1) {
 				return false;
 			}
 		}
-		return true;
+		return !claimed_gases.contains(u.getTag());
 	}
 	
 	public static int in_progress(UnitType t) {
