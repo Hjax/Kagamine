@@ -1,4 +1,5 @@
 package com.hjax.kagamine;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +22,7 @@ import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.query.AvailableAbilities;
+import com.github.ocraft.s2client.protocol.query.QueryBuildingPlacement;
 import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
 import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
@@ -145,6 +147,12 @@ public class Game {
 	
 	public static boolean can_place(Ability a, Point2d p) {
 		return query.placement(a, p);
+	}
+	
+	public static List<Boolean> can_place(Ability a, List<Point2d> p) {
+		List<QueryBuildingPlacement> queries = new ArrayList<>();
+		for (Point2d point : p) queries.add(QueryBuildingPlacement.placeBuilding().useAbility(a).on(point).build());
+		return query.placement(queries);
 	}
 	
 	public static int supply() {
@@ -298,6 +306,12 @@ public class Game {
 	
 	public static AvailableAbilities availible_abilities(UnitInPool u) {
 		return query.getAbilitiesForUnit(u.unit(), false);
+	}
+	
+	public static List<AvailableAbilities> availible_abilities(List<UnitInPool> u) {
+		List<Unit> parsed = new ArrayList<>();
+		for (UnitInPool up: u) parsed.add(up.unit());
+		return query.getAbilitiesForUnits(parsed, false);
 	}
 	
 	public static void draw_box(Point2d current, Color c) {

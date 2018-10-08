@@ -3,6 +3,7 @@ package com.hjax.kagamine;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -403,12 +404,19 @@ public class BaseManager {
 			
 			Point2d best = null;
 			
-			
+			List<Point2d> points = new ArrayList<>();
+			for (int x_offset = -10; x_offset < 11; x_offset++) {
+				for (int y_offset = -10; y_offset < 11; y_offset++) {
+					Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
+					points.add(current);
+				}
+			}
+			List<Boolean> results = Game.can_place(Abilities.BUILD_HATCHERY, points);
 			for (int x_offset = -10; x_offset < 11; x_offset++) {
 				for (int y_offset = -10; y_offset < 11; y_offset++) {
 					Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
 					if (best == null || average.toPoint2d().distance(current) < average.toPoint2d().distance(best)) {
-						if (Game.query.placement(Abilities.BUILD_HATCHERY, current)) {
+						if (results.get((x_offset + 10) * 21 + (y_offset + 10))) {
 							best = current;
 							//Game.debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), Color.GREEN);
 						}

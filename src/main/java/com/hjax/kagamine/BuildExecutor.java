@@ -145,7 +145,7 @@ public class BuildExecutor {
 				if (Game.supply_cap() - Game.supply() >= 2) {
 					if (Game.can_afford(Units.ZERG_QUEEN)) {
 						for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF)) {
-							if (Game.is_town_hall(u.unit().getType())) {
+							if (Game.is_town_hall(u.unit().getType()) && u.unit().getBuildProgress() > 0.999) {
 								if (u.unit().getOrders().size() == 0) {
 									Game.purchase(Units.ZERG_QUEEN);
 									Game.unit_command(u, Abilities.TRAIN_QUEEN);
@@ -159,7 +159,7 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (!ThreatManager.under_attack()) {
+			if (!ThreatManager.under_attack() || Wisdom.cannon_rush()) {
 				if (Game.minerals() > 25 && Game.gas() > 75 && GameInfoCache.count_friendly(Units.ZERG_ROACH) > 0 && Build.composition.contains(Units.ZERG_RAVAGER)) {
 					for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ROACH)) {
 						Game.unit_command(u, Abilities.MORPH_RAVAGER);
@@ -301,7 +301,7 @@ public class BuildExecutor {
 				queen_target += 1;
 			}
 		}
-		if (BaseManager.base_count(Alliance.SELF) < 3 && count(Units.ZERG_QUEEN) < queen_target || (BaseManager.base_count(Alliance.SELF) >= 3 && (count(Units.ZERG_QUEEN) < queen_target)) && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
+		if (count(Units.ZERG_QUEEN) < queen_target && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
 			return true;
 		}
 		return false;
