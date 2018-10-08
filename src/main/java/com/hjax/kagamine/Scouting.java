@@ -104,11 +104,17 @@ public class Scouting {
 		return best;
 	}
 	
+	private static Point2d mclosest_enemy_spawn = null;
+	private static int mclosest_enemy_spawn_frame = -1;
 	public static Point2d closest_enemy_spawn() {
-		if (BaseManager.main_base() != null) {
-			return closest_enemy_spawn(BaseManager.main_base().location);
+		if (Game.get_frame() != mclosest_enemy_spawn_frame) {
+			mclosest_enemy_spawn_frame = (int) Game.get_frame();
+			if (BaseManager.main_base() != null) {
+				 mclosest_enemy_spawn = closest_enemy_spawn(BaseManager.main_base().location);
+			}
+			 mclosest_enemy_spawn = closest_enemy_spawn(Point2d.of(0, 0));
 		}
-		return closest_enemy_spawn(Point2d.of(0, 0));
+		return  mclosest_enemy_spawn;
 	}
 	
 	public static void overlord_scout(Unit u) {
