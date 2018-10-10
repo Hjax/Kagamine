@@ -23,19 +23,21 @@ public class BuildExecutor {
 				float larva = EconomyManager.larva_rate();
 				if (should_build_queens()) larva += 2;
 				if (Game.supply_cap() + (GameInfoCache.in_progress(Units.ZERG_OVERLORD) * 8) - Game.supply() <= larva * 1.5) {
-					if (Game.can_afford(Units.ZERG_OVERLORD)) {
-						if (Larva.has_larva()) {
-							Game.purchase(Units.ZERG_OVERLORD);
+					if (Larva.has_larva()) {
+						if (Game.can_afford(Units.ZERG_OVERLORD)) {
 							Larva.produce_unit(Units.ZERG_OVERLORD);
-						}
-					} else return;
+						} 
+						Game.purchase(Units.ZERG_OVERLORD);
+					}
 				}
 			}
 			
 			if (count(Units.ZERG_DRONE) > 45 || count(Units.ZERG_EXTRACTOR) == 0) {
-				if ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) && ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < ((count(Units.ZERG_DRONE) - 15) / 8)) && Game.can_afford(Units.ZERG_EXTRACTOR)) {
-					BaseManager.build(Units.ZERG_EXTRACTOR);
-					Game.purchase(Units.ZERG_EXTRACTOR);
+				if ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) && ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < ((count(Units.ZERG_DRONE) - 15) / 8))) {
+					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
+						BaseManager.build(Units.ZERG_EXTRACTOR);
+						Game.purchase(Units.ZERG_EXTRACTOR);
+					}
 				}
 			}
 			
@@ -58,8 +60,9 @@ public class BuildExecutor {
 				if (count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
 					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count(Alliance.SELF) > 1 || Wisdom.proxy_detected())) {
 						if (Wisdom.all_in_detected() || Wisdom.proxy_detected() || (count(Units.ZERG_SPINE_CRAWLER) < 1 && Wisdom.aggression_detected())) {
-							if (!Game.can_afford(Units.ZERG_SPINE_CRAWLER)) return;
-							Game.purchase(Units.ZERG_SPINE_CRAWLER);
+							if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
+								Game.purchase(Units.ZERG_SPINE_CRAWLER);
+							}
 							BaseManager.build(Units.ZERG_SPINE_CRAWLER);
 						}
 					}
@@ -76,11 +79,10 @@ public class BuildExecutor {
 									BaseManager.get_next_base().set_walking_drone(drone);
 								}
 							}
-							return;
 						} else {
 							BaseManager.build(Units.ZERG_HATCHERY);
-							Game.purchase(Units.ZERG_HATCHERY);
 						}
+						Game.purchase(Units.ZERG_HATCHERY);
 					}
 				}
 			}
@@ -99,7 +101,7 @@ public class BuildExecutor {
 				}
 				if (needs_spores) {
 					// TODO this returns even if all of our bases have spores
-					if (!Game.can_afford(Units.ZERG_SPORE_CRAWLER)) return;
+					if (!Game.can_afford(Units.ZERG_SPORE_CRAWLER) && count(Units.ZERG_SPORE_CRAWLER) < 1) return;
 					BaseManager.build_defensive_spores();
 				}
 			}
@@ -125,6 +127,7 @@ public class BuildExecutor {
 										for (Base b: BaseManager.bases) {
 											if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0) {
 												Game.unit_command(b.command_structure, Abilities.MORPH_LAIR);
+												Game.purchase(Units.ZERG_LAIR);
 												break;
 											}
 										}
@@ -132,9 +135,9 @@ public class BuildExecutor {
 								}
 							} else {
 								if (Game.can_afford(Balance.next_tech_requirement(u))) {
-									Game.purchase(Balance.next_tech_requirement(u));
 									BaseManager.build(Balance.next_tech_requirement(u));
-								} else if (!pulled_off_gas && BaseManager.active_extractors() > 0) return;
+								}
+								Game.purchase(Balance.next_tech_requirement(u));
 							}
 						}
 					}
@@ -154,7 +157,7 @@ public class BuildExecutor {
 							}
 						}
 					} else if (count(Units.ZERG_QUEEN) < BaseManager.base_count(Alliance.SELF)) {
-						return;
+						Game.purchase(Units.ZERG_QUEEN);
 					}
 				}
 			}
@@ -218,6 +221,7 @@ public class BuildExecutor {
 			}
 		}
 	}
+		
 
 	public static void execute_build() {
 		if (Build.build.get(Build.build_index).getKey() <= Game.supply()) {

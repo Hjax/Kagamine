@@ -89,7 +89,7 @@ public class BaseManager {
 		}
 		for (Base b: bases) {
 			b.update();
-			if (b.has_walking_drone() && b.walking_drone.unit().getPosition().toPoint2d().distance(b.location) > 4) {
+			if (b.has_walking_drone() && b.walking_drone.unit().getPosition().toPoint2d().distance(b.location) > 4 && (b.walking_drone.unit().getOrders().size() == 0 || b.walking_drone.unit().getOrders().get(0).getAbility() != Abilities.BUILD_HATCHERY)) {
 				Game.unit_command(b.walking_drone, Abilities.MOVE, b.location);
 			}
 			if (b.has_walking_drone() && !b.walking_drone.isAlive()) b.walking_drone = null;

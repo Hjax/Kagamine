@@ -145,7 +145,7 @@ public class BuildPlanner {
 						new Pair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new Pair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new Pair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_MUTALISK);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.ideal_gases = 8;

@@ -56,7 +56,6 @@ public class Game {
 		debug = d;
 
 		spending = new int[2];
-		o.getGameInfo();
 	}
 	
 	public static void on_frame() {
