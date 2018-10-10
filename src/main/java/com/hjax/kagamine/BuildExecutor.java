@@ -61,9 +61,9 @@ public class BuildExecutor {
 					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count(Alliance.SELF) > 1 || Wisdom.proxy_detected())) {
 						if (Wisdom.all_in_detected() || Wisdom.proxy_detected() || (count(Units.ZERG_SPINE_CRAWLER) < 1 && Wisdom.aggression_detected())) {
 							if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
-								Game.purchase(Units.ZERG_SPINE_CRAWLER);
+								BaseManager.build(Units.ZERG_SPINE_CRAWLER);
 							}
-							BaseManager.build(Units.ZERG_SPINE_CRAWLER);
+							Game.purchase(Units.ZERG_SPINE_CRAWLER);
 						}
 					}
 				}
