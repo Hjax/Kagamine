@@ -36,12 +36,6 @@ public class Main {
 	        }
 	        while (s2Coordinator.update()) {
 	        }
-	        try {
-				s2Coordinator.saveReplayList(Paths.get("C:\\Users\\hjax\\Documents\\StarCraft II\\Replays\\Multiplayer"));
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 	        s2Coordinator.quit();
 	    }
 
