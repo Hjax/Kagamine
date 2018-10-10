@@ -112,17 +112,23 @@ public class BaseManager {
 		return false;
 	}
 	
+	public static long main_base_frame = -1;
+	public static Base main_base = null;
 	public static Base main_base() {
-		Base best = null;
-		for (Base b: bases) {
-			if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
-				if (best == null || best.location.distance(Scouting.closest_enemy_spawn(best.location)) < b.location.distance(Scouting.closest_enemy_spawn(b.location))) {
-					best = b;
+		if (main_base_frame != Game.get_frame()) {
+			main_base_frame = Game.get_frame();
+			Base best = null;
+			for (Base b: bases) {
+				if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
+					if (best == null || best.location.distance(Scouting.closest_enemy_spawn(best.location)) < b.location.distance(Scouting.closest_enemy_spawn(b.location))) {
+						best = b;
+					}
 				}
 			}
+			if (best == null) best = bases.get(0);
+			main_base = best;
 		}
-		if (best == null) best = bases.get(0);
-		return best;
+		return main_base;
 	}
 	
 	public static float get_distance(Base b1, Base b2) {
