@@ -19,7 +19,7 @@ import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.Wisdom;
 
 public class GenericUnit {
-	public static void on_frame(UnitInPool u) {
+	public static void on_frame(UnitInPool u, boolean moveOut) {
 		if (u.unit().getWeaponCooldown().orElse((float) 0) > 0.1) {
 			for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (Game.get_unit_type_data().get(e.unit().getType()).getWeapons().size() > 0) {
@@ -34,7 +34,7 @@ public class GenericUnit {
 			}
 		}
 		if (u.unit().getOrders().size() != 0) return;
-		if (Wisdom.cannon_rush() && GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) > 2) return;
+		if (Wisdom.cannon_rush()) return;
 		if ((Wisdom.proxy_detected() || Wisdom.all_in_detected()) && GameInfoCache.count_friendly(Units.ZERG_SPINE_CRAWLER) > 0 && BaseManager.base_count(Alliance.SELF) < 2 && Game.army_supply() < ThreatManager.seen.size() * 4 && Game.army_supply() < 25) {
 			if (ArmyManager.defend != null) {
 				for (UnitInPool s: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
@@ -56,7 +56,7 @@ public class GenericUnit {
 				return;
 			}
 		}
-		if (Game.supply() >= Build.push_supply || Wisdom.ahead()) {
+		if ((Game.supply() >= Build.push_supply || Wisdom.ahead()) && moveOut) {
 			if (ArmyManager.has_target) {
 				if (u.unit().getOrders().size() == 0) {
 					Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);

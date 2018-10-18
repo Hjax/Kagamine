@@ -68,6 +68,16 @@ public class BuildExecutor {
 					}
 				}
 			}
+			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count(Alliance.SELF) < 3) {
+				if (count(Units.ZERG_SPINE_CRAWLER) < 1 && Game.get_opponent_race() == Race.ZERG) {
+					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 2 || Wisdom.proxy_detected())) {
+						if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
+							BaseManager.build(Units.ZERG_SPINE_CRAWLER);
+						}
+						Game.purchase(Units.ZERG_SPINE_CRAWLER);
+					}
+				}
+			}
 			
 			if (ThreatManager.is_safe(BaseManager.get_next_base().location) ) {
 				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 15 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && should_expand()) {

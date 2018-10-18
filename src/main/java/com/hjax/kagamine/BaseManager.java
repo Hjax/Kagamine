@@ -424,10 +424,6 @@ public class BaseManager {
 					if (best == null || average.toPoint2d().distance(current) < average.toPoint2d().distance(best)) {
 						if (results.get((x_offset + 10) * 21 + (y_offset + 10))) {
 							best = current;
-							//Game.debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), Color.GREEN);
-						}
-						else {
-							//Game.debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), Color.RED);
 						}
 					}
 				}

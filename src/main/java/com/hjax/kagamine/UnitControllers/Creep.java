@@ -99,7 +99,6 @@ public class Creep {
 								} else {
 									creep_points.add(Point2d.of(x, y));
 								}
-								Game.draw_box(Point2d.of(x, y), Color.RED);
 							}
 						}
 					}

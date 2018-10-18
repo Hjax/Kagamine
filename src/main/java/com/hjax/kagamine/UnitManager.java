@@ -28,7 +28,7 @@ public class UnitManager {
 			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR_BURROWED) {
 				Creep.on_frame(u);
 			} else if (!Game.is_structure(u.unit().getType())) {
-				GenericUnit.on_frame(u);
+				GenericUnit.on_frame(u, true);
 			}
 		}
 	}

@@ -46,7 +46,7 @@ public class Queen {
 				}
 			}
 		} else {
-			GenericUnit.on_frame(u);
+			GenericUnit.on_frame(u, false);
 		}
 	}
 }

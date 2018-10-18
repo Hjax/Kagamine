@@ -97,7 +97,7 @@ public class Mutalisk {
 		}
 		
 		if (!cont || dive) {
-			GenericUnit.on_frame(muta);
+			GenericUnit.on_frame(muta, true);
 		} else {
 			float threat = 0;
 			int marines = 0;

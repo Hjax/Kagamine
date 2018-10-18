@@ -46,6 +46,20 @@ public class BuildPlanner {
 				}
 			}
 		}
+		if (is_all_in && Game.get_opponent_race() == Race.PROTOSS && !Wisdom.cannon_rush() && GameInfoCache.count_friendly(Units.ZERG_RAVAGER) > 6) {
+			Build.build = new ArrayList<>();
+			Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+			Build.ideal_hatches = -1;
+			Build.push_supply = 35;
+			Build.ideal_workers = 70;
+			Build.ideal_gases = 6;
+			Build.max_queens = -1;
+			Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2));
+		}
+		if (is_all_in && Game.get_opponent_race() == Race.PROTOSS && !Wisdom.cannon_rush() && GameInfoCache.count_friendly(Units.ZERG_RAVAGER) < 2) {
+			is_all_in = false;
+			Build.push_supply = 185;
+		}
 		if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) hunter_killer();
 		if (Game.get_opponent_race() == Race.PROTOSS) {
 			if (GameInfoCache.count_enemy(Units.PROTOSS_CARRIER) > 0 ||
@@ -60,6 +74,7 @@ public class BuildPlanner {
 					Build.push_supply = 185;
 					Build.ideal_workers = 70;
 					Build.ideal_gases = 6;
+					Build.max_queens = -1;
 					Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2));
 				}
 			}
@@ -73,6 +88,7 @@ public class BuildPlanner {
 				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 				Build.ideal_gases = 2;
 				Build.ideal_hatches = 1;
+				Build.max_queens = 1;
 				Build.tech_drones = 16;
 				Build.scout = true;
 				Build.push_supply = 40;
@@ -116,13 +132,13 @@ public class BuildPlanner {
 						new Pair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new Pair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_ROACH);
-				Build.ideal_hatches = -1;
+				Build.ideal_hatches = 3;
 				Build.scout = false;
-				Build.push_supply = 160;
+				Build.push_supply = 140;
 				Build.ideal_gases = 4;
 				Build.ideal_workers = 65;
 				Build.pull_off_gas = false;
-				Build.tech_drones = 22;
+				Build.tech_drones = 21;
 				Build.max_queens = -1;
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL1));
 				break;			
