@@ -117,14 +117,14 @@ public class BuildPlanner {
 															new Pair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 															new Pair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 															new Pair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.push_supply = 185;
-				Build.pull_off_gas = true;
+				Build.pull_off_gas = false;
 				Build.ideal_workers = 70;
-				Build.ideal_gases = 6;
-				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2));
+				Build.ideal_gases = 8;
+				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.CENTRIFICAL_HOOKS, Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_FLYER_WEAPONS_LEVEL1, Upgrades.ZERG_FLYER_WEAPONS_LEVEL2));
 				break;
 			case ZERG:
 				Build.build = new ArrayList<>(Arrays.asList(new Pair<Integer, UnitType>(13, Units.ZERG_OVERLORD),

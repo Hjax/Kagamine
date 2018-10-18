@@ -57,7 +57,7 @@ public class BuildExecutor {
 				Build.pull_off_gas = false;
 			}
 			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count(Alliance.SELF) < 3) {
-				if (count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
+				if (count(Units.ZERG_SPINE_CRAWLER) < 4 && !Wisdom.cannon_rush() && Build.scout) {
 					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count(Alliance.SELF) > 1 || Wisdom.proxy_detected())) {
 						if (Wisdom.all_in_detected() || Wisdom.proxy_detected() || (count(Units.ZERG_SPINE_CRAWLER) < 1 && Wisdom.aggression_detected())) {
 							if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
@@ -109,6 +109,9 @@ public class BuildExecutor {
 						}
 					}
 				}
+				// TODO remove this hack
+				if (GameInfoCache.count_enemy(Units.PROTOSS_DARK_SHRINE) > 0) needs_spores = true;
+				if (count(Units.ZERG_DRONE) > 60) needs_spores = true;
 				if (needs_spores) {
 					// TODO this returns even if all of our bases have spores
 					if (!Game.can_afford(Units.ZERG_SPORE_CRAWLER) && count(Units.ZERG_SPORE_CRAWLER) < 1) return;
@@ -215,7 +218,7 @@ public class BuildExecutor {
 				}
 			}
 			if (count(Units.ZERG_EXTRACTOR) >= 3) {
-				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 2 && count(Units.ZERG_DRONE) > 35 && BaseManager.base_count(Alliance.SELF) > 3) {
+				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 1 && count(Units.ZERG_DRONE) > 35 && BaseManager.base_count(Alliance.SELF) > 3) {
 					if (Game.can_afford(Units.ZERG_EVOLUTION_CHAMBER)) {
 						BaseManager.build(Units.ZERG_EVOLUTION_CHAMBER);
 						Game.purchase(Units.ZERG_EVOLUTION_CHAMBER);

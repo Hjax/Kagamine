@@ -16,7 +16,6 @@ public class Kagamine extends S2Agent{
 		long startTime = System.nanoTime();
 		Game.start_frame(observation(), actions(), query(), debug());
 		GameInfoCache.start_frame();
-		Game.chat("Kagamine 1.1.1");
 		BaseManager.start_game();
 		BuildPlanner.decide_build();
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
