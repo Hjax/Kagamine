@@ -5,10 +5,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Upgrade;
 
-import javafx.util.Pair;
 
 public class Build {
 	public static int build_index = 0;

@@ -5,7 +5,6 @@ import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.ArmyManager;
 import com.hjax.kagamine.Base;
 import com.hjax.kagamine.BaseManager;
 import com.hjax.kagamine.Game;

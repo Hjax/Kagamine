@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
@@ -15,8 +18,6 @@ import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.Drone;
-
-import javafx.util.Pair;
 
 public class BaseManager {
 	// the index of bases must never change
@@ -47,8 +48,8 @@ public class BaseManager {
 						dist = Game.pathing_distance(first, second);
 					}
 				}
-				distances.put(new Pair<>(i, j), dist);
-				distances.put(new Pair<>(j, i), dist);
+				distances.put(new ImmutablePair<>(i, j), dist);
+				distances.put(new ImmutablePair<>(j, i), dist);
 			}
 		}
 		on_unit_created(main);
@@ -132,7 +133,7 @@ public class BaseManager {
 	}
 	
 	public static float get_distance(Base b1, Base b2) {
-		return distances.get(new Pair<>(bases.indexOf(b1), bases.indexOf(b2)));
+		return distances.get(new ImmutablePair<>(bases.indexOf(b1), bases.indexOf(b2)));
 	}
 	
 	public static long next_base_frame = -1;

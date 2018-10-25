@@ -7,27 +7,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.tuple.ImmutablePair;
+
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
-import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
-import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Base;
 import com.hjax.kagamine.BaseManager;
 import com.hjax.kagamine.Game;
-import com.hjax.kagamine.GameInfoCache;
 import com.hjax.kagamine.Scouting;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.Constants;
 
-import javafx.util.Pair;
-
 public class Creep {
-	public static Map<Pair<Integer, Integer>, Integer> reserved = new HashMap<>();
+	public static Map<ImmutablePair<Integer, Integer>, Integer> reserved = new HashMap<>();
 	static int[][] terrain = new int[1000][1000];	
 	static int[][] bases = new int[1000][1000];
 	static Set<Tag> used = new HashSet<>();
@@ -51,13 +47,13 @@ public class Creep {
 	}
 	
 	static void calculate() {
-		ArrayList<Pair<Integer, Integer>> to_erase = new ArrayList<>();
-		for (Pair<Integer, Integer> item : reserved.keySet()) {
+		ArrayList<ImmutablePair<Integer, Integer>> to_erase = new ArrayList<>();
+		for (ImmutablePair<Integer, Integer> item : reserved.keySet()) {
 			if (reserved.get(item) < Game.get_frame() - Constants.FPS * 10) {
 				to_erase.add(item);
 			}
 		}
-		for (Pair<Integer, Integer> item : to_erase) reserved.remove(item);
+		for (ImmutablePair<Integer, Integer> item : to_erase) reserved.remove(item);
 		terrain = new int[1000][1000];
 		creep_points = new ArrayList<>();
 		List<Point2d> alt = new ArrayList<>();
@@ -165,14 +161,14 @@ public class Creep {
 	public static Point2d get_creep_point() {
 		Point2d best = null;
 		for (Point2d p : creep_points) {
-			if (!reserved.containsKey(new Pair<Integer, Integer>((int) p.getX(), (int) p.getY()))) {
+			if (!reserved.containsKey(new ImmutablePair<Integer, Integer>((int) p.getX(), (int) p.getY()))) {
 				if (best == null || score(best) > score(p)) {
 					best = p;
 				}
 			}
 		}
 		if (best != null) {
-			reserved.put(new Pair<Integer, Integer>((int) best.getX(), (int) best.getY()), (int) Game.get_frame());
+			reserved.put(new ImmutablePair<Integer, Integer>((int) best.getX(), (int) best.getY()), (int) Game.get_frame());
 		}
 		return best;
 	}
