@@ -9,13 +9,15 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 public class TechManager {
 	public static void on_frame() {
 		outer: for (Upgrade u : Build.upgrades) {
-			if (Game.can_afford(u) && !(Game.has_upgrade(u))) {
+			if (!(Game.has_upgrade(u))) {
 				for (UnitType t: Game.get_unit_type_data().keySet()) {
 					if (t.getAbilities().contains(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)) || t.getAbilities().contains(Game.get_abliity_data().get(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)).getRemapsToAbility().orElse(Abilities.INVALID))) {
 						for (UnitInPool up: GameInfoCache.get_units(Alliance.SELF, t)) {
-							if (up.unit().getOrders().size() == 0) {
+							if (up.unit().getOrders().size() == 0 && up.unit().getBuildProgress() > 0.999) {
+								if (Game.can_afford(u)) {
+									Game.unit_command(up, Game.get_upgrade_data().get(u).getAbility().get());
+								}
 								Game.purchase(u);
-								Game.unit_command(up, Game.get_upgrade_data().get(u).getAbility().get());
 								continue outer;
 							}
 						}
