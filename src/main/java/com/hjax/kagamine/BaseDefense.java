@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -27,7 +28,7 @@ public class BaseDefense {
 						supply += Game.get_unit_type_data().get(enemy.unit().getType()).getFoodRequired().orElse((float) 0);
 						flyers = enemy.unit().getFlying().orElse(false) || flyers;
 					}
-					int assigned_supply = 0;
+					float assigned_supply = 0;
 					while (assigned_supply < supply * 2 && supply < 30) {
 						UnitInPool current = closest_free(enemy_squad.iterator().next().unit().getPosition().toPoint2d());
 						if (current == null) return;
@@ -46,7 +47,7 @@ public class BaseDefense {
 		for (UnitInPool ally : GameInfoCache.get_units(Alliance.SELF)) {
 			if (!Game.is_structure(ally.unit().getType()) && Game.is_combat(ally.unit().getType())) {
 				if (!used.contains(ally.getTag())) {
-					if (best == null || best.unit().getPosition().toPoint2d().distance(p) > ally.unit().getPosition().toPoint2d().distance(p)) {
+					if (best == null || (best.unit().getPosition().toPoint2d().distance(p) / Game.get_unit_type_data().get(best.unit().getType()).getMovementSpeed().orElse((float) 1)) > (ally.unit().getPosition().toPoint2d().distance(p)) / Game.get_unit_type_data().get(ally.unit().getType()).getMovementSpeed().orElse((float) 1)) {
 						best = ally;
 					}
 				}
