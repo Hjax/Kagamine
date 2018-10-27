@@ -121,11 +121,6 @@ public class Mutalisk {
 		int marines = 0;
 		int medivacs = 0;
 		float mutas = 0;
-		
-		if (ThreatManager.under_attack()) {
-			GenericUnit.on_frame(muta, true);
-			return;
-		}
 
 		boolean stutter = false;
 		for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {

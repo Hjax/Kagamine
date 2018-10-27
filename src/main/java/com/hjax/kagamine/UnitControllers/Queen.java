@@ -22,7 +22,6 @@ public class Queen {
 						if (u.unit().getEnergy().get() >= 25) {
 							Game.unit_command(u, Abilities.EFFECT_INJECT_LARVA, b.command_structure.unit());
 						}
-						return;
 					}
 				}
 			}

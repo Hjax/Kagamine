@@ -38,7 +38,7 @@ public class GenericUnit {
 		if (Wisdom.cannon_rush()) return;
 		
 		if (BaseDefense.assignments.containsKey(u.unit().getTag())) {
-			Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);
+			Game.unit_command(u, Abilities.ATTACK, BaseDefense.assignments.get(u.getTag()));
 		}
 		
 		if ((Game.supply() >= Build.push_supply || Wisdom.ahead()) && moveOut) {
