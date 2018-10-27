@@ -9,6 +9,7 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.ArmyManager;
 import com.hjax.kagamine.Base;
+import com.hjax.kagamine.BaseDefense;
 import com.hjax.kagamine.BaseManager;
 import com.hjax.kagamine.Build;
 import com.hjax.kagamine.Game;
@@ -35,27 +36,11 @@ public class GenericUnit {
 		}
 		if (u.unit().getOrders().size() != 0) return;
 		if (Wisdom.cannon_rush()) return;
-		if ((Wisdom.proxy_detected() || Wisdom.all_in_detected()) && GameInfoCache.count_friendly(Units.ZERG_SPINE_CRAWLER) > 0 && BaseManager.base_count(Alliance.SELF) < 2 && Game.army_supply() < ThreatManager.seen.size() * 4 && Game.army_supply() < 25) {
-			if (ArmyManager.defend != null) {
-				for (UnitInPool s: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPINE_CRAWLER)) {
-					if (s.unit().getPosition().toPoint2d().distance(ArmyManager.defend.unit().getPosition().toPoint2d()) <= 7) {
-						if (u.unit().getOrders().size() != 0) return;
-						Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit().getPosition().toPoint2d());
-						return;
-					}
-				}
-			}
-			Base forward = BaseManager.get_forward_base();
-			if (forward.location.distance(u.unit().getPosition().toPoint2d()) > 10 && !Wisdom.ahead()) {
-				Game.unit_command(u, Abilities.MOVE, forward.location);
-				return;
-			}
-		} else if (ArmyManager.defend != null) {
-			if (!ArmyManager.defend.unit().getFlying().get() || Game.hits_air(u.unit().getType())) {
-				Game.unit_command(u, Abilities.ATTACK, ArmyManager.defend.unit().getPosition().toPoint2d());
-				return;
-			}
+		
+		if (BaseDefense.assignments.containsKey(u.unit().getTag())) {
+			Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);
 		}
+		
 		if ((Game.supply() >= Build.push_supply || Wisdom.ahead()) && moveOut) {
 			if (ArmyManager.has_target) {
 				if (u.unit().getOrders().size() == 0) {

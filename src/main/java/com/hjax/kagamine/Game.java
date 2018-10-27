@@ -331,4 +331,8 @@ public class Game {
 		}
 		return false;
 	}
+	
+	public static boolean is_combat(UnitType u) {
+		return get_unit_type_data().get(u).getWeapons().size() > 0;
+	}
 }
