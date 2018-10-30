@@ -216,7 +216,7 @@ public class BuildExecutor {
 				}
 			}
 			if (count(Units.ZERG_EXTRACTOR) >= 3) {
-				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 1 && count(Units.ZERG_DRONE) > 35 && BaseManager.base_count(Alliance.SELF) > 3) {
+				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 2 && count(Units.ZERG_DRONE) > 35 && BaseManager.base_count(Alliance.SELF) > 3) {
 					if (Game.can_afford(Units.ZERG_EVOLUTION_CHAMBER)) {
 						BaseManager.build(Units.ZERG_EVOLUTION_CHAMBER);
 						Game.purchase(Units.ZERG_EVOLUTION_CHAMBER);

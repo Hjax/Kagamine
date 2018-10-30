@@ -117,18 +117,6 @@ public class Scouting {
 		return  mclosest_enemy_spawn;
 	}
 	
-	public static void overlord_scout(Unit u) {
-		// TODO make sure spawns get initialized first
-		if (overlord_base == 5 && spawns.size() == 1) {
-			Game.unit_command(u, Abilities.MOVE, closest_enemy_spawn());
-		} 
-		else if (overlord_base >= 0) {
-			Game.unit_command(u, Abilities.MOVE, BaseManager.get_base(overlord_base));
-		}
-		if (overlord_base > 0) overlord_base--;
-		
-	}
-	
 	public static void assign_scout() {
 		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 			if (Drone.can_build(unit)) {

@@ -34,12 +34,13 @@ public class GenericUnit {
 				}
 			}
 		}
-		if (u.unit().getOrders().size() != 0) return;
-		if (Wisdom.cannon_rush()) return;
 		
 		if (BaseDefense.assignments.containsKey(u.unit().getTag())) {
 			Game.unit_command(u, Abilities.ATTACK, BaseDefense.assignments.get(u.getTag()));
 		}
+		
+		if (u.unit().getOrders().size() != 0) return;
+		if (Wisdom.cannon_rush()) return;
 		
 		if ((Game.supply() >= Build.push_supply || Wisdom.ahead()) && moveOut) {
 			if (ArmyManager.has_target) {

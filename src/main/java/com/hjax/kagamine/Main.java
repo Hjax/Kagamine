@@ -1,6 +1,7 @@
 package com.hjax.kagamine;
 
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 import com.github.ocraft.s2client.bot.S2Coordinator;
 import com.github.ocraft.s2client.protocol.game.Difficulty;
@@ -23,15 +24,36 @@ public class Main {
 		                .joinGame();
 	        } else {
 	        	System.out.println("Starting regular game");
+	        	System.out.println("Enter the race you would like the human to play");
+	        	Scanner input = new Scanner(System.in);
+	        	Race choice = Race.NO_RACE;
+	        	while (choice == Race.NO_RACE) {
+	        		String current = input.nextLine();
+	        		switch (current.toLowerCase()) {
+	        			case "terran":
+	        				choice = Race.TERRAN;
+	        				break;
+	        			case "protoss":
+	        				choice = Race.PROTOSS;
+	        				break;
+	        			case "zerg":
+	        				choice = Race.ZERG;
+	        				break;
+	        			case "random":
+	        				choice = Race.RANDOM;
+	        				break;
+	        		}
+	        	}
+	        	input.close();
 		        s2Coordinator = S2Coordinator.setup()
 		                .loadSettings(args)
-		                .setRealtime(true)
+		                .setRealtime(false)
 		                .setParticipants(
-		                        S2Coordinator.createParticipant(Race.TERRAN, bot2),
-		                        S2Coordinator.createParticipant(Race.ZERG, bot))
-		                        //S2Coordinator.createComputer(Race.TERRAN, Difficulty.VERY_HARD))
+		                       // S2Coordinator.createParticipant(choice, bot2),
+		                        S2Coordinator.createParticipant(Race.ZERG, bot),
+		                        S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
 		                .launchStarcraft()
-		                .startGame(LocalMap.of(Paths.get("C:\\Program Files (x86)\\StarCraft II\\Maps\\ParaSiteLE.SC2Map")));
+		                .startGame(LocalMap.of(Paths.get("LostAndFoundLE.SC2Map")));
 	        }
 	        while (s2Coordinator.update()) {
 	        }

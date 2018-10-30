@@ -12,6 +12,7 @@ import com.github.ocraft.s2client.protocol.data.Ability;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.UnitTypeData;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.data.Upgrade;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.UnitOrder;
@@ -33,9 +34,8 @@ public class GameInfoCache {
 	static Set<Tag> morphing_drones = new HashSet<>();
 	
 	static void start_frame() {
-		for (Ability u: Game.get_abliity_data().keySet()) {
-			production.put(u, 0);
-		}
+		
+		production.clear();
 		
 		morphing_drones.clear();
 		visible_friendly.clear();
@@ -57,6 +57,23 @@ public class GameInfoCache {
 						counts_friendly.put(u.unit().getType(), counts_friendly.getOrDefault(u.unit().getType(), 0) + 1);
 					}
 					visible_friendly.put(u.getTag(), u);
+					for (UnitOrder o: u.unit().getOrders()) {
+						production.put(o.getAbility(), production.getOrDefault(o.getAbility(), 0) + 1);
+						if (Game.is_worker(u.unit().getType())) {
+							if (o.getAbility() == Abilities.BUILD_EXTRACTOR || o.getAbility() == Abilities.BUILD_REFINERY || o.getAbility() == Abilities.BUILD_ASSIMILATOR) {
+								claimed_gases.add(o.getTargetedUnitTag().get());
+							}
+							if (o.getAbility() != Abilities.HARVEST_GATHER && o.getAbility() != Abilities.HARVEST_RETURN) {
+								for (UnitTypeData t: Game.get_unit_type_data().values()) {
+									if (o.getAbility() == t.getAbility().orElse(Abilities.INVALID)) {
+										morphing_drones.add(u.getTag());
+										break;
+									}
+								}
+								break;
+							}
+						}
+					}
 				} else if (u.unit().getAlliance() == Alliance.ENEMY) {
 					counts_enemy.put(u.unit().getType(), counts_enemy.getOrDefault(u.unit().getType(), 0) + 1);
 					visible_enemy.put(u.getTag(), u);
@@ -65,25 +82,9 @@ public class GameInfoCache {
 				}
 				if (u.unit().getBuildProgress() < Constants.DONE) {
 					production.put(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 
-					production.get(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID)) + 1);
+					production.getOrDefault(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 0) + 1);
 				}
-				for (UnitOrder o: u.unit().getOrders()) {
-					production.put(o.getAbility(), production.get(o.getAbility()) + 1);
-					if (Game.is_worker(u.unit().getType())) {
-						if (o.getAbility() == Abilities.BUILD_EXTRACTOR || o.getAbility() == Abilities.BUILD_REFINERY || o.getAbility() == Abilities.BUILD_ASSIMILATOR) {
-							claimed_gases.add(o.getTargetedUnitTag().get());
-						}
-						if (o.getAbility() != Abilities.HARVEST_GATHER && o.getAbility() != Abilities.HARVEST_RETURN) {
-							for (UnitTypeData t: Game.get_unit_type_data().values()) {
-								if (o.getAbility() == t.getAbility().orElse(Abilities.INVALID)) {
-									morphing_drones.add(u.getTag());
-									break;
-								}
-							}
-							break;
-						}
-					}
-				}
+				
 			}
 
 		}
@@ -141,7 +142,16 @@ public class GameInfoCache {
 	}
 	
 	public static int in_progress(UnitType t) {
-		return production.get(Game.get_unit_type_data().get(t).getAbility().orElse(Abilities.INVALID));
+		return production.getOrDefault(Game.get_unit_type_data().get(t).getAbility().orElse(Abilities.INVALID), 0);
+	}
+	
+	public static boolean is_researching(Upgrade u) {
+		if (Game.get_abliity_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().isPresent()) {
+			if (production.getOrDefault(Game.get_abliity_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().get(), 0) > 0) {
+				return true;
+			}
+		}
+		return production.getOrDefault(Game.get_upgrade_data().get(u).getAbility().get(), 0) > 0;
 	}
 	
 }

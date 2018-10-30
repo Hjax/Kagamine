@@ -60,5 +60,10 @@ public class Kagamine extends S2Agent{
 	public void onUnitCreated(UnitInPool u) {
 		BaseManager.on_unit_created(u);
 	}
+	
+	@Override
+	public void onGameEnd() {
+		Counter.print();
+	}
 
 }

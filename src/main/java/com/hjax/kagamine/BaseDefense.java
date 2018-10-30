@@ -29,7 +29,7 @@ public class BaseDefense {
 					}
 					float assigned_supply = 0;
 					Set<Tag> unit_group = new HashSet<>();
-					while (assigned_supply < supply * 2 && supply < 30) {
+					while (assigned_supply < supply * 1.5 || supply > 30) {
 						UnitInPool current = closest_free(enemy_squad.iterator().next().unit().getPosition().toPoint2d());
 						if (current == null) break;
 						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);

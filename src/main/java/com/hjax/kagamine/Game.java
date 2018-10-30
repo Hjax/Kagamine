@@ -67,69 +67,72 @@ public class Game {
 	}
 	
 	public static void unit_command(Unit u, Ability a, Unit t, boolean queued) {
+		if (u.getOrders().size() > 0 && !queued) {
+			if (u.getOrders().get(0).getAbility() == a) {
+				if (u.getOrders().get(0).getTargetedUnitTag().isPresent()) {
+					if (t.getTag() == u.getOrders().get(0).getTargetedUnitTag().get()) {
+						return;
+					}
+				}
+			}
+		}
+		Counter.increment(u.getType().toString());
 		action.unitCommand(u, a, t, queued);
 	}
 	
 	public static void unit_command(Unit u, Ability a, Point2d p, boolean queued) {
+		if (u.getOrders().size() > 0 && !queued) {
+			if (u.getOrders().get(0).getAbility() == a) {
+				if (u.getOrders().get(0).getTargetedWorldSpacePosition().isPresent()) {
+					if (p.distance(u.getOrders().get(0).getTargetedWorldSpacePosition().get().toPoint2d()) < 1) {
+						return;
+					}
+				}
+			}
+		}
+		Counter.increment(u.getType().toString());
 		action.unitCommand(u, a, p, queued);
 	}
 	
 	public static void unit_command(Unit u, Ability a, boolean queued) {
+		Counter.increment(u.getType().toString());
 		action.unitCommand(u, a, queued);
 	}
 	
 	public static void unit_command(Unit u, Ability a, Unit t) {
-		action.unitCommand(u, a, t, false);
+		unit_command(u, a, t, false);
 	}
 	
 	public static void unit_command(Unit u, Ability a, Point2d p) {
-		action.unitCommand(u, a, p, false);
+		unit_command(u, a, p, false);
 	}
 	
 	public static void unit_command(Unit u, Ability a) {
-		action.unitCommand(u, a, false);
+		unit_command(u, a, false);
 	}
 	
 	public static void unit_command(UnitInPool u, Ability a, Unit t, boolean queued) {
-		if (u.unit().getOrders().size() > 0) {
-			if (u.unit().getOrders().get(0).getAbility() == a) {
-				if (u.unit().getOrders().get(0).getTargetedUnitTag().isPresent()) {
-					if (t.getTag() == u.unit().getOrders().get(0).getTargetedUnitTag().get()) {
-						return;
-					}
-				}
-			}
-		}
-		action.unitCommand(u.unit(), a, t, queued);
+		unit_command(u.unit(), a, t, queued);
 	}
 	
 	public static void unit_command(UnitInPool u, Ability a, Point2d p, boolean queued) {
-		if (u.unit().getOrders().size() > 0) {
-			if (u.unit().getOrders().get(0).getAbility() == a) {
-				if (u.unit().getOrders().get(0).getTargetedWorldSpacePosition().isPresent()) {
-					if (p.distance(u.unit().getOrders().get(0).getTargetedWorldSpacePosition().get().toPoint2d()) < 1) {
-						return;
-					}
-				}
-			}
-		}
-		action.unitCommand(u.unit(), a, p, queued);
+		unit_command(u.unit(), a, p, queued);
 	}
 	
 	public static void unit_command(UnitInPool u, Ability a, boolean queued) {
-		action.unitCommand(u.unit(), a, queued);
+		unit_command(u.unit(), a, queued);
 	}
 	
 	public static void unit_command(UnitInPool u, Ability a, Unit t) {
-		action.unitCommand(u.unit(), a, t, false);
+		unit_command(u.unit(), a, t, false);
 	}
 	
 	public static void unit_command(UnitInPool u, Ability a, Point2d p) {
-		action.unitCommand(u.unit(), a, p, false);
+		unit_command(u.unit(), a, p, false);
 	}
 	
 	public static void unit_command(UnitInPool u, Ability a) {
-		action.unitCommand(u.unit(), a, false);
+		unit_command(u.unit(), a, false);
 	}
 	
 	public static boolean has_upgrade(Upgrade u) {
