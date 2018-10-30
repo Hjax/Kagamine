@@ -20,7 +20,7 @@ public class BuildExecutor {
 			if (Game.supply_cap() < 200) {
 				float larva = EconomyManager.larva_rate();
 				if (should_build_queens()) larva += 2;
-				if (Game.supply_cap() + (GameInfoCache.in_progress(Units.ZERG_OVERLORD) * 8) - Game.supply() <= larva * 1.5) {
+				if (Game.supply_cap() + (GameInfoCache.in_progress(Units.ZERG_OVERLORD) * 8) - Game.supply() <= larva * 2) {
 					if (Larva.has_larva()) {
 						if (Game.can_afford(Units.ZERG_OVERLORD)) {
 							Larva.produce_unit(Units.ZERG_OVERLORD);

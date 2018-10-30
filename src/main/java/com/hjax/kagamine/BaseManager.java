@@ -53,6 +53,7 @@ public class BaseManager {
 			}
 		}
 		on_unit_created(main);
+		Game.unit_command(main, Abilities.RALLY_HATCHERY_WORKERS, main.unit());
 	}
 	
 	static void on_unit_created(UnitInPool u) {
