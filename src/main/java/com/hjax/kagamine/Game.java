@@ -91,10 +91,28 @@ public class Game {
 	}
 	
 	public static void unit_command(UnitInPool u, Ability a, Unit t, boolean queued) {
+		if (u.unit().getOrders().size() > 0) {
+			if (u.unit().getOrders().get(0).getAbility() == a) {
+				if (u.unit().getOrders().get(0).getTargetedUnitTag().isPresent()) {
+					if (t.getTag() == u.unit().getOrders().get(0).getTargetedUnitTag().get()) {
+						return;
+					}
+				}
+			}
+		}
 		action.unitCommand(u.unit(), a, t, queued);
 	}
 	
 	public static void unit_command(UnitInPool u, Ability a, Point2d p, boolean queued) {
+		if (u.unit().getOrders().size() > 0) {
+			if (u.unit().getOrders().get(0).getAbility() == a) {
+				if (u.unit().getOrders().get(0).getTargetedWorldSpacePosition().isPresent()) {
+					if (p.distance(u.unit().getOrders().get(0).getTargetedWorldSpacePosition().get().toPoint2d()) < 1) {
+						return;
+					}
+				}
+			}
+		}
 		action.unitCommand(u.unit(), a, p, queued);
 	}
 	
@@ -314,7 +332,15 @@ public class Game {
 	}
 	
 	public static void draw_box(Point2d current, Color c) {
-		debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), c);
+		if (Constants.DEBUG) {
+			debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), c);
+		}
+	}
+	
+	public static void draw_line(Point2d a, Point2d b, Color c) {
+		if (Constants.DEBUG) {
+			debug.debugLineOut(Point.of(a.getX(), a.getY(), (float) (Game.height(a) + .5)), Point.of((float) (b.getX()), (float) (b.getY()), (float) (Game.height(b) + .5)), c);
+		}
 	}
 	
 	public static float army_killed() { 

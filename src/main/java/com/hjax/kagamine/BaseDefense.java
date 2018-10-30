@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
-import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -29,9 +28,10 @@ public class BaseDefense {
 						flyers = enemy.unit().getFlying().orElse(false) || flyers;
 					}
 					float assigned_supply = 0;
+					Set<Tag> unit_group = new HashSet<>();
 					while (assigned_supply < supply * 2 && supply < 30) {
 						UnitInPool current = closest_free(enemy_squad.iterator().next().unit().getPosition().toPoint2d());
-						if (current == null) return;
+						if (current == null) break;
 						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);
 						assignments.put(current.getTag(), average);
 					}
