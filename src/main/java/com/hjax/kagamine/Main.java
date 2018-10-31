@@ -1,5 +1,6 @@
 package com.hjax.kagamine;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
@@ -47,11 +48,11 @@ public class Main {
 	        	input.close();
 		        s2Coordinator = S2Coordinator.setup()
 		                .loadSettings(args)
-		                .setRealtime(false)
+		                .setRealtime(true)
 		                .setParticipants(
-		                       // S2Coordinator.createParticipant(choice, bot2),
-		                        S2Coordinator.createParticipant(Race.ZERG, bot),
-		                        S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
+		                        S2Coordinator.createParticipant(choice, bot2),
+		                        S2Coordinator.createParticipant(Race.ZERG, bot))
+		                       // S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
 		                .launchStarcraft()
 		                .startGame(LocalMap.of(Paths.get("LostAndFoundLE.SC2Map")));
 	        }

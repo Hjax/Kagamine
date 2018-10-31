@@ -76,7 +76,6 @@ public class Game {
 				}
 			}
 		}
-		Counter.increment(u.getType().toString());
 		action.unitCommand(u, a, t, queued);
 	}
 	
@@ -90,13 +89,19 @@ public class Game {
 				}
 			}
 		}
-		Counter.increment(u.getType().toString());
 		action.unitCommand(u, a, p, queued);
 	}
 	
 	public static void unit_command(Unit u, Ability a, boolean queued) {
-		Counter.increment(u.getType().toString());
 		action.unitCommand(u, a, queued);
+	}
+	
+	public static void unit_command(List<Unit> u, Ability a, Point2d p) {
+		unit_command(u, a, p, false);
+	}
+	
+	public static void unit_command(List<Unit> u, Ability a, Point2d p, boolean queued) {
+		action.unitCommand(u, a, p, queued);
 	}
 	
 	public static void unit_command(Unit u, Ability a, Unit t) {

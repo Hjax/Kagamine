@@ -17,10 +17,10 @@ public class BaseDefense {
 	public static void on_frame() {
 		used.clear();
 		assignments.clear();
-		for (Set<UnitInPool> enemy_squad : EnemySquadManager.enemy_squads) {
+		for (Set<UnitInPool> enemy_squad : SquadManager.enemy_squads) {
 			int supply = 0;
 			boolean flyers = false;
-			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			Point2d average = SquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
 				if (b.has_friendly_command_structure() && b.location.distance(average) < 15) {
 					for (UnitInPool enemy : enemy_squad) {

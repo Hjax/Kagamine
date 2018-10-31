@@ -37,7 +37,7 @@ public class Kagamine extends S2Agent{
 			MiningOptimizer.on_frame();
 			Creep.start_frame();
 			BuildPlanner.on_frame();
-			EnemySquadManager.on_frame();
+			SquadManager.on_frame();
 			BaseDefense.on_frame();
 			BuildExecutor.on_frame();
 			UnitManager.on_frame();
@@ -63,7 +63,9 @@ public class Kagamine extends S2Agent{
 	
 	@Override
 	public void onGameEnd() {
-		Counter.print();
+		if (Constants.DEBUG) {
+			Counter.print();
+		}
 	}
 
 }
