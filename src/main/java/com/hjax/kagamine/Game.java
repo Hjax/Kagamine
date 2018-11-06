@@ -1,22 +1,8 @@
 package com.hjax.kagamine;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
-import com.github.ocraft.s2client.bot.gateway.ActionInterface;
-import com.github.ocraft.s2client.bot.gateway.DebugInterface;
-import com.github.ocraft.s2client.bot.gateway.ObservationInterface;
-import com.github.ocraft.s2client.bot.gateway.QueryInterface;
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.bot.gateway.*;
 import com.github.ocraft.s2client.protocol.action.ActionChat.Channel;
-import com.github.ocraft.s2client.protocol.data.Ability;
-import com.github.ocraft.s2client.protocol.data.AbilityData;
-import com.github.ocraft.s2client.protocol.data.UnitType;
-import com.github.ocraft.s2client.protocol.data.UnitTypeData;
-import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.data.Upgrade;
-import com.github.ocraft.s2client.protocol.data.UpgradeData;
-import com.github.ocraft.s2client.protocol.data.Weapon;
+import com.github.ocraft.s2client.protocol.data.*;
 import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.PlayerInfo;
@@ -28,6 +14,10 @@ import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.Unit;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class Game {
 	

@@ -1,15 +1,5 @@
 package com.hjax.kagamine;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
@@ -18,6 +8,10 @@ import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.Drone;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
+
+import java.util.*;
 
 public class BaseManager {
 	// the index of bases must never change
@@ -196,7 +190,7 @@ public class BaseManager {
 					if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
 						for (UnitInPool gas: b.gases) {
 							if (GameInfoCache.geyser_is_free(gas)) {
-								UnitInPool worker = get_free_worker(get_next_base().location);
+								UnitInPool worker = get_free_worker(gas.unit().getPosition().toPoint2d());
 								if (worker != null) {
 									Game.unit_command(worker, Abilities.BUILD_EXTRACTOR, gas.unit());
 									return;

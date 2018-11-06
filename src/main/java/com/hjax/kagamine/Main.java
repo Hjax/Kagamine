@@ -1,14 +1,11 @@
 package com.hjax.kagamine;
 
-import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.Scanner;
-
 import com.github.ocraft.s2client.bot.S2Coordinator;
-import com.github.ocraft.s2client.protocol.game.Difficulty;
 import com.github.ocraft.s2client.protocol.game.LocalMap;
 import com.github.ocraft.s2client.protocol.game.Race;
-import com.hjax.kagamine.Kagamine;
+
+import java.nio.file.Paths;
+import java.util.Scanner;
 
 public class Main {
 		public static boolean ladder = false;

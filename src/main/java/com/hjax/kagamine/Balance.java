@@ -1,15 +1,11 @@
 package com.hjax.kagamine;
 
+import com.github.ocraft.s2client.protocol.data.*;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import com.github.ocraft.s2client.protocol.data.Abilities;
-import com.github.ocraft.s2client.protocol.data.Ability;
-import com.github.ocraft.s2client.protocol.data.UnitType;
-import com.github.ocraft.s2client.protocol.data.UnitTypeData;
-import com.github.ocraft.s2client.protocol.data.Units;
 
 public class Balance {
 	

@@ -6,12 +6,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.BaseManager;
-import com.hjax.kagamine.Game;
-import com.hjax.kagamine.GameInfoCache;
-import com.hjax.kagamine.Scouting;
-import com.hjax.kagamine.Utilities;
-import com.hjax.kagamine.Vector2d;
+import com.hjax.kagamine.*;
 
 public class Ravager {
 	public static void on_frame(UnitInPool rav) {

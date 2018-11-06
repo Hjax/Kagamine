@@ -1,22 +1,12 @@
 package com.hjax.kagamine.UnitControllers;
 
-import java.util.ArrayList;
-
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.ArmyManager;
-import com.hjax.kagamine.Base;
-import com.hjax.kagamine.BaseDefense;
-import com.hjax.kagamine.BaseManager;
-import com.hjax.kagamine.Build;
-import com.hjax.kagamine.Game;
-import com.hjax.kagamine.GameInfoCache;
-import com.hjax.kagamine.ThreatManager;
-import com.hjax.kagamine.Utilities;
-import com.hjax.kagamine.Vector2d;
-import com.hjax.kagamine.Wisdom;
+import com.hjax.kagamine.*;
+
+import java.util.ArrayList;
 
 public class GenericUnit {
 	public static void on_frame(UnitInPool u, boolean moveOut) {

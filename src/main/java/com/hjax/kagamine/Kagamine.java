@@ -2,7 +2,6 @@ package com.hjax.kagamine;
 
 import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
-import com.hjax.kagamine.UnitControllers.Creep;
 import com.hjax.kagamine.UnitControllers.Larva;
 
 public class Kagamine extends S2Agent{
