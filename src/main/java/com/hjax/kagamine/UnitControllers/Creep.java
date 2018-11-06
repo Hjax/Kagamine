@@ -27,6 +27,7 @@ public class Creep {
 	static int[][] terrain = new int[1000][1000];	
 	static int[][] bases = new int[1000][1000];
 	static Set<Tag> used = new HashSet<>();
+	static int calculated_frame = -1;
 	static List<Point2d> creep_points = new ArrayList<>();
 	static {
 		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
@@ -40,10 +41,6 @@ public class Creep {
 				}
 			}
 		}
-	}
-	
-	public static void start_frame() {
-		calculate();
 	}
 	
 	static void calculate() {
@@ -105,6 +102,10 @@ public class Creep {
 	}
 
 	public static void on_frame(UnitInPool u) {
+		if (calculated_frame != Game.get_frame()) {
+			calculated_frame = (int) Game.get_frame();
+			calculate();
+		}
 		if (!used.contains(u.getTag())) {
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
 				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
