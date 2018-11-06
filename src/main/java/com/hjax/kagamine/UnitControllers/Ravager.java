@@ -9,26 +9,26 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.*;
 
 public class Ravager {
-	public static void on_frame(UnitInPool rav) {
-		UnitInPool best = null;
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
-			if (best == null || u.unit().getPosition().toPoint2d().distance(rav.unit().getPosition().toPoint2d()) < best.unit().getPosition().toPoint2d().distance(rav.unit().getPosition().toPoint2d())) {
-				best = u;
-			}
-		}
-		if (best != null) {
-			for (AvailableAbility ab : Game.availible_abilities(rav).getAbilities()) {
-				if (ab.getAbility() == Abilities.EFFECT_CORROSIVE_BILE) {
-					Game.unit_command(rav, Abilities.EFFECT_CORROSIVE_BILE, best.unit().getPosition().toPoint2d());
-					return;
-				}
-			}
-			if (best.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) < best.unit().getPosition().toPoint2d().distance(Scouting.closest_enemy_spawn())) {
-				Vector2d diff = Utilities.direction_to(Vector2d.of(best.unit().getPosition().toPoint2d()), Vector2d.of(rav.unit().getPosition().toPoint2d()));
-				Game.unit_command(rav, Abilities.MOVE, Point2d.of(best.unit().getPosition().getX() + diff.x * 15, best.unit().getPosition().getY() + diff.y * 15));
-				return;
-			}
-		}
-		if (rav.unit().getOrders().size() == 0) GenericUnit.on_frame(rav, true);
-	}
+    public static void on_frame(UnitInPool rav) {
+        UnitInPool best = null;
+        for (UnitInPool u : GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
+            if (best == null || u.unit().getPosition().toPoint2d().distance(rav.unit().getPosition().toPoint2d()) < best.unit().getPosition().toPoint2d().distance(rav.unit().getPosition().toPoint2d())) {
+                best = u;
+            }
+        }
+        if (best != null) {
+            for (AvailableAbility ab : Game.availible_abilities(rav).getAbilities()) {
+                if (ab.getAbility() == Abilities.EFFECT_CORROSIVE_BILE) {
+                    Game.unit_command(rav, Abilities.EFFECT_CORROSIVE_BILE, best.unit().getPosition().toPoint2d());
+                    return;
+                }
+            }
+            if (best.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) < best.unit().getPosition().toPoint2d().distance(Scouting.closest_enemy_spawn())) {
+                Vector2d diff = Utilities.direction_to(Vector2d.of(best.unit().getPosition().toPoint2d()), Vector2d.of(rav.unit().getPosition().toPoint2d()));
+                Game.unit_command(rav, Abilities.MOVE, Point2d.of(best.unit().getPosition().getX() + diff.x * 15, best.unit().getPosition().getY() + diff.y * 15));
+                return;
+            }
+        }
+        if (rav.unit().getOrders().size() == 0) GenericUnit.on_frame(rav, true);
+    }
 }
