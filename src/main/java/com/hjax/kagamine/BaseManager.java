@@ -15,6 +15,7 @@ import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
+import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.UnitControllers.Drone;
@@ -29,6 +30,7 @@ public class BaseManager {
 		bases.clear();
 		calculate_expansions();
 		for (Point2d e: expos) bases.add(new Base(e));
+		
 		UnitInPool main = GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY).get(0);
 		// Fix the placement for our main base
 		for (Base b : bases) {
@@ -386,7 +388,7 @@ public class BaseManager {
 			if (unit.unit().getType().toString().toLowerCase().contains("mineral")) {
 				for (Set<UnitInPool> lines : mineral_lines) {
 					for (UnitInPool patch : lines) {
-						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 10) {
+						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 14) {
 							lines.add(unit);
 							continue outer;
 						}
