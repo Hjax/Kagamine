@@ -364,4 +364,8 @@ public class Game {
 	public static boolean is_combat(UnitType u) {
 		return get_unit_type_data().get(u).getWeapons().size() > 0 && !is_worker(u);
 	}
+	
+	public static boolean is_changeling(UnitType u) {
+		return u.toString().toLowerCase().contains("changeling");
+	}
 }

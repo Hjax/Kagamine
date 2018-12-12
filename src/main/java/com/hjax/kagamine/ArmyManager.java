@@ -24,7 +24,7 @@ public class ArmyManager {
 		outer: for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF)) {
 			if (target.distance(u.unit().getPosition().toPoint2d()) < 4) {
 				for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (e.unit().getType() != Units.PROTOSS_ADEPT_PHASE_SHIFT) {
+					if (e.unit().getType() != Units.PROTOSS_ADEPT_PHASE_SHIFT && !Game.is_changeling(e.unit().getType())) {
 						if (!e.unit().getFlying().orElse(false) || GameInfoCache.count_friendly(Units.ZERG_MUTALISK) > 0) {
 							if (u.unit().getPosition().distance(e.unit().getPosition()) < 4) {
 								break outer;

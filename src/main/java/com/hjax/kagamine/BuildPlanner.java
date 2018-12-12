@@ -134,7 +134,7 @@ public class BuildPlanner {
 				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_ROACH);
 				Build.ideal_hatches = 3;
 				Build.scout = false;
-				Build.push_supply = 195;
+				Build.push_supply = 140;
 				Build.ideal_gases = 4;
 				Build.ideal_workers = 65;
 				Build.pull_off_gas = false;
