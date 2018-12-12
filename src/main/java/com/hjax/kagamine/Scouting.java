@@ -30,8 +30,9 @@ public class Scouting {
 		if (spawns.size() > 1) {
 			for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (Game.is_structure(u.unit().getType())) {
+					Point2d spawn = closest_enemy_spawn(u.unit().getPosition().toPoint2d());
 					spawns = new ArrayList<>();
-					spawns.add(closest_enemy_spawn(u.unit().getPosition().toPoint2d()));
+					spawns.add(spawn);
 					break;
 				}
 			}

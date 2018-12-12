@@ -18,6 +18,9 @@ public class Kagamine extends S2Agent{
 		GameInfoCache.start_frame();
 		BaseManager.start_game();
 		BuildPlanner.decide_build();
+		if (Constants.DEBUG) {
+			Game.chat("Kagamine version 2.0 TEST");
+		}
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
@@ -29,6 +32,7 @@ public class Kagamine extends S2Agent{
 		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
 			GameInfoCache.start_frame();
 			Larva.start_frame();
+			ControlGroups.on_frame();
 			Scouting.on_frame();
 			ArmyManager.on_frame();
 			ThreatManager.on_frame();
@@ -43,7 +47,7 @@ public class Kagamine extends S2Agent{
 			UnitManager.on_frame();
 			GameInfoCache.end_frame();
 		}
-		if (!Main.ladder && Constants.DEBUG) {
+		if (Constants.DEBUG) {
 			Game.debug.sendDebug();
 			time_sum += ((System.nanoTime() - startTime) / 1000000.0);
 			if (((System.nanoTime() - startTime) / 1000000.0) > max) {
