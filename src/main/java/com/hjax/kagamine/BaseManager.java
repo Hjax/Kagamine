@@ -28,32 +28,37 @@ public class BaseManager {
 	
 	static void start_game() {
 		bases.clear();
-		calculate_expansions();
-		for (Point2d e: expos) bases.add(new Base(e));
+		//calculate_expansions();
+		for (Point p : Game.query.calculateExpansionLocations(Game.observation)) {
+			System.out.println(p.getX() + " " + p.getY());
+			expos.add(Point2d.of(p.getX(),  p.getY()));
+		}
 		
 		UnitInPool main = GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY).get(0);
-		// Fix the placement for our main base
-		for (Base b : bases) {
-			if (b.location.distance(main.unit().getPosition().toPoint2d()) < 10) {
-				b.location = main.unit().getPosition().toPoint2d();
-			}
+		
+		expos.add(main.unit().getPosition().toPoint2d());
+		
+		for (Point2d e: expos) {
+			if (e.distance(Point2d.of(0, 0)) > 1) bases.add(new Base(e));
 		}
+
+		
 		for (int i = 0; i < bases.size(); i++) {
 			for (int j = 0; j < bases.size(); j++) {
 				Point2d first = bases.get(i).location;
 				Point2d second = bases.get(j).location;
 				float dist = Game.pathing_distance(first, second);
 				if (i != j) {
-					while (Math.abs(dist) < 0.1) {
-						first = Point2d.of(first.getX() + 1, first.getY());
-						second = Point2d.of(second.getX() + 1, second.getY());
-						dist = Game.pathing_distance(first, second);
-					}
+					first = Point2d.of(first.getX() + 1, first.getY());
+					second = Point2d.of(second.getX() + 1, second.getY());
+					dist = Game.pathing_distance(first, second);
 				}
+				Game.draw_line(first, second, Color.RED);
 				distances.put(new ImmutablePair<>(i, j), dist);
 				distances.put(new ImmutablePair<>(j, i), dist);
 			}
 		}
+		Game.debug.sendDebug();
 		on_unit_created(main);
 		Game.unit_command(main, Abilities.RALLY_HATCHERY_WORKERS, main.unit());
 	}
@@ -84,6 +89,7 @@ public class BaseManager {
 	}
 	
 	static void on_frame() {
+		
 		for (UnitInPool u: Game.get_units()) {
 			if (Game.is_town_hall(u.unit().getType())) {
 				for (Base b: bases) {
