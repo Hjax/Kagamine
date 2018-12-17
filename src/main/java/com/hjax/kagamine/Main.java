@@ -53,7 +53,7 @@ public class Main {
 		                        S2Coordinator.createParticipant(Race.ZERG, bot),
 		                        S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
 		                .launchStarcraft()
-		                .startGame(LocalMap.of(Paths.get("LostAndFoundLE.SC2Map")));
+		                .startGame(LocalMap.of(Paths.get("AutomatonLE.SC2Map")));
 	        }
 	        while (s2Coordinator.update()) {
 	        }

@@ -28,6 +28,12 @@ public class BaseManager {
 	static void start_game() {
 		bases.clear();
 		calculate_expansions();
+		
+		for (Point2d p : expos) {
+			Game.draw_box(p, Color.GREEN);
+		}
+		Game.debug.sendDebug();
+		
 		for (Point2d e: expos) bases.add(new Base(e));
 		UnitInPool main = GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY).get(0);
 		// Fix the placement for our main base
@@ -142,7 +148,7 @@ public class BaseManager {
 	public static Base get_next_base() {
 		if (next_base_frame != Game.get_frame()) {
 			Base best = null;
-			double best_dist = -1;
+			double best_dist = 9999;
 			for (Base b: bases) {
 				if (b.has_friendly_command_structure()) continue;
 				if (best == null || (get_distance(main_base(), b) - get_distance(closest_base(Scouting.closest_enemy_spawn()), b)) < best_dist) {
@@ -383,10 +389,10 @@ public class BaseManager {
 		expos.clear();
 		ArrayList<Set<UnitInPool>> mineral_lines = new ArrayList<>();
 		outer: for (UnitInPool unit: GameInfoCache.get_units(Alliance.NEUTRAL)) {
-			if (unit.unit().getType().toString().toLowerCase().contains("mineral")) {
+			if (unit.unit().getType().toString().toLowerCase().contains("mineral") || unit.unit().getType().toString().toLowerCase().contains("geyser")) {
 				for (Set<UnitInPool> lines : mineral_lines) {
 					for (UnitInPool patch : lines) {
-						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 10) {
+						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 16) {
 							lines.add(unit);
 							continue outer;
 						}

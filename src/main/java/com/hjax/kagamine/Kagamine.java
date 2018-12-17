@@ -32,6 +32,7 @@ public class Kagamine extends S2Agent{
 		Game.start_frame(observation(), actions(), query(), debug());
 		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
 			GameInfoCache.start_frame();
+			Inference.on_frame();
 			Larva.start_frame();
 			ControlGroups.on_frame();
 			Scouting.on_frame();
