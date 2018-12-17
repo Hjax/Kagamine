@@ -17,6 +17,7 @@ public class Kagamine extends S2Agent{
 		Game.start_frame(observation(), actions(), query(), debug());
 		GameInfoCache.start_frame();
 		BaseManager.start_game();
+		Scouting.start_game();
 		BuildPlanner.decide_build();
 		if (Constants.DEBUG) {
 			Game.chat("Kagamine version 2.0 TEST");
@@ -45,6 +46,7 @@ public class Kagamine extends S2Agent{
 			BaseDefense.on_frame();
 			BuildExecutor.on_frame();
 			UnitManager.on_frame();
+			MapAnalysis.on_frame();
 			GameInfoCache.end_frame();
 		}
 		if (Constants.DEBUG) {

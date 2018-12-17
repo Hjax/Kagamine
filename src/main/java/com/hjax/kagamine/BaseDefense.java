@@ -34,7 +34,7 @@ public class BaseDefense {
 						if (current == null) break;
 						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);
 						assignments.put(current.getTag(), average);
-						Game.draw_line(current.unit().getPosition().toPoint2d(), average, Color.GREEN);
+					//	Game.draw_line(current.unit().getPosition().toPoint2d(), average, Color.GREEN);
 					}
 					break;
 				}

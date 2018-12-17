@@ -336,7 +336,7 @@ public class Game {
 	
 	public static void draw_box(Point2d current, Color c) {
 		if (Constants.DEBUG) {
-			debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Game.height(current) + .5)), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Game.height(current) + .5)), c);
+			debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Math.max(Game.height(current) + .5, 0))), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Math.max(Game.height(current) + .5, 0))), c);
 		}
 	}
 	

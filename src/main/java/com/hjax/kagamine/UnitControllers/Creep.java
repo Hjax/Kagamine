@@ -63,7 +63,7 @@ public class Creep {
 		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
 		for (int x = (int) min.getX(); x <= max.getX(); x += Constants.CREEP_RESOLUTION) {
 			for (int y = (int) min.getY(); y <= max.getY(); y += Constants.CREEP_RESOLUTION) {
-				if (bases[x][y] == 0 && Game.is_placeable(Point2d.of(x, y))) {
+				if (bases[x][y] == 0 && Game.pathable(Point2d.of(x, y))) {
 					if (Game.on_creep(Point2d.of(x, y))) {
 						terrain[x][y] = 1;
 					}
