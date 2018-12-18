@@ -29,11 +29,6 @@ public class BaseManager {
 		bases.clear();
 		calculate_expansions();
 		
-		for (Point2d p : expos) {
-			Game.draw_box(p, Color.GREEN);
-		}
-		Game.debug.sendDebug();
-		
 		for (Point2d e: expos) bases.add(new Base(e));
 		UnitInPool main = GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY).get(0);
 		// Fix the placement for our main base

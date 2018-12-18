@@ -11,7 +11,6 @@ public class MapAnalysis {
 	static boolean[][] air_safe = new boolean[1000][1000];
 	static ArrayList<Point2d> overlord_spots = new ArrayList<>();
 	static {
-		long startTime = System.nanoTime();
 		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
 		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
 		for (int x = (int) min.getX(); x < max.getX(); x ++) {

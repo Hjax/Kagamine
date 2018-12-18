@@ -16,10 +16,6 @@ public class ArmyManager {
 		has_target = true;
 	}
 	
-	public static void start_frame() {
-		
-	}
-	
 	public static void on_frame() {
 		outer: for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF)) {
 			if (target.distance(u.unit().getPosition().toPoint2d()) < 4) {
@@ -107,9 +103,4 @@ public class ArmyManager {
 		}
 		
 	}
-	
-	public static void end_frame() {
-		
-	}
-	
 }

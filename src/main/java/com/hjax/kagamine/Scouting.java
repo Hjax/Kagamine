@@ -10,7 +10,6 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
-import com.github.ocraft.s2client.protocol.unit.Unit;
 import com.hjax.kagamine.UnitControllers.Drone;
 
 public class Scouting {
@@ -18,7 +17,7 @@ public class Scouting {
 	public static UnitInPool patrol_scout = null;
 	public static ArrayList<Point2d> spawns = new ArrayList<>();
 	public static int patrol_base = 2;
-	public static int overlord_base = 5;
+	public static int overlord_count = 0;
 	
 	public static boolean scared = false;
 	public static boolean has_pulled_back = false;
@@ -102,20 +101,23 @@ public class Scouting {
 		}
 		
 		// send overlords to vision spots, dont replace them if / when they die
-		for (UnitInPool o: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
-			Point2d best = null;
-			if (o.unit().getOrders().size() == 0 && !overlords.containsValue(o.getTag())) {
-				for (Point2d p : overlords.keySet()) {
-					if (overlords.get(p) == null) {
-						if (best == null || best.distance(closest_enemy_spawn()) > p.distance(closest_enemy_spawn())) {
-							best = p;
+		if (!has_pulled_back && overlord_count < 3) {
+			for (UnitInPool o: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
+				Point2d best = null;
+				if (o.unit().getOrders().size() == 0 && !overlords.containsValue(o.getTag())) {
+					for (Point2d p : overlords.keySet()) {
+						if (overlords.get(p) == null) {
+							if (best == null || best.distance(closest_enemy_spawn()) > p.distance(closest_enemy_spawn())) {
+								best = p;
+							}
 						}
 					}
 				}
-			}
-			if (best != null) {
-				overlords.put(best, o.getTag());
-				Game.unit_command(o, Abilities.MOVE, best);
+				if (best != null) {
+					overlords.put(best, o.getTag());
+					Game.unit_command(o, Abilities.MOVE, best);
+					overlord_count++;
+				}
 			}
 		}
 		
