@@ -2,7 +2,6 @@ package com.hjax.kagamine;
 
 import java.util.ArrayList;
 
-import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 
 public class MapAnalysis {

@@ -15,7 +15,6 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.hjax.kagamine.Game;
 import com.hjax.kagamine.GameInfoCache;
-import com.hjax.kagamine.ThreatManager;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 

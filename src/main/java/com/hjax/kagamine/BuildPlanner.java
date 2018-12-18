@@ -2,6 +2,7 @@ package com.hjax.kagamine;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -23,7 +24,7 @@ public class BuildPlanner {
 			Game.chat("Sorry im not tycklish");
 			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
 					new ImmutablePair<Integer, UnitType>(14, Units.ZERG_SPAWNING_POOL)));
-			Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
+			Build.composition = Collections.singletonList(Units.ZERG_ZERGLING);
 			Build.ideal_gases = 0;
 			Build.ideal_hatches = 1;
 			Build.scout = false;
@@ -99,7 +100,7 @@ public class BuildPlanner {
 	
 	private static void hunter_killer() {
 		Build.build = new ArrayList<>();
-				Build.composition = Arrays.asList(Units.ZERG_MUTALISK);
+				Build.composition = Collections.singletonList(Units.ZERG_MUTALISK);
 				Build.ideal_gases = 6;
 				Build.ideal_hatches = -1;
 				Build.tech_drones = 40;
