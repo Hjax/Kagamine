@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.economy.Base;
@@ -39,6 +40,7 @@ public class BaseDefense {
 						if (current == null) break;
 						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);
 						assignments.put(current.getTag(), average);
+						Game.draw_line(average, current.unit().getPosition().toPoint2d(), Color.GREEN);
 					}
 					assigned_supply = 0;
 					while (assigned_supply < flyer_supply * 1.5 || flyer_supply > 30) {
@@ -46,6 +48,7 @@ public class BaseDefense {
 						if (current == null) break;
 						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);
 						assignments.put(current.getTag(), average);
+						Game.draw_line(average, current.unit().getPosition().toPoint2d(), Color.GREEN);
 					}
 					break;
 				}

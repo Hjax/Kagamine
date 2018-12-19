@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
@@ -22,6 +23,7 @@ public class GenericUnit {
 	public static void on_frame(UnitInPool u, boolean moveOut) {
 		if (u.unit().getWeaponCooldown().orElse((float) 0) > 0.1) {
 			for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (e.unit().getType() == Units.PROTOSS_INTERCEPTOR) continue;
 				if (Game.get_unit_type_data().get(e.unit().getType()).getWeapons().size() > 0) {
 					if (u.unit().getPosition().toPoint2d().distance(e.unit().getPosition().toPoint2d()) < new ArrayList<>(Game.get_unit_type_data().get(u.unit().getType()).getWeapons()).get(0).getRange()) {
 						if (new ArrayList<>(Game.get_unit_type_data().get(e.unit().getType()).getWeapons()).get(0).getRange() < new ArrayList<>(Game.get_unit_type_data().get(u.unit().getType()).getWeapons()).get(0).getRange()) {

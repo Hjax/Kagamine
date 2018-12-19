@@ -50,6 +50,15 @@ public class ArmyManager {
 			}
 		}
 		
+		for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_structure(e.unit().getType())) {
+				if (!has_target || target.distance(BaseManager.main_base().location) > e.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location)) {
+					has_target = true;
+					target = e.unit().getPosition().toPoint2d();
+				}
+			}
+		}
+		
 		if (Game.army_supply() < 10) {
 			if (!Wisdom.worker_rush()) {
 				if (!Wisdom.cannon_rush() && !Wisdom.proxy_detected()) {

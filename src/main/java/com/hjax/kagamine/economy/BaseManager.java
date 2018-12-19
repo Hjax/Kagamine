@@ -393,7 +393,7 @@ public class BaseManager {
 			if (unit.unit().getType().toString().toLowerCase().contains("mineral") || unit.unit().getType().toString().toLowerCase().contains("geyser")) {
 				for (Set<UnitInPool> lines : mineral_lines) {
 					for (UnitInPool patch : lines) {
-						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 16) {
+						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 14) {
 							lines.add(unit);
 							continue outer;
 						}
@@ -404,6 +404,13 @@ public class BaseManager {
 				mineral_lines.add(adder);
 			}
 		}
+		for (Set<UnitInPool> line : mineral_lines) {
+			UnitInPool first = line.iterator().next();
+			for (UnitInPool u : line) {
+				Game.draw_line(first.unit().getPosition().toPoint2d(), u.unit().getPosition().toPoint2d(), Color.GREEN);
+			}
+		}
+
 		for (Set<UnitInPool> line : mineral_lines) {
 			float x = 0;
 			float y = 0;
