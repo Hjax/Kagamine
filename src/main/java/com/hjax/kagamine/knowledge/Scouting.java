@@ -1,4 +1,4 @@
-package com.hjax.kagamine;
+package com.hjax.kagamine.knowledge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +15,6 @@ import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.MapAnalysis;
-import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.Drone;
 
 public class Scouting {

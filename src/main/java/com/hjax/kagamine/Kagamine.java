@@ -16,6 +16,7 @@ import com.hjax.kagamine.game.ControlGroups;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.MapAnalysis;
+import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.unitcontrollers.Creep;
 import com.hjax.kagamine.unitcontrollers.Larva;
 

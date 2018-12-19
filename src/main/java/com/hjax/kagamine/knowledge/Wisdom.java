@@ -5,7 +5,6 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Constants;
-import com.hjax.kagamine.Scouting;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;

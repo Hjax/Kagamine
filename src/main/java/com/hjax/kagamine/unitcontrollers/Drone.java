@@ -2,11 +2,11 @@ package com.hjax.kagamine.unitcontrollers;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
-import com.hjax.kagamine.Scouting;
 import com.hjax.kagamine.build.EconomyManager;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.knowledge.Scouting;
 
 public class Drone {
 	public static void on_frame(UnitInPool u) {

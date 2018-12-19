@@ -14,12 +14,12 @@ import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Tag;
-import com.hjax.kagamine.Scouting;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.Constants;
 
 public class Creep {
