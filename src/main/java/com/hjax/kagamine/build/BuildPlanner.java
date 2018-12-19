@@ -129,7 +129,7 @@ public class BuildPlanner {
 				Build.push_supply = 185;
 				Build.pull_off_gas = true;
 				Build.ideal_workers = 70;
-				Build.ideal_gases = 6;
+				Build.ideal_gases = 7;
 				Build.upgrades = new HashSet<>(Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2));
 				break;
 			case ZERG:
