@@ -2,8 +2,22 @@ package com.hjax.kagamine;
 
 import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
-import com.hjax.kagamine.UnitControllers.Creep;
-import com.hjax.kagamine.UnitControllers.Larva;
+import com.hjax.kagamine.army.ArmyManager;
+import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.army.EnemySquadManager;
+import com.hjax.kagamine.army.ThreatManager;
+import com.hjax.kagamine.army.UnitManager;
+import com.hjax.kagamine.build.BuildExecutor;
+import com.hjax.kagamine.build.BuildPlanner;
+import com.hjax.kagamine.build.EconomyManager;
+import com.hjax.kagamine.economy.BaseManager;
+import com.hjax.kagamine.economy.MiningOptimizer;
+import com.hjax.kagamine.game.ControlGroups;
+import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.MapAnalysis;
+import com.hjax.kagamine.unitcontrollers.Creep;
+import com.hjax.kagamine.unitcontrollers.Larva;
 
 public class Kagamine extends S2Agent{
 

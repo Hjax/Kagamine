@@ -10,7 +10,13 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
-import com.hjax.kagamine.UnitControllers.Drone;
+import com.hjax.kagamine.build.Build;
+import com.hjax.kagamine.economy.BaseManager;
+import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.MapAnalysis;
+import com.hjax.kagamine.knowledge.Wisdom;
+import com.hjax.kagamine.unitcontrollers.Drone;
 
 public class Scouting {
 	public static UnitInPool scout = null;
