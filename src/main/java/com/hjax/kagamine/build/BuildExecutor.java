@@ -11,6 +11,7 @@ import com.github.ocraft.s2client.protocol.unit.CloakState;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
+import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Balance;
@@ -221,6 +222,15 @@ public class BuildExecutor {
 				}
 			}
 			
+			if (count(Units.ZERG_EXTRACTOR) >= 3) {
+				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 2 && count(Units.ZERG_DRONE) > 40 && BaseManager.base_count(Alliance.SELF) > 3) {
+					if (Game.can_afford(Units.ZERG_EVOLUTION_CHAMBER)) {
+						BaseManager.build(Units.ZERG_EVOLUTION_CHAMBER);
+					}
+					Game.purchase(Units.ZERG_EVOLUTION_CHAMBER);
+				}
+			}
+			
 			if (should_build_army() || !should_build_drones()) {
 				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
 					if (next_army_unit() != Units.INVALID) {
@@ -233,14 +243,6 @@ public class BuildExecutor {
 				if (Game.can_afford(Units.ZERG_DRONE) && Larva.has_larva()) {
 					Game.purchase(Units.ZERG_DRONE);
 					Larva.produce_unit(Units.ZERG_DRONE);
-				}
-			}
-			if (count(Units.ZERG_EXTRACTOR) >= 3) {
-				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 2 && count(Units.ZERG_DRONE) > 35 && BaseManager.base_count(Alliance.SELF) > 3) {
-					if (Game.can_afford(Units.ZERG_EVOLUTION_CHAMBER)) {
-						BaseManager.build(Units.ZERG_EVOLUTION_CHAMBER);
-						Game.purchase(Units.ZERG_EVOLUTION_CHAMBER);
-					}
 				}
 			}
 
