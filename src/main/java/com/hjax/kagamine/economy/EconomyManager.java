@@ -50,6 +50,13 @@ public class EconomyManager {
 	}
 
 	public static void assign_worker(UnitInPool u) {
+		// TODO remove this hack and drone bases in an intelligent order
+		if (BaseManager.main_base().command_structure.unit().getAssignedHarvesters().orElse(0) < BaseManager.main_base().command_structure.unit().getIdealHarvesters().orElse(0)) {
+			if (BaseManager.main_base().minerals.size() > 0) {
+				Game.unit_command(u, Abilities.SMART, BaseManager.main_base().minerals.get(0).unit());
+				return;
+			}
+		}
 		for (Base b : BaseManager.bases) {
 			if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
 				if (b.command_structure.unit().getAssignedHarvesters().orElse(0) < b.command_structure.unit().getIdealHarvesters().orElse(0)) {

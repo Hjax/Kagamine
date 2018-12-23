@@ -22,8 +22,8 @@ public class BaseDefense {
 		used.clear();
 		assignments.clear();
 		for (Set<UnitInPool> enemy_squad : EnemySquadManager.enemy_squads) {
-			int ground_supply = 0;
-			int flyer_supply = 0;
+			float ground_supply = 0;
+			float flyer_supply = 0;
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
 				if (b.has_friendly_command_structure() && b.location.distance(average) < 15) {

@@ -38,6 +38,15 @@ public class BuildExecutor {
 				}
 			}
 			
+			if (should_build_army() && Game.army_supply() < 5) {
+				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
+					if (next_army_unit() != Units.INVALID) {
+						Game.purchase(next_army_unit());
+						Larva.produce_unit(next_army_unit());
+					}
+				}
+			}
+			
 			if (count(Units.ZERG_DRONE) > 45 || count(Units.ZERG_EXTRACTOR) == 0) {
 				if ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) && ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < ((count(Units.ZERG_DRONE) - 15) / 8))) {
 					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {

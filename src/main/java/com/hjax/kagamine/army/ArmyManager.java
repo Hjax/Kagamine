@@ -58,26 +58,26 @@ public class ArmyManager {
 				}
 			}
 		}
-		
-		if (Game.army_supply() < 10) {
+
+		if (Game.completed_army_supply() < 2) {
 			if (!Wisdom.worker_rush()) {
 				if (!Wisdom.cannon_rush() && !Wisdom.proxy_detected()) {
 					enemy_loop: for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-						if (Game.is_worker(u.unit().getType())) {
-							for (Base b : BaseManager.bases) {
-								if (b.has_friendly_command_structure() && u.unit().getPosition().toPoint2d().distance(b.location) < 12) {
-									for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-										if (!(ally.unit().getOrders().size() == 0) && (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK || ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK_ATTACK)) {
-											if (ally.unit().getOrders().get(0).getTargetedUnitTag().orElse(Tag.of((long) 0)).equals(u.unit().getTag())) {
-												continue enemy_loop;
-											}
+						for (Base b : BaseManager.bases) {
+							if (b.has_friendly_command_structure() && u.unit().getPosition().toPoint2d().distance(b.location) < 12) {
+								int attackers = 0;
+								for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+									if (!(ally.unit().getOrders().size() == 0) && (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK || ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK_ATTACK)) {
+										if (ally.unit().getOrders().get(0).getTargetedUnitTag().orElse(Tag.of((long) 0)).equals(u.unit().getTag())) {
+											attackers++;
 										}
 									}
-									for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-										if (Drone.can_build(ally)) {
-											Game.unit_command(ally, Abilities.ATTACK, u.unit());
-											continue enemy_loop;
-										}
+								}
+								if (attackers >= 2) continue enemy_loop;
+								for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+									if (Drone.can_build(ally) && ally.unit().getHealth().orElse((float) 0) > 15) {
+										Game.unit_command(ally, Abilities.ATTACK, u.unit());
+										continue enemy_loop;
 									}
 								}
 							}

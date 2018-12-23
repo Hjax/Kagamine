@@ -11,6 +11,7 @@ import com.github.ocraft.s2client.protocol.game.Race;
 public class Main {
 	    public static void main(String[] args) {
 			Kagamine bot = new Kagamine();
+			Nothing bot2 = new Nothing();
 			S2Coordinator s2Coordinator;
 			System.out.println("Starting regular game");
 			System.out.println("Enter the race you would like the human to play");
@@ -38,9 +39,9 @@ public class Main {
 					.loadSettings(args)
 					.setRealtime(false)
 					.setParticipants(
-							// S2Coordinator.createParticipant(choice, bot2),
-							S2Coordinator.createParticipant(Race.ZERG, bot),
-							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
+							S2Coordinator.createParticipant(choice, bot2),
+							S2Coordinator.createParticipant(Race.ZERG, bot))//,
+						//	S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
 					.launchStarcraft()
 					.startGame(LocalMap.of(Paths.get("BlueshiftLE.SC2Map")));
 			while (s2Coordinator.update()) {

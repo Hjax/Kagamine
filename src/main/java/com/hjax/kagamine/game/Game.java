@@ -26,6 +26,7 @@ import com.github.ocraft.s2client.protocol.query.QueryBuildingPlacement;
 import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
 import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.Unit;
 import com.hjax.kagamine.Constants;
@@ -187,6 +188,16 @@ public class Game {
 	
 	public static int army_supply() {
 		return observation.getFoodArmy();
+	}
+	
+	public static float completed_army_supply() {
+		float result = 0;
+		for (UnitInPool u:  get_units()) {
+			if (u.unit().getAlliance() == Alliance.SELF && is_combat(u.unit().getType()) && u.unit().getBuildProgress() > 0.999) {
+				result += get_unit_type_data().get(u.unit().getType()).getFoodRequired().orElse((float) 0);
+			}
+		}
+		return result;
 	}
 	
 	public static int minerals() {
