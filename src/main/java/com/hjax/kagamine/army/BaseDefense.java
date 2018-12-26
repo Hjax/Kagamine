@@ -26,7 +26,7 @@ public class BaseDefense {
 			float flyer_supply = 0;
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
-				if (b.has_friendly_command_structure() && b.location.distance(average) < 15) {
+				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && b.location.distance(average) < 15) {
 					for (UnitInPool enemy : enemy_squad) {
 						if (enemy.unit().getFlying().orElse(false)) {
 							flyer_supply += Game.get_unit_type_data().get(enemy.unit().getType()).getFoodRequired().orElse((float) 0);

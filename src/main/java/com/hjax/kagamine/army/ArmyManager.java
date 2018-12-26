@@ -111,7 +111,7 @@ public class ArmyManager {
 							if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
 						}
 					}
-					if (best > 15) Game.unit_command(ally, Abilities.STOP);
+					if (best > 30) Game.unit_command(ally, Abilities.STOP);
 					if (ally.unit().getHealth().orElse((float) 0) < 6) Game.unit_command(ally, Abilities.STOP);
 				}
 			}

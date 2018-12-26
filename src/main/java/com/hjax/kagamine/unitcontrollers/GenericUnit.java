@@ -34,9 +34,7 @@ public class GenericUnit {
 					}
 				}
 			}
-		}
-		
-		if (BaseDefense.assignments.containsKey(u.unit().getTag())) {
+		} else if (BaseDefense.assignments.containsKey(u.unit().getTag())) {
 			Game.unit_command(u, Abilities.ATTACK, BaseDefense.assignments.get(u.getTag()));
 		}
 		

@@ -72,7 +72,7 @@ public class BuildExecutor {
 				Build.pull_off_gas = false;
 			}
 			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count(Alliance.SELF) < 3) {
-				if (count(Units.ZERG_SPINE_CRAWLER) < 4 && !Wisdom.cannon_rush() && Build.scout) {
+				if (count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
 					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count(Alliance.SELF) > 1 || Wisdom.proxy_detected())) {
 						if (Wisdom.all_in_detected() || Wisdom.proxy_detected() || (count(Units.ZERG_SPINE_CRAWLER) < 1 && Wisdom.aggression_detected())) {
 							if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
@@ -357,10 +357,11 @@ public class BuildExecutor {
 		if (Game.get_opponent_race() == Race.ZERG) {
 			if (count(Units.ZERG_BANELING) == 0 && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
+		if (Wisdom.ahead()) return true;
 		int target = 2 + 2 * count(Units.ZERG_QUEEN);
 		if (Game.get_opponent_race() == Race.ZERG) target = 10;
 		if (Wisdom.all_in_detected()) target = 10;
-		if (Wisdom.proxy_detected()) target = 20;
+		if (Wisdom.proxy_detected()) target = 10;
 		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < 4 * ThreatManager.seen.size())) {
 			if (next_army_unit() != Units.INVALID) {
 				return true;

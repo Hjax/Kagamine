@@ -37,15 +37,18 @@ public class BuildPlanner {
 			Build.ideal_workers = 14;
 			Build.upgrades = new ArrayList<>();
 		}
-		if ((BuildExecutor.count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) || (Game.get_opponent_race() == Race.TERRAN && Wisdom.proxy_detected())) {
-			do_ravager_all_in();
-			if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {
-				for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
-					if (u.unit().getBuildProgress() < 0.999) {
-						Game.unit_command(u, Abilities.CANCEL);
-						for (Base b: BaseManager.bases) {
-							if (b.location.distance(u.unit().getPosition().toPoint2d()) < 4) {
-								b.set_walking_drone(null);
+		
+		if (!is_all_in) {
+			if ((BuildExecutor.count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) || Wisdom.proxy_detected()) {
+				do_ravager_all_in();
+				if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {
+					for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
+						if (u.unit().getBuildProgress() < 0.999) {
+							Game.unit_command(u, Abilities.CANCEL);
+							for (Base b: BaseManager.bases) {
+								if (b.location.distance(u.unit().getPosition().toPoint2d()) < 4) {
+									b.set_walking_drone(null);
+								}
 							}
 						}
 					}
@@ -62,9 +65,10 @@ public class BuildPlanner {
 			Build.max_queens = -1;
 			Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2);
 		}
-		if (is_all_in && Game.get_opponent_race() == Race.PROTOSS && !Wisdom.cannon_rush() && GameInfoCache.count_friendly(Units.ZERG_RAVAGER) < 2) {
+		if (is_all_in && Game.get_opponent_race() == Race.PROTOSS && !Wisdom.cannon_rush() && !Wisdom.proxy_detected() && GameInfoCache.count_friendly(Units.ZERG_RAVAGER) < 2) {
 			is_all_in = false;
 			Build.push_supply = 185;
+			Game.chat("Our counter was held");
 		}
 		if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) hunter_killer();
 		if (Game.get_opponent_race() == Race.PROTOSS) {
@@ -74,6 +78,7 @@ public class BuildPlanner {
 					GameInfoCache.count_enemy(Units.PROTOSS_MOTHERSHIP) > 0 ||
 					GameInfoCache.count_enemy(Units.PROTOSS_STARGATE) > 0) {
 				if (Build.composition.contains(Units.ZERG_ROACH)) {
+					Game.chat("Mass hydra against protoss air");
 					Build.build = new ArrayList<>();
 					Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 					Build.ideal_hatches = -1;
@@ -89,6 +94,7 @@ public class BuildPlanner {
 
 
 	private static void do_ravager_all_in() {
+		Game.chat("Doing Ravager all in");
 		is_all_in = true;
 		Build.build = new ArrayList<>();
 				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
@@ -104,6 +110,7 @@ public class BuildPlanner {
 	}
 	
 	private static void hunter_killer() {
+		Game.chat("Switching to mutas to kill floating structures");
 		Build.build = new ArrayList<>();
 				Build.composition = Collections.singletonList(Units.ZERG_MUTALISK);
 				Build.ideal_gases = 6;
