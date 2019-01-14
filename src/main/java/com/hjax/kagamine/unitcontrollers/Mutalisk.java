@@ -15,6 +15,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
+import com.hjax.kagamine.army.BaseDefense;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 
@@ -122,54 +123,60 @@ public class Mutalisk {
 		float mutas = 0;
 
 		boolean stutter = false;
-		for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (enemy.isAlive() && enemy.unit().getDisplayType() != DisplayType.SNAPSHOT) {
-				double dist = enemy.unit().getPosition().toPoint2d().distance(muta.unit().getPosition().toPoint2d());
-				if (dist < 12) {
-					if (dist <= 3) stutter = true;
-					if (enemy.unit().getType() == Units.TERRAN_MARINE) {
-						marines++;
-					}
-					else if (enemy.unit().getType() == Units.TERRAN_MEDIVAC) {
-						medivacs++;
-					}
-					else if (threats.containsKey(enemy.unit().getType())) {
-						if (!Game.is_structure(enemy.unit().getType()) || enemy.unit().getBuildProgress() > 0.999) {
-							threat += threats.get(enemy.unit().getType()) * enemy.unit().getHealth().orElse((float) 0) / enemy.unit().getHealthMax().get();
-						}
-					}
-				}
-			}
+		
+		if (BaseDefense.assignments.containsKey(muta.unit().getTag())) {
+			Game.unit_command(muta, Abilities.ATTACK, BaseDefense.assignments.get(muta.getTag()));
 		}
-		if (stutter && muta.unit().getWeaponCooldown().get() < 0.01) {
-			Game.unit_command(muta, Abilities.HOLD_POSITION);
-		} else {
-			medivacs = Math.min(marines, medivacs);
-			threat += marines + marines * medivacs * 0.1;
-			for (UnitInPool mutaf: GameInfoCache.get_units(Alliance.SELF)) {
-				if (mutaf.unit().getPosition().toPoint2d().distance(muta.unit().getPosition().toPoint2d()) < 8) {
-					mutas++;
-				}
-			}
-			if (Game.has_upgrade(Upgrades.ZERG_FLYER_WEAPONS_LEVEL1)) mutas = (float) Math.pow(mutas, 1.13);
-			else if (Game.has_upgrade(Upgrades.ZERG_FLYER_WEAPONS_LEVEL2)) mutas = (float) Math.pow(mutas, 1.4);
-			else mutas = (float) Math.pow(mutas, 1.1);
-
-			threat -= mutas;
-			UnitInPool best = null;
-			if (threat < 0) {
-				for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (enemy.unit().getPosition().toPoint2d().distance(muta.unit().getPosition().toPoint2d()) < 11) {
-						if (best == null || get_score(enemy.unit().getType()) > get_score(best.unit().getType())) {
-							best = enemy;
+		else {
+			for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (enemy.isAlive() && enemy.unit().getDisplayType() != DisplayType.SNAPSHOT) {
+					double dist = enemy.unit().getPosition().toPoint2d().distance(muta.unit().getPosition().toPoint2d());
+					if (dist < 12) {
+						if (dist <= 3) stutter = true;
+						if (enemy.unit().getType() == Units.TERRAN_MARINE) {
+							marines++;
+						}
+						else if (enemy.unit().getType() == Units.TERRAN_MEDIVAC) {
+							medivacs++;
+						}
+						else if (threats.containsKey(enemy.unit().getType())) {
+							if (!Game.is_structure(enemy.unit().getType()) || enemy.unit().getBuildProgress() > 0.999) {
+								threat += threats.get(enemy.unit().getType()) * enemy.unit().getHealth().orElse((float) 0) / enemy.unit().getHealthMax().get();
+							}
 						}
 					}
 				}
 			}
-			if (best != null) {
-				Game.unit_command(muta, Abilities.ATTACK, best.unit());
+			if (stutter && muta.unit().getWeaponCooldown().get() < 0.01) {
+				Game.unit_command(muta, Abilities.HOLD_POSITION);
 			} else {
-				pressure(muta);
+				medivacs = Math.min(marines, medivacs);
+				threat += marines + marines * medivacs * 0.1;
+				for (UnitInPool mutaf: GameInfoCache.get_units(Alliance.SELF)) {
+					if (mutaf.unit().getPosition().toPoint2d().distance(muta.unit().getPosition().toPoint2d()) < 8) {
+						mutas++;
+					}
+				}
+				if (Game.has_upgrade(Upgrades.ZERG_FLYER_WEAPONS_LEVEL1)) mutas = (float) Math.pow(mutas, 1.13);
+				else if (Game.has_upgrade(Upgrades.ZERG_FLYER_WEAPONS_LEVEL2)) mutas = (float) Math.pow(mutas, 1.4);
+				else mutas = (float) Math.pow(mutas, 1.1);
+
+				threat -= mutas;
+				UnitInPool best = null;
+				if (threat < 0) {
+					for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+						if (enemy.unit().getPosition().toPoint2d().distance(muta.unit().getPosition().toPoint2d()) < 11) {
+							if (best == null || get_score(enemy.unit().getType()) > get_score(best.unit().getType())) {
+								best = enemy;
+							}
+						}
+					}
+				}
+				if (best != null) {
+					Game.unit_command(muta, Abilities.ATTACK, best.unit());
+				} else {
+					pressure(muta);
+				}
 			}
 		}
 	}

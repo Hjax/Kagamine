@@ -57,7 +57,7 @@ public class BuildExecutor {
 			}
 			
 			// TODO make this less of a hack
-			if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && !(GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPAWNING_POOL).get(0).unit().getOrders().size() == 0) && Build.pull_off_gas) {
+			if ((count(Units.ZERG_DRONE) <= 15 && !Build.pull_off_gas) || (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && !(GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPAWNING_POOL).get(0).unit().getOrders().size() == 0) && Build.pull_off_gas)) {
 				pulled_off_gas = true;
 				for (UnitInPool drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 					if (!(drone.unit().getOrders().size() == 0) && 
@@ -80,16 +80,6 @@ public class BuildExecutor {
 							}
 							Game.purchase(Units.ZERG_SPINE_CRAWLER);
 						}
-					}
-				}
-			}
-			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count(Alliance.SELF) < 3) {
-				if (count(Units.ZERG_SPINE_CRAWLER) < 1 && Game.get_opponent_race() == Race.ZERG && BaseManager.base_count(Alliance.SELF) > 1) {
-					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 2 || Wisdom.proxy_detected())) {
-						if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
-							BaseManager.build(Units.ZERG_SPINE_CRAWLER);
-						}
-						Game.purchase(Units.ZERG_SPINE_CRAWLER);
 					}
 				}
 			}
@@ -144,8 +134,9 @@ public class BuildExecutor {
 
 			TechManager.on_frame();
 
-			if (!pulled_off_gas && (count(Units.ZERG_DRONE) > Build.tech_drones || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25))) {
-				for (UnitType u: Build.composition) {
+
+			for (UnitType u: Build.composition) {
+				if (!pulled_off_gas && (count(Units.ZERG_DRONE) > Build.tech_drones || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && Game.get_opponent_race() == Race.ZERG && count(Units.ZERG_DRONE) >= 17)) {
 					if (Balance.has_tech_requirement(u)) {
 						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
@@ -202,8 +193,8 @@ public class BuildExecutor {
 					}
 				}
 			}
-			
-			if (!ThreatManager.under_attack() || Wisdom.cannon_rush()) {
+
+			if (!ThreatManager.under_attack() || Wisdom.cannon_rush() || Wisdom.proxy_detected()) {
 				if (Game.minerals() > 25 && Game.gas() > 75 && GameInfoCache.count_friendly(Units.ZERG_ROACH) > 0 && Build.composition.contains(Units.ZERG_RAVAGER)) {
 					for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ROACH)) {
 						Game.unit_command(u, Abilities.MORPH_RAVAGER);
@@ -312,6 +303,7 @@ public class BuildExecutor {
 		for (UnitType u: Build.composition) {
 			if (u == Units.ZERG_BANELING) continue;
 			if (u == Units.ZERG_RAVAGER) continue;
+			if (u == Units.ZERG_MUTALISK && count(Units.ZERG_MUTALISK) >= 10) continue;
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
 				if (best == Units.INVALID) best = u;
 				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {
@@ -359,7 +351,7 @@ public class BuildExecutor {
 		}
 		if (Wisdom.ahead()) return true;
 		int target = 2 + 2 * count(Units.ZERG_QUEEN);
-		if (Game.get_opponent_race() == Race.ZERG) target = 10;
+		if (Game.get_opponent_race() == Race.ZERG) target = 15;
 		if (Wisdom.all_in_detected()) target = 10;
 		if (Wisdom.proxy_detected()) target = 10;
 		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < 4 * ThreatManager.seen.size())) {

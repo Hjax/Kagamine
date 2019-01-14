@@ -43,6 +43,8 @@ public class BaseManager {
 				b.location = main.unit().getPosition().toPoint2d();
 			}
 		}
+		
+		
 		for (int i = 0; i < bases.size(); i++) {
 			for (int j = 0; j < bases.size(); j++) {
 				Point2d first = bases.get(i).location;
@@ -393,7 +395,7 @@ public class BaseManager {
 			if (unit.unit().getType().toString().toLowerCase().contains("mineral") || unit.unit().getType().toString().toLowerCase().contains("geyser")) {
 				for (Set<UnitInPool> lines : mineral_lines) {
 					for (UnitInPool patch : lines) {
-						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 14) {
+						if (patch.unit().getPosition().distance(unit.unit().getPosition()) < 14 && Math.abs(Game.height(patch.unit().getPosition().toPoint2d()) - Game.height(unit.unit().getPosition().toPoint2d())) < .1) {
 							lines.add(unit);
 							continue outer;
 						}

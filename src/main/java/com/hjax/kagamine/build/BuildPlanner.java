@@ -38,7 +38,7 @@ public class BuildPlanner {
 			Build.upgrades = new ArrayList<>();
 		}
 		
-		if (!is_all_in) {
+		if (!is_all_in && Game.get_opponent_race() != Race.ZERG) {
 			if ((BuildExecutor.count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) || Wisdom.proxy_detected()) {
 				do_ravager_all_in();
 				if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {
@@ -145,13 +145,13 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_ROACH);
-				Build.ideal_hatches = 3;
+				Build.ideal_hatches = -1;
 				Build.scout = false;
 				Build.push_supply = 140;
 				Build.ideal_gases = 4;
 				Build.ideal_workers = 65;
 				Build.pull_off_gas = false;
-				Build.tech_drones = 21;
+				Build.tech_drones = 25;
 				Build.max_queens = -1;
 				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL1);
 				break;			
@@ -160,7 +160,7 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ULTRALISK);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK, Units.ZERG_ULTRALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.ideal_gases = 7;
