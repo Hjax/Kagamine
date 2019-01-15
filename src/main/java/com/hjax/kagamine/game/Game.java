@@ -298,13 +298,13 @@ public class Game {
 		else if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
 			minerals = Math.max(minerals - 50, 0);
 		}
-		return minerals <= minerals() && gas <= gas();
+		return (minerals <= minerals() || minerals == 0) && (gas <= gas() || gas == 0);
 	}
 	
 	public static boolean can_afford(Upgrade u) {
 		int minerals = get_upgrade_data().get(u).getMineralCost().orElse(0);
 		int gas = get_upgrade_data().get(u).getVespeneCost().orElse(0);
-		return minerals <= minerals() && gas <= gas();
+		return (minerals <= minerals() || minerals == 0) && (gas <= gas() || gas == 0);
 	}
 	
 	public static boolean is_town_hall(UnitType u) {
