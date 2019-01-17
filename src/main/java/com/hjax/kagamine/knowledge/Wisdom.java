@@ -33,12 +33,12 @@ public class Wisdom {
 	public static boolean all_in_detected() {
 		if (Game.army_supply() >= 30) return false;
 		int t1 = GameInfoCache.count_enemy(Units.TERRAN_BARRACKS) + GameInfoCache.count_enemy(Units.PROTOSS_GATEWAY);
-		return t1 >= 3 * enemy_bases() && enemy_bases() != 0;
+		return t1 >= 3 * Math.max(enemy_bases(), 1);
 	}
 	public static boolean aggression_detected() {
 		if (Game.army_supply() >= 30) return false;
 		int t1 = GameInfoCache.count_enemy(Units.TERRAN_BARRACKS) + GameInfoCache.count_enemy(Units.PROTOSS_GATEWAY);
-		return t1 >= 2 * enemy_bases() && enemy_bases() == 1;
+		return t1 >= 2 * Math.max(enemy_bases(), 1);
 	}
 	public static int enemy_bases() {
 		int result = 0;
