@@ -55,7 +55,7 @@ public class BuildPlanner {
 				}
 			}
 		}
-		if (is_all_in && Game.get_opponent_race() == Race.PROTOSS && !Wisdom.cannon_rush() && !Wisdom.proxy_detected() && GameInfoCache.count_friendly(Units.ZERG_RAVAGER) > 6) {
+		if (is_all_in && Game.get_opponent_race() == Race.PROTOSS && !Wisdom.cannon_rush() && !Wisdom.proxy_detected() && (GameInfoCache.count_friendly(Units.ZERG_RAVAGER) + GameInfoCache.count_friendly(Units.ZERG_ROACH)) > 6) {
 			Build.build = new ArrayList<>();
 			Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			Build.ideal_hatches = -1;

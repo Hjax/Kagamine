@@ -67,7 +67,7 @@ public class BuildExecutor {
 					}
 				}
 			}
-			if (count(Units.ZERG_DRONE) > 40 && pulled_off_gas) {
+			if ((count(Units.ZERG_DRONE) > 40 && pulled_off_gas) || !Build.pull_off_gas) {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;
 			}
@@ -140,7 +140,7 @@ public class BuildExecutor {
 					if (Balance.has_tech_requirement(u)) {
 						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
-								if (BaseManager.base_count(Alliance.SELF) >= 3 && count(Units.ZERG_DRONE) > 30) {
+								if (BaseManager.base_count(Alliance.SELF) >= 2) {
 									if (Game.minerals() < 150 && Game.gas() > 100) return;
 									if (Game.can_afford(Balance.next_tech_requirement(u))) {
 										for (Base b: BaseManager.bases) {
@@ -319,6 +319,9 @@ public class BuildExecutor {
 	public static boolean should_build_queens() {
 		if (Wisdom.worker_rush()) return false;
 		if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) return false;
+		
+		if (Build.composition.contains(Units.ZERG_QUEEN) && count(Units.ZERG_QUEEN) < 25) return true;
+		
 		int queen_target = 0;
 		if (Build.max_queens == -1) {
 			if (count(Units.ZERG_HATCHERY) < 3) {

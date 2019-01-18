@@ -28,6 +28,7 @@ public class Mutalisk {
 		scores.put(Units.TERRAN_MEDIVAC, 2);
 		scores.put(Units.TERRAN_VIKING_FIGHTER, 3);
 		scores.put(Units.TERRAN_MARINE, 3);
+		scores.put(Units.TERRAN_CYCLONE, 4);
 		scores.put(Units.TERRAN_LIBERATOR, 5);
 		scores.put(Units.TERRAN_MISSILE_TURRET, 6);
 		scores.put(Units.TERRAN_BUNKER, 6);
@@ -45,6 +46,7 @@ public class Mutalisk {
 		
 		threats.put(Units.TERRAN_MISSILE_TURRET, 5);
 		threats.put(Units.TERRAN_THOR, 15);
+		threats.put(Units.TERRAN_CYCLONE, 3);
 		threats.put(Units.TERRAN_VIKING_FIGHTER, 3);
 		threats.put(Units.TERRAN_GHOST, 3);
 		threats.put(Units.TERRAN_LIBERATOR, 4);
