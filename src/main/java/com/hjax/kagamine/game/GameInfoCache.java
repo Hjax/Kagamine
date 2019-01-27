@@ -21,7 +21,7 @@ import com.hjax.kagamine.Constants;
 public class GameInfoCache {
 	
 	static Map<Ability, Integer> production = new HashMap<>();
-	static Map<Tag, UnitInPool> all_units = new HashMap<>();
+	public static Map<Tag, UnitInPool> all_units = new HashMap<>();
 	
 	static Map<UnitType, Integer> counts_friendly = new HashMap<>();
 	static Map<UnitType, Integer> counts_enemy = new HashMap<>();

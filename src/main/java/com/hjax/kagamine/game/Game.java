@@ -21,6 +21,7 @@ import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
+import com.github.ocraft.s2client.protocol.observation.raw.Visibility;
 import com.github.ocraft.s2client.protocol.query.AvailableAbilities;
 import com.github.ocraft.s2client.protocol.query.QueryBuildingPlacement;
 import com.github.ocraft.s2client.protocol.response.ResponseGameInfo;
@@ -62,7 +63,7 @@ public class Game {
 	}
 	
 	public static void on_frame() {
-		
+
 	}
 	
 	public static void end_frame() {
@@ -158,6 +159,10 @@ public class Game {
 		if (Constants.CHAT) {
 			action.sendChat(s, Channel.BROADCAST);
 		}
+	}
+	
+	public static boolean isVisible(Point2d p) {
+		return observation.getVisibility(p) == Visibility.VISIBLE;
 	}
 	
 	public static double get_game_time() {
@@ -380,5 +385,17 @@ public class Game {
 	
 	public static boolean is_changeling(UnitType u) {
 		return u.toString().toLowerCase().contains("changeling");
+	}
+	
+	public static boolean is_gas(UnitType u) {
+		return u.toString().toLowerCase().contains("geyser");
+	}
+	
+	public static boolean is_mineral(UnitType u) {
+		return u.toString().toLowerCase().contains("mineral");
+	}
+	
+	public static boolean is_resource(UnitType u) {
+		return is_mineral(u) || is_gas(u);
 	}
 }

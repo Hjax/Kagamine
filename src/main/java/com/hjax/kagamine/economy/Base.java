@@ -9,7 +9,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 
 public class Base {
 	public Point2d location;
-	ArrayList<UnitInPool> gases;
+	public ArrayList<UnitInPool> gases;
 	public ArrayList<UnitInPool> minerals;
 	
 	public UnitInPool walking_drone = null;
