@@ -72,7 +72,10 @@ public class ResourceTracking {
 		}
 	}
 	
+	private static int previous_estimate_mins = 0;
+	private static int previous_estimate_frame_mins = 0;
 	public static int estimate_enemy_minerals() {
+		if (previous_estimate_frame_mins == Game.get_frame()) return previous_estimate_mins;
 		int total = 0;
 		for (Tag u : recent_value.keySet()) {
 			if (!gas.contains(u)) {
@@ -87,10 +90,15 @@ public class ResourceTracking {
 				}
 			}
 		}
+		previous_estimate_frame_mins = (int) Game.get_frame();
+		previous_estimate_mins = total;
 		return total;
 	}
 	
+	private static int previous_estimate_gas = 0;
+	private static int previous_estimate_frame_gas = 0;
 	public static int estimate_enemy_gas() {
+		if (previous_estimate_frame_gas == Game.get_frame()) return previous_estimate_gas;
 		int total = 0;
 		for (Tag u : recent_value.keySet()) {
 			if (gas.contains(u)) {
@@ -105,6 +113,8 @@ public class ResourceTracking {
 				}
 			}
 		}
+		previous_estimate_frame_gas = (int) Game.get_frame();
+		previous_estimate_gas = total;
 		return total;
 	}
 }
