@@ -32,7 +32,7 @@ public class ThreatManager {
 		for (UnitInPool u : GameInfoCache.get_units(Alliance.ENEMY)) {
 			for (Base b: BaseManager.bases) {
 				if (!b.has_friendly_command_structure()) continue;
-				if (b.location.distance(u.unit().getPosition().toPoint2d()) < 30 && u.unit().getType() != Units.PROTOSS_ADEPT_PHASE_SHIFT) {
+				if (b.location.distance(u.unit().getPosition().toPoint2d()) < Constants.THREAT_DISTANCE && u.unit().getType() != Units.PROTOSS_ADEPT_PHASE_SHIFT) {
 					seen.put(u.getTag(), 0);
 				}
 			}

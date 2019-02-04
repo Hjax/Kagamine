@@ -26,6 +26,8 @@ public class UnitManager {
 				Mutalisk.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_RAVAGER) {
 				Ravager.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_BANELING) {
+				Baneling.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_EGG) {
 			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR) {
 			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR_QUEEN) {

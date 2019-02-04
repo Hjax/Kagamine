@@ -90,6 +90,21 @@ public class BuildPlanner {
 				}
 			}
 		}
+
+		if (GameInfoCache.count_enemy(Units.TERRAN_BATTLECRUISER) > 0) {
+			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
+					new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
+					new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
+					new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
+			Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+			Build.ideal_hatches = -1;
+			Build.scout = true;
+			Build.push_supply = 185;
+			Build.pull_off_gas = true;
+			Build.ideal_workers = 70;
+			Build.ideal_gases = 7;
+			Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2);
+		}
 	}
 
 
@@ -160,7 +175,7 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK, Units.ZERG_ULTRALISK);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_ULTRALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.ideal_gases = 7;

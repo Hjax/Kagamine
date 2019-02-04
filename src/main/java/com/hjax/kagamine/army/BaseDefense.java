@@ -12,6 +12,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Tag;
+import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.ControlGroups;
@@ -30,7 +31,7 @@ public class BaseDefense {
 			float flyer_supply = 0;
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
-				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && b.location.distance(average) < 20) {
+				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && b.location.distance(average) < Constants.THREAT_DISTANCE) {
 					for (UnitInPool enemy : enemy_squad) {
 						if (enemy.unit().getFlying().orElse(false)) {
 							flyer_supply += Game.get_unit_type_data().get(enemy.unit().getType()).getFoodRequired().orElse((float) 0);
