@@ -30,7 +30,7 @@ public class BaseDefense {
 			float flyer_supply = 0;
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
-				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && b.location.distance(average) < 30) {
+				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && b.location.distance(average) < 20) {
 					for (UnitInPool enemy : enemy_squad) {
 						if (enemy.unit().getFlying().orElse(false)) {
 							flyer_supply += Game.get_unit_type_data().get(enemy.unit().getType()).getFoodRequired().orElse((float) 0);
@@ -42,12 +42,13 @@ public class BaseDefense {
 					float assigned_supply = 0;
 					while (assigned_supply < ground_supply * 1.5 || ground_supply > 30) {
 						UnitInPool current = closest_free(average, false);
+						if (current == null) current = closest_free(average, true);
 						if (current == null) break;
 						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);
 						assigned.add(current);
 					}
 					assigned_supply = 0;
-					while (assigned_supply < flyer_supply * 1.5 || flyer_supply > 30) {
+					while (assigned_supply < flyer_supply * 1 || flyer_supply > 30) {
 						UnitInPool current = closest_free(average, true);
 						if (current == null) break;
 						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);
@@ -56,7 +57,9 @@ public class BaseDefense {
 					Point2d center = average_point_zergling(assigned, average);
 					for (UnitInPool u: assigned) {
 						assignments.put(u.getTag(), average);
-						surroundCenter.put(u.getTag(), center);
+						if (center.distance(Point2d.of(0, 0)) > 1) {
+							surroundCenter.put(u.getTag(), center);
+						}
 						Game.draw_line(average, u.unit().getPosition().toPoint2d(), Color.GREEN);
 						Game.draw_line(center, u.unit().getPosition().toPoint2d(), Color.RED);
 					}
@@ -70,7 +73,7 @@ public class BaseDefense {
 	public static UnitInPool closest_free(Point2d p, boolean aa) {
 		UnitInPool best = null;
 		for (UnitInPool ally : ControlGroups.get(0)) {
-			if (aa && !Game.hits_air(ally.unit().getType())) continue;
+			if (aa != Game.hits_air(ally.unit().getType())) continue;
 			if (!Game.is_structure(ally.unit().getType()) && Game.is_combat(ally.unit().getType())) {
 				if (!used.contains(ally.getTag())) {
 					if (best == null || (best.unit().getPosition().toPoint2d().distance(p) / Game.get_unit_type_data().get(best.unit().getType()).getMovementSpeed().orElse((float) 1)) > (ally.unit().getPosition().toPoint2d().distance(p)) / Game.get_unit_type_data().get(ally.unit().getType()).getMovementSpeed().orElse((float) 1)) {

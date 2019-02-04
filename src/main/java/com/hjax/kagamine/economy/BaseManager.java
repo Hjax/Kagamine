@@ -363,6 +363,12 @@ public class BaseManager {
 		return forward_base;
 	}
 	
+	static Point2d[] get_spore_triangle_placement_locations(Base b) {
+		Point2d[] p = new Point2d[3];
+		// TODO complete
+		return p;
+	}
+	
 	static Point2d get_spore_placement_location(Base b) {
 		float x = 0;
 		float y = 0;

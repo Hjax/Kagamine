@@ -318,6 +318,7 @@ public class BuildExecutor {
 	
 	public static boolean should_build_queens() {
 		if (Wisdom.worker_rush()) return false;
+		if (ThreatManager.under_attack() && count(Units.ZERG_LARVA) > 0) return false; 
 		if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) return false;
 		
 		if (Build.composition.contains(Units.ZERG_QUEEN) && count(Units.ZERG_QUEEN) < 25) return true;
