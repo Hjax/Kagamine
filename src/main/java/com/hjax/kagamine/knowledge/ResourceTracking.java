@@ -8,8 +8,6 @@ import java.util.Set;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
-import com.github.ocraft.s2client.protocol.debug.Color;
-import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
@@ -65,10 +63,6 @@ public class ResourceTracking {
 					recent_value.put(u.getTag(), new ImmutablePair<>((int) Game.get_frame(), u.unit().getVespeneContents().orElse(0) + u.unit().getMineralContents().orElse(0)));
 				}
 			}
-		}
-		
-		if (Game.get_frame() % 100 == 0) {
-			Game.chat("Assumed minerals: " + Integer.toString(estimate_enemy_minerals()));
 		}
 	}
 	

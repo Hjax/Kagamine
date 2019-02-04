@@ -371,6 +371,14 @@ public class Game {
 	public static float army_lost() {
 		return Game.observation.getScore().getDetails().getLostMinerals().getArmy() + Game.observation.getScore().getDetails().getLostVespene().getArmy();
 	}
+	
+	public static int minerals_killed() {
+		return (int) (Game.observation.getScore().getDetails().getKilledMinerals().getArmy() + Game.observation.getScore().getDetails().getKilledMinerals().getEconomy() + Game.observation.getScore().getDetails().getKilledMinerals().getTechnology()) ;
+	}
+	
+	public static int gas_killed() {
+		return (int) (Game.observation.getScore().getDetails().getKilledVespene().getArmy() + Game.observation.getScore().getDetails().getKilledVespene().getEconomy() + Game.observation.getScore().getDetails().getKilledVespene().getTechnology()) ;
+	}
 
 	public static boolean hits_air(UnitType u) {
 		for (Weapon w: get_unit_type_data().get(u).getWeapons()) {

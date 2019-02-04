@@ -37,7 +37,7 @@ public class Main {
 			input.close();
 			s2Coordinator = S2Coordinator.setup()
 					.loadSettings(args)
-					.setRealtime(false)
+					.setRealtime(true)
 					.setParticipants(
 							S2Coordinator.createParticipant(choice, bot2),
 							S2Coordinator.createParticipant(Race.ZERG, bot))

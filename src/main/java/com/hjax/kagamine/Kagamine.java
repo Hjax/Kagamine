@@ -16,6 +16,7 @@ import com.hjax.kagamine.game.ControlGroups;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.MapAnalysis;
+import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.ResourceTracking;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.unitcontrollers.Creep;
@@ -44,12 +45,11 @@ public class Kagamine extends S2Agent{
 	@Override
 	public void onStep() {
 		long startTime = System.nanoTime();
-		//Inference.on_frame();
 		Game.start_frame(observation(), actions(), query(), debug());
 		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
 			GameInfoCache.start_frame();
 			ResourceTracking.on_frame();
-			//Inference.on_frame();
+			EnemyModel.on_frame();
 			Larva.start_frame();
 			ControlGroups.on_frame();
 			Scouting.on_frame();

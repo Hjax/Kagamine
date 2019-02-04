@@ -14,6 +14,8 @@ public class UnitManager {
 				Queen.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_DRONE) {
 				Drone.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_ZERGLING) {
+				Zergling.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_LARVA) {
 				Larva.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_EXTRACTOR) {

@@ -72,6 +72,9 @@ public class Balance {
 		if (overrides.containsKey(u)) {
 			return overrides.get(u);
 		}
-		return Game.get_unit_type_data().get(u).getTechRequirement().get();
+		if (Game.get_unit_type_data().get(u).getTechRequirement().isPresent()) {
+			return Game.get_unit_type_data().get(u).getTechRequirement().get();
+		}
+		return Units.INVALID;
 	}
 }
