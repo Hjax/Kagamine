@@ -39,7 +39,7 @@ public class BuildPlanner {
 		}
 		
 		if (!is_all_in && Game.get_opponent_race() != Race.ZERG) {
-			if ((BuildExecutor.count(Units.ZERG_DRONE) < 30 && Wisdom.cannon_rush()) || Wisdom.proxy_detected()) {
+			if (BuildExecutor.count(Units.ZERG_DRONE) < 30 && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
 				do_ravager_all_in();
 				if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {
 					for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
@@ -70,7 +70,9 @@ public class BuildPlanner {
 			Build.push_supply = 185;
 			Game.chat("Our counter was held");
 		}
-		if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) hunter_killer();
+		if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) {
+			hunter_killer();
+		}
 		if (Game.get_opponent_race() == Race.PROTOSS) {
 			if (GameInfoCache.count_enemy(Units.PROTOSS_CARRIER) > 0 ||
 					GameInfoCache.count_enemy(Units.PROTOSS_VOIDRAY) > 0 || 
@@ -89,21 +91,6 @@ public class BuildPlanner {
 					Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2);
 				}
 			}
-		}
-
-		if (GameInfoCache.count_enemy(Units.TERRAN_BATTLECRUISER) > 0) {
-			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-					new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
-					new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
-					new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-			Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
-			Build.ideal_hatches = -1;
-			Build.scout = true;
-			Build.push_supply = 185;
-			Build.pull_off_gas = true;
-			Build.ideal_workers = 70;
-			Build.ideal_gases = 7;
-			Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2);
 		}
 	}
 
@@ -175,14 +162,14 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_ULTRALISK);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_HYDRALISK, Units.ZERG_ULTRALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
-				Build.ideal_gases = 7;
+				Build.ideal_gases = 8;
 				Build.push_supply = 190;
-				Build.ideal_workers = 80;
+				Build.ideal_workers = 85;
 				Build.pull_off_gas = true;
-				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.CENTRIFICAL_HOOKS, Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_MELEE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.CHITINOUS_PLATING, Upgrades.ANABOLIC_SYNTHESIS);
+				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.CENTRIFICAL_HOOKS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_MELEE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.CHITINOUS_PLATING, Upgrades.ANABOLIC_SYNTHESIS);
 				break;
 			default:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),

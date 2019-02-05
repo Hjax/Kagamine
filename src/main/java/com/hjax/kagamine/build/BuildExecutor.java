@@ -86,7 +86,7 @@ public class BuildExecutor {
 			
 			if (ThreatManager.is_safe(BaseManager.get_next_base().location) ) {
 				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 15 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && should_expand()) {
-					if ((count(Units.ZERG_DRONE) > ((BaseManager.base_count(Alliance.SELF) - 1) * 23) && BaseManager.base_count(Alliance.SELF) < 4) || Game.army_supply() > 100) {
+					if (((count(Units.ZERG_DRONE) > ((BaseManager.base_count(Alliance.SELF) - 1) * 23) && BaseManager.base_count(Alliance.SELF) < 4)) || count(Units.ZERG_DRONE) >= (Build.ideal_workers - 10)) {
 						if (!Game.can_afford(Units.ZERG_HATCHERY)) {
 							if (!BaseManager.get_next_base().has_walking_drone() && Game.minerals() > 100) {
 								UnitInPool drone = BaseManager.get_free_worker(BaseManager.get_next_base().location);
@@ -203,7 +203,7 @@ public class BuildExecutor {
 					}
 				}
 				if (Game.get_opponent_race() != Race.ZERG) {
-					if ((Game.minerals() > 25 && Game.gas() > 25 && (GameInfoCache.count_friendly(Units.ZERG_ZERGLING) >= 40) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) * 2 && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > 0 && Build.composition.contains(Units.ZERG_BANELING))) {
+					if ((Game.minerals() > 25 && Game.gas() > 25 && (GameInfoCache.count_friendly(Units.ZERG_ZERGLING) >= 20) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) * 2 && Build.composition.contains(Units.ZERG_BANELING))) {
 						for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ZERGLING)) {
 							Game.unit_command(u, Abilities.TRAIN_BANELING);
 							Game.spend(25, 25);
@@ -354,7 +354,7 @@ public class BuildExecutor {
 			if (count(Units.ZERG_BANELING) == 0 && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
 		if (Wisdom.ahead()) return true;
-		int target = 6 + 2 * count(Units.ZERG_QUEEN);
+		int target = 4 + 2 * count(Units.ZERG_QUEEN);
 		if (Game.get_opponent_race() == Race.ZERG) target = 15;
 		if (Wisdom.all_in_detected()) target = 10;
 		if (Wisdom.proxy_detected()) target = 10;
