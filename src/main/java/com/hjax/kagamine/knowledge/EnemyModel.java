@@ -18,6 +18,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 public class EnemyModel {
 	public static Set<Tag> registered = new HashSet<>();
 	public static Map<UnitType, Integer> counts = new HashMap<>();
+	public static Map<UnitType, Integer> inferred = new HashMap<>();
 	public static void on_frame() {
 		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (u.unit().getDisplayType() != DisplayType.SNAPSHOT && !registered.contains(u.getTag())) {
@@ -38,6 +39,7 @@ public class EnemyModel {
 					}
 				}
 				
+				inferred.put(u.unit().getType(), Math.max(inferred.getOrDefault(u.unit().getType(), 0) - 1, 0));
 				counts.put(u.unit().getType(), counts.getOrDefault(u.unit().getType(), 0) + 1);
 			}
 		}
@@ -47,8 +49,9 @@ public class EnemyModel {
 	
 	public static void update(UnitType u) {
 		if (u == Units.INVALID) return;
-		if (counts.getOrDefault(u, 0) == 0) {
-			counts.put(u, counts.getOrDefault(u, 0) + 1);
+		Game.chat("You have a " + u.toString());
+		if (counts.getOrDefault(u, 0) == 0 && inferred.getOrDefault(u, 0) == 0) {
+			inferred.put(u, inferred.getOrDefault(u, 0) + 1);
 		}
 		if (Game.get_unit_type_data().get(u).getTechRequirement().isPresent()) {
 			if (Game.get_unit_type_data().get(u).getTechRequirement().get() != Units.INVALID) {
@@ -62,6 +65,10 @@ public class EnemyModel {
 		for (UnitType u : counts.keySet()) {
 			res[0] += Game.get_unit_type_data().get(u).getMineralCost().orElse(0) * counts.get(u);
 			res[1] += Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) * counts.get(u);
+		}
+		for (UnitType u : inferred.keySet()) {
+			res[0] += Game.get_unit_type_data().get(u).getMineralCost().orElse(0) * inferred.get(u);
+			res[1] += Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) * inferred.get(u);
 		}
 		res[0] -= 1000; // take into account free stuff in spending
 		return res;
@@ -79,6 +86,7 @@ public class EnemyModel {
 		int[] alive = resourcesAlive();
 		int[] spent = resourcesSpent();
 		Game.chat("You have " + Integer.toString(alive[0]) + " minerals and " + Integer.toString(alive[1]) + " gas in living units");
+		Game.chat("You have " + Integer.toString(ResourceTracking.estimate_enemy_minerals()) + " minerals and " + Integer.toString(ResourceTracking.estimate_enemy_gas()) + " gas mined");
 		Game.chat("You have lost " + Integer.toString(Game.minerals_killed()) + " minerals and " + Integer.toString(Game.gas_killed()) + " gas");
 		Game.chat("You have " + Integer.toString(ResourceTracking.estimate_enemy_minerals() - spent[0]) + " minerals and " + Integer.toString(ResourceTracking.estimate_enemy_gas() - alive[1]) + " gas unaccounted for");
 	}
