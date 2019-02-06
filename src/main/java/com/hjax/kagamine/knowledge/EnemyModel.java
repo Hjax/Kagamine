@@ -8,7 +8,6 @@ import java.util.Set;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -43,7 +42,7 @@ public class EnemyModel {
 			}
 		}
 		
-		if (Game.get_frame() % (Constants.FRAME_SKIP * 50) == 0) printStats();
+		if (Game.get_frame() % (Constants.FRAME_SKIP * 100) == 0) printStats();
 	}
 	
 	public static void update(UnitType u) {
