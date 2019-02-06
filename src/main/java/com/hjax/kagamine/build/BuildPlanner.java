@@ -35,7 +35,21 @@ public class BuildPlanner {
 			Build.scout = false;
 			Build.push_supply = 30;
 			Build.ideal_workers = 14;
+			Build.tech_drones = 12;
 			Build.upgrades = new ArrayList<>();
+		}
+		
+		if (GameInfoCache.count_enemy(Units.ZERG_ZERGLING) > 0 && Game.get_frame() < 2700) {
+			Game.chat("Anti cheese ling flood");
+			Build.composition = Collections.singletonList(Units.ZERG_ZERGLING);
+			Build.ideal_gases = 1;
+			Build.ideal_hatches = 2;
+			Build.scout = false;
+			Build.push_supply = 50;
+			Build.ideal_workers = 16;
+			Build.pull_off_gas = true;
+			Build.max_queens = 1;
+			Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED);
 		}
 		
 		if (!is_all_in && Game.get_opponent_race() != Race.ZERG) {
@@ -167,7 +181,7 @@ public class BuildPlanner {
 				Build.scout = true;
 				Build.ideal_gases = 8;
 				Build.push_supply = 190;
-				Build.ideal_workers = 85;
+				Build.ideal_workers = 75;
 				Build.pull_off_gas = true;
 				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.CENTRIFICAL_HOOKS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_MELEE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.CHITINOUS_PLATING, Upgrades.ANABOLIC_SYNTHESIS);
 				break;

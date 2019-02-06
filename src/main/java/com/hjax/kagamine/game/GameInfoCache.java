@@ -147,8 +147,8 @@ public class GameInfoCache {
 	}
 	
 	public static boolean is_researching(Upgrade u) {
-		if (Game.get_abliity_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().isPresent()) {
-			if (production.getOrDefault(Game.get_abliity_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().get(), 0) > 0) {
+		if (Game.get_ability_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().isPresent()) {
+			if (production.getOrDefault(Game.get_ability_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().get(), 0) > 0) {
 				return true;
 			}
 		}

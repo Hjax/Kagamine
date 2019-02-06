@@ -249,7 +249,7 @@ public class Game {
 		return upgrade_data;
 	}
 	
-	public static Map<Ability, AbilityData> get_abliity_data() {
+	public static Map<Ability, AbilityData> get_ability_data() {
 		if (ability_data == null) {
 			ability_data = observation.getAbilityData(false);
 		}

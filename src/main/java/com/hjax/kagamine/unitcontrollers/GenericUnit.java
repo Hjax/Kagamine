@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.data.Weapon;
+import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
@@ -30,25 +32,28 @@ public class GenericUnit {
 							Vector2d offset = Utilities.direction_to(Vector2d.of(u.unit().getPosition().toPoint2d()), Vector2d.of(e.unit().getPosition().toPoint2d()));
 							Point2d target = Point2d.of(u.unit().getPosition().getX() - offset.x, u.unit().getPosition().getY() - offset.y);
 							Game.unit_command(u, Abilities.MOVE, target);
+							return;
 						}
 					}
 				}
 			}
 		} else if (BaseDefense.assignments.containsKey(u.unit().getTag())) {
 			Game.unit_command(u, Abilities.ATTACK, BaseDefense.assignments.get(u.getTag()));
+			return;
 		}
-		
-		if (u.unit().getOrders().size() != 0) return;
+				
 		if (Wisdom.cannon_rush()) return;
 		
 		if ((Game.supply() >= Build.push_supply || Wisdom.ahead()) && moveOut) {
 			if (ArmyManager.has_target) {
 				if (u.unit().getOrders().size() == 0) {
 					Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);
+					return;
 				}
 			} else {
 				if (u.unit().getOrders().size() == 0) {
 					Game.unit_command(u, Abilities.ATTACK, Game.get_game_info().findRandomLocation());
+					return;
 				}
 			}
 			
@@ -57,7 +62,7 @@ public class GenericUnit {
 			Base front = BaseManager.get_forward_base();
 			if (u.unit().getOrders().size() == 0) {
 				if (u.unit().getPosition().toPoint2d().distance(front.location) > 12) {
-					Game.unit_command(u, Abilities.ATTACK, front.location);
+					Game.unit_command(u, Abilities.MOVE, front.location);
 				}
 			}
 		}
