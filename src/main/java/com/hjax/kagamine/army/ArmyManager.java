@@ -106,12 +106,16 @@ public class ArmyManager {
 			double best = 9999;
 			if (!(ally.unit().getOrders().size() == 0)) {
 				if (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK) {
-					for (Base b : BaseManager.bases) {
+					if (Game.completed_army_supply() >= 2) {
+						Game.unit_command(ally, Abilities.STOP);
+						continue;
+					}
+ 					for (Base b : BaseManager.bases) {
 						if (b.has_friendly_command_structure()) {
 							if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
 						}
 					}
-					if (best > 20) Game.unit_command(ally, Abilities.STOP);
+					if (best > 10) Game.unit_command(ally, Abilities.STOP);
 					if (ally.unit().getHealth().orElse((float) 0) < 6) Game.unit_command(ally, Abilities.STOP);
 				}
 			}

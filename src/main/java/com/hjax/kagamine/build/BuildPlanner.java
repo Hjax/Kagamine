@@ -40,15 +40,15 @@ public class BuildPlanner {
 		}
 		
 		if (GameInfoCache.count_enemy(Units.ZERG_ZERGLING) > 0 && Game.get_frame() < 2700) {
-			Game.chat("Anti cheese ling flood");
-			Build.composition = Collections.singletonList(Units.ZERG_ZERGLING);
+			//Game.chat("Anti cheese ling flood");
+			Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
 			Build.ideal_gases = 1;
 			Build.ideal_hatches = 2;
 			Build.scout = false;
 			Build.push_supply = 50;
-			Build.ideal_workers = 16;
+			Build.ideal_workers = 19;
 			Build.pull_off_gas = true;
-			Build.max_queens = 1;
+			Build.max_queens = 2;
 			Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED);
 		}
 		
@@ -162,7 +162,7 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_ROACH);
 				Build.ideal_hatches = -1;
-				Build.scout = false;
+				Build.scout = true;
 				Build.push_supply = 140;
 				Build.ideal_gases = 4;
 				Build.ideal_workers = 65;

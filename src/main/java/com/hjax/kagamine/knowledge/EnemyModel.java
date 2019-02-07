@@ -44,7 +44,7 @@ public class EnemyModel {
 			}
 		}
 		
-		if (Game.get_frame() % (Constants.FRAME_SKIP * 100) == 0) printStats();
+		//if (Game.get_frame() % (Constants.FRAME_SKIP * 100) == 0) printStats();
 	}
 	
 	public static void update(UnitType u) {

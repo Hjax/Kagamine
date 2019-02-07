@@ -58,7 +58,7 @@ public class BaseDefense {
 					Point2d center = average_point_zergling(assigned, average);
 					for (UnitInPool u: assigned) {
 						assignments.put(u.getTag(), average);
-						if (center.distance(Point2d.of(0, 0)) > 1) {
+						if (center.distance(Point2d.of(0, 0)) > 1 && enemy_squad.size() * 2 <= assigned.size()) {
 							surroundCenter.put(u.getTag(), center);
 						}
 						Game.draw_line(average, u.unit().getPosition().toPoint2d(), Color.GREEN);
