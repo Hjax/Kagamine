@@ -45,7 +45,7 @@ public class BuildPlanner {
 			Build.ideal_gases = 1;
 			Build.ideal_hatches = 2;
 			Build.scout = false;
-			Build.push_supply = 50;
+			Build.push_supply = 40;
 			Build.ideal_workers = 19;
 			Build.pull_off_gas = true;
 			Build.max_queens = 2;

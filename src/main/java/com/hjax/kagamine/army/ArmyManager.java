@@ -8,6 +8,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
+import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Scouting;
@@ -107,7 +108,7 @@ public class ArmyManager {
 			if (!(ally.unit().getOrders().size() == 0)) {
 				if (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK) {
 					if (Game.completed_army_supply() >= 2) {
-						Game.unit_command(ally, Abilities.STOP);
+						EconomyManager.assign_worker(ally);
 						continue;
 					}
  					for (Base b : BaseManager.bases) {
@@ -115,8 +116,8 @@ public class ArmyManager {
 							if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
 						}
 					}
-					if (best > 10) Game.unit_command(ally, Abilities.STOP);
-					if (ally.unit().getHealth().orElse((float) 0) < 6) Game.unit_command(ally, Abilities.STOP);
+					if (best > 10) EconomyManager.assign_worker(ally);
+					if (ally.unit().getHealth().orElse((float) 0) <= 5) EconomyManager.assign_worker(ally);
 				}
 			}
 		}

@@ -339,7 +339,7 @@ public class BuildExecutor {
 		if (Game.supply() > 120) queen_target = Math.min(BaseManager.base_count(Alliance.SELF), 6);
 		if (Wisdom.proxy_detected()) {
 			queen_target = 1;
-			if (Game.minerals() > 400) {
+			if (Game.minerals() > 200) {
 				queen_target += 1;
 			}
 		}

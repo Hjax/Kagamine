@@ -9,5 +9,5 @@ public class Constants {
 	public static int CREEP_RESOLUTION = 5;
 	public static int ENEMY_SQUAD_DISTANCE = 6;
 	public static int RESOURCE_UPDATE_TIMER = 224;
-	public static int THREAT_DISTANCE = 20;
+	public static int THREAT_DISTANCE = 40;
 }

@@ -19,7 +19,7 @@ public class EnemySquadManager {
 		Set<Tag> parsed = new HashSet<>();
 		enemy_squads.clear();
 		for (UnitInPool a: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_structure(a.unit().getType())) continue;
+			if (Game.is_structure(a.unit().getType()) && !Game.is_combat(a.unit().getType())) continue;
 			if (!parsed.contains(a.getTag())) {
 				List<UnitInPool> open = new ArrayList<>();
 				Set<UnitInPool> squad = new HashSet<>();
