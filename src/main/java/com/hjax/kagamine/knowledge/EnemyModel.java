@@ -49,7 +49,6 @@ public class EnemyModel {
 	
 	public static void update(UnitType u) {
 		if (u == Units.INVALID) return;
-		Game.chat("You have a " + u.toString());
 		if (counts.getOrDefault(u, 0) == 0 && inferred.getOrDefault(u, 0) == 0) {
 			inferred.put(u, inferred.getOrDefault(u, 0) + 1);
 		}

@@ -39,8 +39,8 @@ public class MapAnalysis {
 		for (int x = (int) min.getX(); x < max.getX(); x ++) {
 			inner: for (int y = (int) min.getY(); y < max.getY(); y ++) {
 				if (air_safe[x][y]) {
-					for (int x_offset = -1; x_offset < 1; x_offset++) {
-						for (int y_offset = -1; y_offset < 1; y_offset++) {
+					for (int x_offset = -1; x_offset <= 1; x_offset++) {
+						for (int y_offset = -1; y_offset <= 1; y_offset++) {
 							if (x_offset != 0 && y_offset != 0) continue;
 							if (Math.abs(x_offset) + Math.abs(y_offset) == 2) continue;
 							if (!air_safe[x + x_offset][y + y_offset]) continue inner;
@@ -51,7 +51,15 @@ public class MapAnalysis {
 							continue inner;
 						}
 					}
-					overlord_spots.add(Point2d.of(x, y));
+					for (int x_offset = -2; x_offset <= 2; x_offset += 4) {
+						for (int y_offset = -2; y_offset <= 2; y_offset += 4) {
+							if (pathable[x + x_offset][y + y_offset]) {
+								overlord_spots.add(Point2d.of(x, y));
+								continue inner;
+							}
+						}
+					}
+					
 				}
 			}
 		}
