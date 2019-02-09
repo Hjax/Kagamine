@@ -2,7 +2,6 @@ package com.hjax.kagamine.game;
 
 import java.util.ArrayList;
 
-import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 
 public class MapAnalysis {
@@ -27,7 +26,7 @@ public class MapAnalysis {
 						if ((x_offset * x_offset + y_offset * y_offset) > 196) continue;
 						if (x + x_offset > max.getX() * 2 || x + x_offset < min.getX()) continue;
 						if (y + y_offset > max.getY() * 2 || y + y_offset < min.getY()) continue;
-						if (pathable[x + x_offset][y + y_offset] && height[x + x_offset][y + y_offset] < height[x][y] - 1) {
+						if (pathable[x + x_offset][y + y_offset] && height[x + x_offset][y + y_offset] > height[x][y] - 1) {
 							safe = false;
 							break scan;
 						}

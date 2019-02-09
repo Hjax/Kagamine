@@ -7,6 +7,7 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.BaseDefense;
 import com.hjax.kagamine.army.ThreatManager;
+import com.hjax.kagamine.build.Build;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
@@ -16,7 +17,7 @@ import com.hjax.kagamine.knowledge.Wisdom;
 public class Queen {
 	public static void on_frame(UnitInPool u) {
 		int tumors = GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_BURROWED) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_QUEEN);
-		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) != 2 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) != 2 || Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
+		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) != 2 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) != 2 || Wisdom.all_in_detected() || Wisdom.proxy_detected() || Build.ideal_workers < 30) {
 			for (Base b : BaseManager.bases) {
 				if (GameInfoCache.count_friendly(Units.ZERG_LARVA) < BaseManager.base_count(Alliance.SELF) * 3) {
 					if (b.has_queen() && b.queen == u && b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
