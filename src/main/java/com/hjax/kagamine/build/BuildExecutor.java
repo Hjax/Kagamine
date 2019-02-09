@@ -134,7 +134,6 @@ public class BuildExecutor {
 
 			TechManager.on_frame();
 
-
 			for (UnitType u: Build.composition) {
 				if (!pulled_off_gas && ((count(Units.ZERG_DRONE) > Build.tech_drones || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && Game.get_opponent_race() == Race.ZERG && count(Units.ZERG_DRONE) >= 16))) {
 					if (Balance.has_tech_requirement(u)) {
@@ -304,6 +303,7 @@ public class BuildExecutor {
 			if (u == Units.ZERG_BANELING) continue;
 			if (u == Units.ZERG_RAVAGER) continue;
 			if (u == Units.ZERG_MUTALISK && count(Units.ZERG_MUTALISK) >= 10 && Game.get_opponent_race() == Race.TERRAN) continue;
+			if (u == Units.ZERG_HYDRALISK && count(Units.ZERG_HYDRALISK) >= 15 && Game.get_opponent_race() == Race.TERRAN) continue;
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
 				if (best == Units.INVALID) best = u;
 				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {

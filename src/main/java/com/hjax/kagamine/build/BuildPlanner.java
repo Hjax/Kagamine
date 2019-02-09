@@ -3,7 +3,6 @@ package com.hjax.kagamine.build;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -39,6 +38,24 @@ public class BuildPlanner {
 			Build.upgrades = new ArrayList<>();
 		}
 		
+		if (!is_all_in && GameInfoCache.count_enemy(Units.PROTOSS_NEXUS) == 2) {
+			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
+														new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
+														new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
+														new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
+			Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
+			Build.ideal_hatches = 3;
+			Build.scout = false;
+			Build.push_supply = 50;
+			Build.pull_off_gas = true;
+			Build.ideal_workers = 25;
+			Build.max_queens = 2;
+			Build.ideal_gases = 1;
+			Build.tech_drones = 12;
+			Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED);
+			is_all_in = true;
+		}
+		
 		if (GameInfoCache.count_enemy(Units.ZERG_ZERGLING) > 0 && Game.get_frame() < 2700) {
 			//Game.chat("Anti cheese ling flood");
 			Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
@@ -70,20 +87,17 @@ public class BuildPlanner {
 			}
 		}
 		
-		if (is_all_in && Game.get_opponent_race() == Race.PROTOSS && !Wisdom.cannon_rush() && !Wisdom.proxy_detected() && (GameInfoCache.count_friendly(Units.ZERG_RAVAGER) + GameInfoCache.count_friendly(Units.ZERG_ROACH)) > 6) {
+		if (is_all_in && Game.army_killed() - Game.army_lost() < -500) {
 			Build.build = new ArrayList<>();
 			Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			Build.ideal_hatches = -1;
-			Build.push_supply = 35;
+			Build.push_supply = 185;
 			Build.ideal_workers = 70;
-			Build.ideal_gases = 6;
+			Build.ideal_gases = 8;
 			Build.max_queens = -1;
 			Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2);
 		}
-		if (is_all_in && Game.get_opponent_race() == Race.PROTOSS && !Wisdom.cannon_rush() && !Wisdom.proxy_detected() && GameInfoCache.count_friendly(Units.ZERG_RAVAGER) < 2) {
-			is_all_in = false;
-			Build.push_supply = 185;
-		}
+
 		if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) {
 			hunter_killer();
 		}
@@ -148,15 +162,15 @@ public class BuildPlanner {
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK);
 				Build.ideal_hatches = -1;
-				Build.scout = true;
 				Build.push_supply = 185;
-				Build.pull_off_gas = true;
-				Build.ideal_workers = 60;
-				Build.ideal_gases = 6;
+				Build.ideal_workers = 70;
+				Build.ideal_gases = 7;
 				Build.tech_drones = 25;
-				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.ZERG_FLYER_WEAPONS_LEVEL1, Upgrades.ZERG_FLYER_WEAPONS_LEVEL2, Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2);
+				Build.pull_off_gas = true;
+				Build.max_queens = -1;
+				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2);
 				break;
 			case ZERG:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),

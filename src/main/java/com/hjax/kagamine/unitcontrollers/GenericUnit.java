@@ -28,11 +28,19 @@ public class GenericUnit {
 				if (e.unit().getType() == Units.PROTOSS_INTERCEPTOR) continue;
 				if (Game.get_unit_type_data().get(e.unit().getType()).getWeapons().size() > 0) {
 					if (u.unit().getPosition().toPoint2d().distance(e.unit().getPosition().toPoint2d()) < new ArrayList<>(Game.get_unit_type_data().get(u.unit().getType()).getWeapons()).get(0).getRange()) {
-						if (new ArrayList<>(Game.get_unit_type_data().get(e.unit().getType()).getWeapons()).get(0).getRange() < new ArrayList<>(Game.get_unit_type_data().get(u.unit().getType()).getWeapons()).get(0).getRange()) {
-							Vector2d offset = Utilities.direction_to(Vector2d.of(u.unit().getPosition().toPoint2d()), Vector2d.of(e.unit().getPosition().toPoint2d()));
-							Point2d target = Point2d.of(u.unit().getPosition().getX() - offset.x, u.unit().getPosition().getY() - offset.y);
-							Game.unit_command(u, Abilities.MOVE, target);
-							return;
+						Weapon best = null;
+						for (Weapon w: Game.get_unit_type_data().get(u.unit().getType()).getWeapons()) {
+							if (w.getTargetType() == TargetType.AIR || (w.getTargetType() == TargetType.AIR && e.unit().getFlying().orElse(false)) || ( (w.getTargetType() == TargetType.GROUND && !e.unit().getFlying().orElse(false)))) {
+								best = w;
+							}
+						}
+						if (best != null) {
+							if (new ArrayList<>(Game.get_unit_type_data().get(e.unit().getType()).getWeapons()).get(0).getRange() < best.getRange()) {
+								Vector2d offset = Utilities.direction_to(Vector2d.of(u.unit().getPosition().toPoint2d()), Vector2d.of(e.unit().getPosition().toPoint2d()));
+								Point2d target = Point2d.of(u.unit().getPosition().getX() - offset.x, u.unit().getPosition().getY() - offset.y);
+								Game.unit_command(u, Abilities.MOVE, target);
+								return;
+							}
 						}
 					}
 				}
