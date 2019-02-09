@@ -98,12 +98,10 @@ public class BuildPlanner {
 		}
 
 		if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) {
-			Chat.sendMessage("You really should learn some manners, floating your buildings isnt very nice");
 			hunter_killer();
 		}
 		
 		if (Game.get_opponent_race() == Race.PROTOSS) {
-			Chat.sendMessage("I guess I don't need roaches vs your air units");
 			if (GameInfoCache.count_enemy(Units.PROTOSS_CARRIER) > 0 ||
 					GameInfoCache.count_enemy(Units.PROTOSS_VOIDRAY) > 0 || 
 					GameInfoCache.count_enemy(Units.PROTOSS_TEMPEST) > 0 ||
@@ -111,6 +109,7 @@ public class BuildPlanner {
 					GameInfoCache.count_enemy(Units.PROTOSS_ARCHON) > 0 ||
 					GameInfoCache.count_enemy(Units.PROTOSS_STARGATE) > 0) {
 				if (Build.composition.contains(Units.ZERG_ROACH) || Build.composition.contains(Units.ZERG_MUTALISK)) {
+					Chat.sendMessage("I guess I don't need roaches vs your air units");
 					Build.build = new ArrayList<>();
 					Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 					Build.ideal_hatches = -1;

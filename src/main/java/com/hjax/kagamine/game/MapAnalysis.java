@@ -40,10 +40,10 @@ public class MapAnalysis {
 		for (int x = (int) min.getX(); x < max.getX() * 2; x ++) {
 			inner: for (int y = (int) min.getY(); y < max.getY() * 2; y ++) {
 				if (air_safe[x][y]) {
-					for (int x_offset = -1; x_offset <= 1; x_offset++) {
-						for (int y_offset = -1; y_offset <= 1; y_offset++) {
-							if ((y_offset * y_offset + x_offset * x_offset) > 1) continue;
-							if (!air_safe[x + x_offset][y + y_offset] && !pathable[x + x_offset][y + y_offset]) continue inner;
+					for (int x_offset = -2; x_offset <= 2; x_offset++) {
+						for (int y_offset = -2; y_offset <= 2; y_offset++) {
+							if (y_offset * y_offset + x_offset * x_offset > 5) continue;
+							if (!air_safe[x + x_offset][y + y_offset]) continue inner;
 						}
 					}
 					for (Point2d p : overlord_spots) {
