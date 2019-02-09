@@ -40,7 +40,7 @@ public class BuildPlanner {
 			is_all_in = true;
 		}
 		
-		if (false && !is_all_in && GameInfoCache.count_friendly(Units.ZERG_DRONE) < 30 && (GameInfoCache.count_enemy(Units.PROTOSS_NEXUS) == 2 || (GameInfoCache.count_enemy(Units.TERRAN_COMMAND_CENTER) + GameInfoCache.count_enemy(Units.TERRAN_ORBITAL_COMMAND)) == 2)) {
+		if (!is_all_in && GameInfoCache.count_friendly(Units.ZERG_DRONE) < 30 && (GameInfoCache.count_enemy(Units.PROTOSS_NEXUS) == 2 || (GameInfoCache.count_enemy(Units.TERRAN_COMMAND_CENTER) + GameInfoCache.count_enemy(Units.TERRAN_ORBITAL_COMMAND)) == 2)) {
 			Chat.sendMessage("That's a nice fast expand you have there, it would be a shame if something happened to it...");
 			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
 														new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),

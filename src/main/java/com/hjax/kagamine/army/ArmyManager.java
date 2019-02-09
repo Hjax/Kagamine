@@ -116,7 +116,7 @@ public class ArmyManager {
 							if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
 						}
 					}
-					if (best > 10) EconomyManager.assign_worker(ally);
+					if (best > 20) EconomyManager.assign_worker(ally);
 					if (ally.unit().getHealth().orElse((float) 0) <= 5) EconomyManager.assign_worker(ally);
 				}
 			}
