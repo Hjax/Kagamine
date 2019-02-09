@@ -75,7 +75,7 @@ public class BuildExecutor {
 			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count(Alliance.SELF) < 3) {
 				if (count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
 					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count(Alliance.SELF) > 1 || Wisdom.proxy_detected())) {
-						if (Wisdom.all_in_detected() || Wisdom.proxy_detected() || (count(Units.ZERG_SPINE_CRAWLER) < 1 && Wisdom.aggression_detected())) {
+						if (Wisdom.all_in_detected() || Wisdom.proxy_detected() || (count(Units.ZERG_SPINE_CRAWLER) < 1 && Wisdom.aggression_detected() && EnemyModel.enemyBaseCount() < 2)) {
 							if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
 								BaseManager.build(Units.ZERG_SPINE_CRAWLER);
 							}
@@ -365,7 +365,16 @@ public class BuildExecutor {
 				return true;
 			}
 		}
-		if (Game.army_supply() * Math.max(EnemyModel.enemyBaseCount(), 1) < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (10 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) return true;
+		if (Game.get_opponent_race() == Race.PROTOSS) {
+			if (Game.army_supply() * Math.max(EnemyModel.enemyBaseCount(), 1) < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (10 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) {
+				return true;
+			}
+		} else {
+			if (Game.army_supply() * 2 < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (10 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) {
+				return true;
+			}
+		}
+		
 		if (Wisdom.all_in_detected() && Game.army_supply() < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > 30) return true;
 		if (count(Units.ZERG_DRONE) > 50 && Game.gas() > 100 && next_army_unit() == Units.ZERG_MUTALISK && count(Units.ZERG_MUTALISK) < 10) return true;
 		return count(Units.ZERG_DRONE) >= worker_cap();
