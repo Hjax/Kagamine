@@ -27,13 +27,14 @@ public class MapAnalysis {
 						if ((x_offset * x_offset + y_offset * y_offset) > 196) continue;
 						if (x + x_offset > max.getX() * 2 || x + x_offset < min.getX()) continue;
 						if (y + y_offset > max.getY() * 2 || y + y_offset < min.getY()) continue;
-						if (pathable[x + x_offset][y + y_offset] && height[x + x_offset][y + y_offset] > height[x][y] - 0.5) {
+						if (pathable[x + x_offset][y + y_offset] && height[x + x_offset][y + y_offset] > height[x][y] - 1.5) {
 							safe = false;
 							break scan;
 						}
 					}
 				}
 				air_safe[x][y] = safe;
+
 			}
 		}
 		
@@ -42,7 +43,7 @@ public class MapAnalysis {
 				if (air_safe[x][y]) {
 					for (int x_offset = -2; x_offset <= 2; x_offset++) {
 						for (int y_offset = -2; y_offset <= 2; y_offset++) {
-							if (y_offset * y_offset + x_offset * x_offset > 5) continue;
+							if (y_offset * y_offset + x_offset * x_offset > 4) continue;
 							if (!air_safe[x + x_offset][y + y_offset]) continue inner;
 						}
 					}

@@ -127,7 +127,12 @@ public class Mutalisk {
 		boolean stutter = false;
 		
 		if (BaseDefense.assignments.containsKey(muta.unit().getTag())) {
-			Game.unit_command(muta, Abilities.ATTACK, BaseDefense.assignments.get(muta.getTag()));
+			if (BaseDefense.assignments.get(muta.getTag()).distance(muta.unit().getPosition().toPoint2d()) < 10) {
+				Game.unit_command(muta, Abilities.ATTACK, BaseDefense.assignments.get(muta.getTag()));
+			} else {
+				Game.unit_command(muta, Abilities.MOVE, BaseDefense.assignments.get(muta.getTag()));
+			}
+			
 		}
 		else {
 			for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {

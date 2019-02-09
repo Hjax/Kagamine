@@ -81,6 +81,14 @@ public class EnemyModel {
 		return res;
 	}
 	
+	public static int enemyBaseCount() {
+		int result = 0;
+		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_town_hall(u.unit().getType())) result++;
+		}
+		return result;
+	}
+	
 	public static void printStats()  {
 		int[] alive = resourcesAlive();
 		int[] spent = resourcesSpent();

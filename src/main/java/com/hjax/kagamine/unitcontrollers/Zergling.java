@@ -16,7 +16,11 @@ public class Zergling {
 			} else {
 				Vector2d offset = Utilities.direction_to(Vector2d.of(BaseDefense.surroundCenter.get(u.getTag())), Vector2d.of(BaseDefense.assignments.get(u.getTag())));
 				Point2d result = Vector2d.of(BaseDefense.assignments.get(u.getTag())).add(offset.scale(6)).toPoint2d();
-				Game.unit_command(u, Abilities.MOVE, result);
+				if (Game.pathable(result) && Math.abs(Game.height(result) - Game.height(u.unit().getPosition().toPoint2d())) < 0.5) {
+					Game.unit_command(u, Abilities.MOVE, result);
+				} else {
+					Game.unit_command(u, Abilities.ATTACK, BaseDefense.assignments.get(u.getTag()));
+				}
 			}
 		} else {
 			GenericUnit.on_frame(u, true);

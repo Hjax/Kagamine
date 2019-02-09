@@ -15,6 +15,7 @@ import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Balance;
+import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.Drone;
 import com.hjax.kagamine.unitcontrollers.Larva;
@@ -67,7 +68,7 @@ public class BuildExecutor {
 					}
 				}
 			}
-			if ((count(Units.ZERG_DRONE) > 40 && pulled_off_gas) || !Build.pull_off_gas) {
+			if ((count(Units.ZERG_DRONE) > 30 && pulled_off_gas) || !Build.pull_off_gas) {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;
 			}
@@ -85,7 +86,7 @@ public class BuildExecutor {
 			}
 			
 			if (ThreatManager.is_safe(BaseManager.get_next_base().location) ) {
-				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 15 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && should_expand()) {
+				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 60 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && should_expand()) {
 					if (((count(Units.ZERG_DRONE) > ((BaseManager.base_count(Alliance.SELF) - 1) * 23) && BaseManager.base_count(Alliance.SELF) < 4)) || count(Units.ZERG_DRONE) >= (Build.ideal_workers - 10)) {
 						if (!Game.can_afford(Units.ZERG_HATCHERY)) {
 							if (!BaseManager.get_next_base().has_walking_drone() && Game.minerals() > 100) {
@@ -116,9 +117,8 @@ public class BuildExecutor {
 				}
 				// TODO remove this hack
 				if (GameInfoCache.count_enemy(Units.PROTOSS_DARK_SHRINE) > 0) needs_spores = true;
-				if (count(Units.ZERG_DRONE) > 60) needs_spores = true;
+				if (count(Units.ZERG_DRONE) > 30 + 10 * Math.min(EnemyModel.enemyBaseCount(), 4)) needs_spores = true;
 				if (needs_spores) {
-					// TODO this returns even if all of our bases have spores
 					if (!Game.can_afford(Units.ZERG_SPORE_CRAWLER) && count(Units.ZERG_SPORE_CRAWLER) < 1) return;
 					BaseManager.build_defensive_spores();
 				}
@@ -140,7 +140,7 @@ public class BuildExecutor {
 					if (Balance.has_tech_requirement(u)) {
 						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
-								if (BaseManager.base_count(Alliance.SELF) >= 2) {
+								if (BaseManager.base_count(Alliance.SELF) >= 2 && count(Units.ZERG_DRONE) > 40) {
 									if (Game.minerals() < 150 && Game.gas() > 100) return;
 									if (Game.can_afford(Balance.next_tech_requirement(u))) {
 										for (Base b: BaseManager.bases) {
@@ -303,7 +303,7 @@ public class BuildExecutor {
 		for (UnitType u: Build.composition) {
 			if (u == Units.ZERG_BANELING) continue;
 			if (u == Units.ZERG_RAVAGER) continue;
-			if (u == Units.ZERG_MUTALISK && count(Units.ZERG_MUTALISK) >= 10) continue;
+			if (u == Units.ZERG_MUTALISK && count(Units.ZERG_MUTALISK) >= 10 && Game.get_opponent_race() == Race.TERRAN) continue;
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
 				if (best == Units.INVALID) best = u;
 				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {
@@ -318,10 +318,12 @@ public class BuildExecutor {
 	
 	public static boolean should_build_queens() {
 		if (Wisdom.worker_rush()) return false;
-		if (ThreatManager.under_attack() && count(Units.ZERG_LARVA) > 0) return false; 
 		if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) return false;
 		
 		if (Build.composition.contains(Units.ZERG_QUEEN) && count(Units.ZERG_QUEEN) < 25) return true;
+		
+		if (ThreatManager.under_attack() && count(Units.ZERG_LARVA) > 0) return false; 
+		if (count(Units.ZERG_DRONE) < 35 && count(Units.ZERG_LARVA) > 0) return false; 
 		
 		int queen_target = 0;
 		if (Build.max_queens == -1) {
@@ -354,7 +356,7 @@ public class BuildExecutor {
 			if (count(Units.ZERG_BANELING) == 0 && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
 		if (Wisdom.ahead()) return true;
-		int target = 4 + 2 * count(Units.ZERG_QUEEN);
+		int target = 2 + 2 * count(Units.ZERG_QUEEN);
 		if (Game.get_opponent_race() == Race.ZERG) target = 15;
 		if (Wisdom.all_in_detected()) target = 10;
 		if (Wisdom.proxy_detected()) target = 10;
@@ -363,9 +365,7 @@ public class BuildExecutor {
 				return true;
 			}
 		}
-		if (Wisdom.play_safe() && Game.army_supply() * 1.5 < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > 43) return true;
-		if (Game.army_supply() * 2 < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > 45) return true;
-		if (Game.get_opponent_race() == Race.PROTOSS && count(Units.ZERG_DRONE) > 45 && Game.army_supply() < 45) return true;
+		if (Game.army_supply() * Math.max(EnemyModel.enemyBaseCount(), 1) < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (10 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) return true;
 		if (Wisdom.all_in_detected() && Game.army_supply() < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > 30) return true;
 		if (count(Units.ZERG_DRONE) > 50 && Game.gas() > 100 && next_army_unit() == Units.ZERG_MUTALISK && count(Units.ZERG_MUTALISK) < 10) return true;
 		return count(Units.ZERG_DRONE) >= worker_cap();

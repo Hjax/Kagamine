@@ -346,6 +346,10 @@ public class Game {
 		return query.getAbilitiesForUnit(u.unit(), false);
 	}
 	
+	public static AvailableAbilities availible_abilities(UnitInPool u, boolean ignore) {
+		return query.getAbilitiesForUnit(u.unit(), ignore);
+	}
+	
 	public static List<AvailableAbilities> availible_abilities(List<UnitInPool> u) {
 		List<Unit> parsed = new ArrayList<>();
 		for (UnitInPool up: u) parsed.add(up.unit());
