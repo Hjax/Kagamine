@@ -2,6 +2,7 @@ package com.hjax.kagamine.game;
 
 import java.util.ArrayList;
 
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 
 public class MapAnalysis {
@@ -26,7 +27,7 @@ public class MapAnalysis {
 						if ((x_offset * x_offset + y_offset * y_offset) > 196) continue;
 						if (x + x_offset > max.getX() * 2 || x + x_offset < min.getX()) continue;
 						if (y + y_offset > max.getY() * 2 || y + y_offset < min.getY()) continue;
-						if (pathable[x + x_offset][y + y_offset] && height[x + x_offset][y + y_offset] > height[x][y] - 1.5) {
+						if (pathable[x + x_offset][y + y_offset] && height[x + x_offset][y + y_offset] < height[x][y] - 1) {
 							safe = false;
 							break scan;
 						}
@@ -40,10 +41,10 @@ public class MapAnalysis {
 		for (int x = (int) min.getX(); x < max.getX() * 2; x ++) {
 			inner: for (int y = (int) min.getY(); y < max.getY() * 2; y ++) {
 				if (air_safe[x][y]) {
-					for (int x_offset = -2; x_offset <= 2; x_offset++) {
-						for (int y_offset = -2; y_offset <= 2; y_offset++) {
-							if (y_offset * y_offset + x_offset * x_offset > 4) continue;
-							if (!air_safe[x + x_offset][y + y_offset]) continue inner;
+					for (int x_offset = -1; x_offset <= 1; x_offset++) {
+						for (int y_offset = -1; y_offset <= 1; y_offset++) {
+							if ((y_offset * y_offset + x_offset * x_offset) > 1) continue;
+							if (!air_safe[x + x_offset][y + y_offset] && !pathable[x + x_offset][y + y_offset]) continue inner;
 						}
 					}
 					for (Point2d p : overlord_spots) {

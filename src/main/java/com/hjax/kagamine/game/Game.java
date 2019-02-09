@@ -11,6 +11,8 @@ import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.action.ActionChat.Channel;
 import com.github.ocraft.s2client.protocol.data.Ability;
 import com.github.ocraft.s2client.protocol.data.AbilityData;
+import com.github.ocraft.s2client.protocol.data.Effect;
+import com.github.ocraft.s2client.protocol.data.EffectData;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.UnitTypeData;
 import com.github.ocraft.s2client.protocol.data.Units;
@@ -21,6 +23,7 @@ import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
+import com.github.ocraft.s2client.protocol.observation.raw.EffectLocations;
 import com.github.ocraft.s2client.protocol.observation.raw.Visibility;
 import com.github.ocraft.s2client.protocol.query.AvailableAbilities;
 import com.github.ocraft.s2client.protocol.query.QueryBuildingPlacement;
@@ -44,6 +47,7 @@ public class Game {
 	static Map<UnitType, UnitTypeData> unit_type_data = null;
 	static Map<Upgrade, UpgradeData> upgrade_data = null;
 	static Map<Ability, AbilityData> ability_data = null;
+	static Map<Effect, EffectData> effect_data = null;
 
 	
 	/**
@@ -101,6 +105,17 @@ public class Game {
 	public static void unit_command(Unit u, Ability a, boolean queued) {
 		Counter.increment(u.getType().toString());
 		action.unitCommand(u, a, queued);
+	}
+	
+	public static List<EffectLocations> get_effects() {
+		return observation.getEffects();
+	}
+	
+	public static Map<Effect, EffectData> get_effect_data() {
+		if (effect_data == null) {
+			effect_data = observation.getEffectData(false);
+		}
+		return effect_data;
 	}
 	
 	public static void unit_command(Unit u, Ability a, Unit t) {
@@ -358,7 +373,8 @@ public class Game {
 	
 	public static void draw_box(Point2d current, Color c) {
 		if (Constants.DEBUG) {
-			debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Math.max(Game.height(current) + .5, 0))), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Math.max(Game.height(current) + .5, 0))), c);
+			//debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Math.max(Game.height(current) + .5, 0))), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Math.max(Game.height(current) + .5, 0))), c);
+			debug.debugBoxOut(Point.of(current.getX(), current.getY(), 15), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) 15), c);
 		}
 	}
 	
