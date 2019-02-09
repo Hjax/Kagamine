@@ -36,9 +36,7 @@ public class Kagamine extends S2Agent{
 		BaseManager.start_game();
 		Scouting.start_game();
 		BuildPlanner.decide_build();
-		if (Constants.DEBUG) {
-			Game.chat("Kagamine version 2.0 TEST");
-		}
+		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
@@ -67,6 +65,7 @@ public class Kagamine extends S2Agent{
 			MapAnalysis.on_frame();
 			GameInfoCache.end_frame();
 		}
+
 		if (Constants.DEBUG) {
 			Game.debug.sendDebug();
 			time_sum += ((System.nanoTime() - startTime) / 1000000.0);
@@ -74,9 +73,9 @@ public class Kagamine extends S2Agent{
 				max = (System.nanoTime() - startTime) / 1000000.0;
 			}
 			frame++;
-			System.out.println("Average " + (time_sum / frame));
-			System.out.println("Max " + max);
-			System.out.println("----------------------------------");
+			//System.out.println("Average " + (time_sum / frame));
+			//System.out.println("Max " + max);
+			//System.out.println("----------------------------------");
 		}
 	}
 	
@@ -89,5 +88,7 @@ public class Kagamine extends S2Agent{
 	public void onGameEnd() {
 		Counter.print();
 	}
+	
+	
 
 }

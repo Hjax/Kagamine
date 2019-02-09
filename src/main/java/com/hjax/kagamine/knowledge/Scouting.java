@@ -27,8 +27,6 @@ public class Scouting {
 	public static boolean scared = false;
 	public static boolean has_pulled_back = false;
 	
-	public static boolean sent_nat_overlord = false;
-	
 	public static Map<Point2d, Tag> overlords = new HashMap<>();
 	
 	public static void start_game() {
@@ -105,12 +103,6 @@ public class Scouting {
 					Game.unit_command(overlord, Abilities.MOVE, BaseManager.main_base().location);
 				}
 			}
-		}
-		
-		if (!sent_nat_overlord) {
-			sent_nat_overlord = true;
-			overlords.put(BaseManager.get_base(BaseManager.bases.size() - 1), GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD).get(0).getTag());
-			Game.unit_command(GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD).get(0), Abilities.MOVE, BaseManager.get_base(BaseManager.bases.size() - 1));
 		}
 		
 		// send overlords to vision spots, dont replace them if / when they die

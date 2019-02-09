@@ -40,7 +40,7 @@ public class BuildPlanner {
 			is_all_in = true;
 		}
 		
-		if (!is_all_in && GameInfoCache.count_friendly(Units.ZERG_DRONE) < 30 && (GameInfoCache.count_enemy(Units.PROTOSS_NEXUS) == 2 || (GameInfoCache.count_enemy(Units.TERRAN_COMMAND_CENTER) + GameInfoCache.count_enemy(Units.TERRAN_ORBITAL_COMMAND)) == 2)) {
+		if (false && !is_all_in && GameInfoCache.count_friendly(Units.ZERG_DRONE) < 30 && (GameInfoCache.count_enemy(Units.PROTOSS_NEXUS) == 2 || (GameInfoCache.count_enemy(Units.TERRAN_COMMAND_CENTER) + GameInfoCache.count_enemy(Units.TERRAN_ORBITAL_COMMAND)) == 2)) {
 			Chat.sendMessage("That's a nice fast expand you have there, it would be a shame if something happened to it...");
 			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
 														new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
@@ -190,14 +190,14 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_HYDRALISK, Units.ZERG_ULTRALISK);
+				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK, Units.ZERG_ULTRALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.ideal_gases = 8;
 				Build.push_supply = 190;
 				Build.ideal_workers = 75;
 				Build.pull_off_gas = true;
-				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.ZERGLING_ATTACK_SPEED, Upgrades.CENTRIFICAL_HOOKS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_MELEE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.CHITINOUS_PLATING, Upgrades.ANABOLIC_SYNTHESIS);
+				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.ZERGLING_ATTACK_SPEED, Upgrades.CENTRIFICAL_HOOKS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.GLIALRE_CONSTITUTION, Upgrades.CHITINOUS_PLATING, Upgrades.ANABOLIC_SYNTHESIS);
 				break;
 			default:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
