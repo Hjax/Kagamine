@@ -196,6 +196,7 @@ public class BuildPlanner {
 				Build.ideal_gases = 8;
 				Build.push_supply = 190;
 				Build.ideal_workers = 75;
+				Build.max_queens = -1;
 				Build.pull_off_gas = true;
 				Build.upgrades = Arrays.asList(Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.ZERGLING_ATTACK_SPEED, Upgrades.CENTRIFICAL_HOOKS, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.GLIALRE_CONSTITUTION, Upgrades.CHITINOUS_PLATING, Upgrades.ANABOLIC_SYNTHESIS);
 				break;
