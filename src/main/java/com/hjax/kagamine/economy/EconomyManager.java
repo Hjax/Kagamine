@@ -71,5 +71,15 @@ public class EconomyManager {
 			}
 		}
 	}
+	
+	public static int free_minerals() {
+		int result = 0;
+		for (Base b: BaseManager.bases) {
+			if (b.has_friendly_command_structure())  {
+				result += Math.max(b.minerals.size() * 2 - b.command_structure.unit().getAssignedHarvesters().orElse(0), 0);
+			}
+		}
+		return result;
+	}
 
 }

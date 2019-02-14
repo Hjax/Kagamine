@@ -84,25 +84,23 @@ public class BuildExecutor {
 					}
 				}
 			}
-			
+
 			if (ThreatManager.is_safe(BaseManager.get_next_base().location) ) {
 				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 60 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && should_expand()) {
-					if (((count(Units.ZERG_DRONE) > ((BaseManager.base_count(Alliance.SELF) - 1) * 23) && BaseManager.base_count(Alliance.SELF) < 4)) || count(Units.ZERG_DRONE) >= (Build.ideal_workers - 10)) {
-						if (!Game.can_afford(Units.ZERG_HATCHERY)) {
-							if (!BaseManager.get_next_base().has_walking_drone() && Game.minerals() > 100) {
-								UnitInPool drone = BaseManager.get_free_worker(BaseManager.get_next_base().location);
-								if (drone != null) {
-									BaseManager.get_next_base().set_walking_drone(drone);
-								}
+					if (!Game.can_afford(Units.ZERG_HATCHERY)) {
+						if (!BaseManager.get_next_base().has_walking_drone() && Game.minerals() > 100) {
+							UnitInPool drone = BaseManager.get_free_worker(BaseManager.get_next_base().location);
+							if (drone != null) {
+								BaseManager.get_next_base().set_walking_drone(drone);
 							}
-						} else {
-							BaseManager.build(Units.ZERG_HATCHERY);
 						}
-						Game.purchase(Units.ZERG_HATCHERY);
+					} else {
+						BaseManager.build(Units.ZERG_HATCHERY);
 					}
+					Game.purchase(Units.ZERG_HATCHERY);
 				}
 			}
-			
+
 			if (count(Units.ZERG_DRONE) >= 20) {
 				boolean needs_spores = Wisdom.air_detected();
 				for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
@@ -381,16 +379,7 @@ public class BuildExecutor {
 	}
 	
 	public static boolean should_build_drones() {
-		boolean should_drone = false;
-		for (Base b: BaseManager.bases) {
-			if (b.has_friendly_command_structure() && ((b.command_structure.unit().getIdealHarvesters().orElse(0) - b.command_structure.unit().getAssignedHarvesters().orElse(0)) > 0 || (b.command_structure.unit().getBuildProgress() > 0.8 && b.command_structure.unit().getBuildProgress() < 0.999))) {
-				should_drone = true;
-				break;
-			}
-		}
-		if (!should_drone) {
-			return false;
-		}
+		if (EconomyManager.free_minerals() == 0) return false;
 		return (count(Units.ZERG_DRONE) < worker_cap());
 	}
 	
@@ -400,7 +389,8 @@ public class BuildExecutor {
 	}
 	
 	public static boolean should_expand() {
-		return (BaseManager.base_count(Alliance.SELF) < Build.ideal_hatches) || (Build.ideal_hatches == -1);
+		if (count(Units.ZERG_HATCHERY) < 3 && count(Units.ZERG_DRONE) > 23) return true;
+		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count(Alliance.SELF) < Build.ideal_hatches) || (Build.ideal_hatches == -1));
 	}
 	
 	
