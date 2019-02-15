@@ -356,7 +356,6 @@ public class BaseManager {
 			}
 
 			if (best == null) best = bases.get(0);
-			Game.draw_box(best.location, Color.GREEN);
 			forward_base = best;
 			forward_base_frame = Game.get_frame();
 		}

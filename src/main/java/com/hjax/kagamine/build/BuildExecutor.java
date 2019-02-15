@@ -108,6 +108,7 @@ public class BuildExecutor {
 						if (u.unit().getType() != Units.ZERG_OVERLORD && 
 							u.unit().getType() != Units.ZERG_OVERSEER &&
 							u.unit().getType() != Units.TERRAN_MEDIVAC &&
+							u.unit().getType() != Units.TERRAN_RAVEN &&
 							u.unit().getType() != Units.PROTOSS_OBSERVER) {
 							needs_spores = true;
 						}
@@ -115,7 +116,7 @@ public class BuildExecutor {
 				}
 				// TODO remove this hack
 				if (GameInfoCache.count_enemy(Units.PROTOSS_DARK_SHRINE) > 0) needs_spores = true;
-				if (count(Units.ZERG_DRONE) > 30 + 10 * Math.min(EnemyModel.enemyBaseCount(), 4)) needs_spores = true;
+				if (Game.get_opponent_race() == Race.PROTOSS && count(Units.ZERG_DRONE) > 30 + 10 * Math.min(EnemyModel.enemyBaseCount(), 4)) needs_spores = true;
 				if (needs_spores) {
 					if (!Game.can_afford(Units.ZERG_SPORE_CRAWLER) && count(Units.ZERG_SPORE_CRAWLER) < 1) return;
 					BaseManager.build_defensive_spores();
@@ -136,6 +137,7 @@ public class BuildExecutor {
 				if (!pulled_off_gas && ((count(Units.ZERG_DRONE) > Build.tech_drones || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && Game.get_opponent_race() == Race.ZERG && count(Units.ZERG_DRONE) >= 16))) {
 					if (Balance.has_tech_requirement(u)) {
 						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
+							if (Balance.next_tech_requirement(u) == Units.ZERG_INFESTATION_PIT && (BaseManager.base_count(Alliance.SELF) < 4 || count(Units.ZERG_DRONE) < 60)) continue;
 							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
 								if (BaseManager.base_count(Alliance.SELF) >= 2 && count(Units.ZERG_DRONE) > 40) {
 									if (Game.minerals() < 150 && Game.gas() > 100) return;
@@ -150,15 +152,13 @@ public class BuildExecutor {
 									}
 								}
 							} else if (Balance.next_tech_requirement(u) == Units.ZERG_HIVE) {
-								if (BaseManager.base_count(Alliance.SELF) >= 4 && count(Units.ZERG_DRONE) > 60) {
-									if (Game.minerals() < 200 && Game.gas() > 150) return;
-									if (Game.can_afford(Balance.next_tech_requirement(u))) {
-										for (Base b: BaseManager.bases) {
-											if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0 && b.command_structure.unit().getType() == Units.ZERG_LAIR) {
-												Game.unit_command(b.command_structure, Abilities.MORPH_HIVE);
-												Game.purchase(Units.ZERG_HIVE);
-												break;
-											}
+								if (Game.minerals() < 200 && Game.gas() > 150) return;
+								if (Game.can_afford(Balance.next_tech_requirement(u))) {
+									for (Base b: BaseManager.bases) {
+										if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999 && b.command_structure.unit().getOrders().size() == 0 && b.command_structure.unit().getType() == Units.ZERG_LAIR) {
+											Game.unit_command(b.command_structure, Abilities.MORPH_HIVE);
+											Game.purchase(Units.ZERG_HIVE);
+											break;
 										}
 									}
 								}
