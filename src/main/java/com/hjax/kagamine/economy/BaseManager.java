@@ -67,6 +67,7 @@ public class BaseManager {
 	
 	public static void on_unit_created(UnitInPool u) {
 		if (u.unit().getType() == Units.ZERG_QUEEN) {
+			if (inject_queen_count() > 3) return;
 			Base best = null;
 			for (Base b: bases) {
 				if (!b.has_queen() && b.has_friendly_command_structure()) {
@@ -163,6 +164,14 @@ public class BaseManager {
 			next_base_frame = Game.get_frame();
 		}
 		return next_base;
+	}
+	
+	public static int inject_queen_count() {
+		int result = 0;
+		for (Base b : bases) {
+			if (b.has_friendly_command_structure() && b.has_queen()) result++;
+		}
+		return result;
 	}
 	
 	public static int base_count(Alliance a) {

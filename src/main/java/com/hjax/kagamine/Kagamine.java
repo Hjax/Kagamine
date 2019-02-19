@@ -19,8 +19,8 @@ import com.hjax.kagamine.game.MapAnalysis;
 import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.ResourceTracking;
 import com.hjax.kagamine.knowledge.Scouting;
-import com.hjax.kagamine.unitcontrollers.Creep;
-import com.hjax.kagamine.unitcontrollers.Larva;
+import com.hjax.kagamine.unitcontrollers.zerg.Creep;
+import com.hjax.kagamine.unitcontrollers.zerg.Larva;
 
 public class Kagamine extends S2Agent{
 

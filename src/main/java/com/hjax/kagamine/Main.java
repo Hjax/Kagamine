@@ -37,13 +37,13 @@ public class Main {
 			input.close();
 			s2Coordinator = S2Coordinator.setup()
 					.loadSettings(args)
-					.setRealtime(true)
+					.setRealtime(false)
 					.setParticipants(
-							S2Coordinator.createParticipant(choice, bot2),
-							S2Coordinator.createParticipant(Race.ZERG, bot))
-							//S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
+						//	S2Coordinator.createParticipant(choice, bot2),
+							S2Coordinator.createParticipant(Race.ZERG, bot),
+							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
 					.launchStarcraft()
-					.startGame(LocalMap.of(Paths.get("BlueshiftLE.SC2Map")));
+					.startGame(LocalMap.of(Paths.get("DarknessSanctuaryLE.SC2Map")));
 			while (s2Coordinator.update()) {
 			}
 			s2Coordinator.quit();

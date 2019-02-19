@@ -18,7 +18,7 @@ import com.hjax.kagamine.knowledge.Balance;
 import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.Drone;
-import com.hjax.kagamine.unitcontrollers.Larva;
+import com.hjax.kagamine.unitcontrollers.zerg.Larva;
 
 public class BuildExecutor {
 	public static boolean pulled_off_gas = false;

@@ -1,4 +1,4 @@
-package com.hjax.kagamine.unitcontrollers;
+package com.hjax.kagamine.unitcontrollers.zerg;
 
 import java.util.ArrayList;
 import java.util.List;
