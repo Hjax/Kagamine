@@ -17,6 +17,7 @@ public class Build {
 	public static int push_supply = 20;
 	public static int max_queens = -1;
 	public static int tech_drones = 30;
+	public static boolean two_base_tech = false;
 	public static boolean scout = true;
 	public static boolean pull_off_gas = false;
 	public static List<UnitType> composition = new ArrayList<>();

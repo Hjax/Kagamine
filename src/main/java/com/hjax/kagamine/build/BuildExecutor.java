@@ -139,7 +139,7 @@ public class BuildExecutor {
 						if (!(count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_INFESTATION_PIT && (BaseManager.base_count(Alliance.SELF) < 4 || count(Units.ZERG_DRONE) < 60)) continue;
 							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
-								if (BaseManager.base_count(Alliance.SELF) >= 2 && count(Units.ZERG_DRONE) > 40) {
+								if (Build.two_base_tech || (BaseManager.base_count(Alliance.SELF) >= 2 && count(Units.ZERG_DRONE) > 40)) {
 									if (Game.minerals() < 150 && Game.gas() > 100) return;
 									if (Game.can_afford(Balance.next_tech_requirement(u))) {
 										for (Base b: BaseManager.bases) {
@@ -300,8 +300,10 @@ public class BuildExecutor {
 		for (UnitType u: Build.composition) {
 			if (u == Units.ZERG_BANELING) continue;
 			if (u == Units.ZERG_RAVAGER) continue;
-			if (u == Units.ZERG_MUTALISK && count(Units.ZERG_MUTALISK) >= 10 && Game.get_opponent_race() == Race.TERRAN) continue;
-			if (u == Units.ZERG_HYDRALISK && count(Units.ZERG_HYDRALISK) >= 15 && Game.get_opponent_race() == Race.TERRAN) continue;
+			if (u == Units.ZERG_CORRUPTOR && count(Units.ZERG_CORRUPTOR) >= 10) continue;
+			if (u == Units.ZERG_CORRUPTOR && count(Units.ZERG_CORRUPTOR) < 10 && Game.army_supply() > 30 && BaseManager.active_extractors() >= 4 && GameInfoCache.count_friendly(Units.ZERG_SPIRE) > 0) return Units.ZERG_CORRUPTOR;
+			if (u == Units.ZERG_MUTALISK && count(Units.ZERG_MUTALISK) >= 15 && Game.get_opponent_race() == Race.TERRAN) continue;
+			if (u == Units.ZERG_HYDRALISK && count(Units.ZERG_HYDRALISK) >= 15 && GameInfoCache.count_enemy(Units.TERRAN_BATTLECRUISER) == 0 && Game.get_opponent_race() == Race.TERRAN) continue;
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
 				if (best == Units.INVALID) best = u;
 				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {
@@ -363,14 +365,9 @@ public class BuildExecutor {
 				return true;
 			}
 		}
-		if (Game.get_opponent_race() == Race.PROTOSS) {
-			if (Game.army_supply() * Math.max(EnemyModel.enemyBaseCount(), 1) < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (10 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) {
-				return true;
-			}
-		} else {
-			if (Game.army_supply() * 2 < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (10 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) {
-				return true;
-			}
+		
+		if (Game.army_supply() * Math.max(EnemyModel.enemyBaseCount(), 1) < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (15 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) {
+			return true;
 		}
 		
 		if (Wisdom.all_in_detected() && Game.army_supply() < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > 30) return true;

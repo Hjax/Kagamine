@@ -44,7 +44,7 @@ public class ThreatManager {
 	
 	public static boolean is_safe(Point2d p) {
 		for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (!Game.is_worker(e.unit().getType())) {
+			if (Game.is_combat(e.unit().getType())) {
 				if (e.unit().getPosition().toPoint2d().distance(p) < 10) {
 					return false;
 				}

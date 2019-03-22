@@ -6,7 +6,7 @@ import com.github.ocraft.s2client.protocol.game.Race;
 public class LadderMain {
     public static void main(String[] args) {
     	Constants.CHAT = false;
-    	Constants.DEBUG = true;
+    	Constants.DEBUG = false;
         Kagamine bot = new Kagamine();
         S2Coordinator s2Coordinator;
             System.out.println("Starting ladder game");
