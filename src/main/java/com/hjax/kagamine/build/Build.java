@@ -20,6 +20,6 @@ public class Build {
 	public static boolean two_base_tech = false;
 	public static boolean scout = true;
 	public static boolean pull_off_gas = false;
-	public static List<UnitType> composition = new ArrayList<>();
+	//public static List<UnitType> composition = new ArrayList<>();
 	public static List<Pair<Integer, UnitType>> build = new ArrayList<>();
 }

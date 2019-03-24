@@ -318,6 +318,10 @@ public class Game {
 		else if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
 			minerals = Math.max(minerals - 50, 0);
 		}
+		else if (u == Units.ZERG_GREATER_SPIRE) {
+			minerals -= get_unit_type_data().get(Units.ZERG_SPIRE).getMineralCost().orElse(0);
+			gas -= get_unit_type_data().get(Units.ZERG_SPIRE).getVespeneCost().orElse(0);
+		}
 		return (minerals <= minerals() || minerals == 0) && (gas <= gas() || gas == 0);
 	}
 	

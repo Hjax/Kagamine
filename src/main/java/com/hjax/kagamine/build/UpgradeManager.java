@@ -26,7 +26,7 @@ public class UpgradeManager {
 		upgrades.put(Units.ZERG_ULTRALISK, Arrays.asList(Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_MELEE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.CHITINOUS_PLATING, Upgrades.ANABOLIC_SYNTHESIS));
 		upgrades.put(Units.ZERG_ROACH, Arrays.asList(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.GLIALRE_CONSTITUTION, Upgrades.TUNNELING_CLAWS));
 		upgrades.put(Units.ZERG_RAVAGER, Arrays.asList(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3));
-		upgrades.put(Units.ZERG_HYDRALISK, Arrays.asList(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3));
+		upgrades.put(Units.ZERG_HYDRALISK, Arrays.asList(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.EVOLVE_GROOVED_SPINES, Upgrades.EVOLVE_MUSCULAR_AUGMENTS));
 		upgrades.put(Units.ZERG_LURKER_MP, Arrays.asList(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3));
 		upgrades.put(Units.ZERG_QUEEN, Arrays.asList(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL1, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL2, Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3));
 		
@@ -38,18 +38,19 @@ public class UpgradeManager {
 	
 	
 	public static void on_frame() {
-		for (UnitType ut : Build.composition) {
+		for (UnitType ut : Composition.comp()) {
 			outer: for (Upgrade u : upgrades.getOrDefault(ut, Arrays.asList())) {
 				if (!(Game.has_upgrade(u)) && !GameInfoCache.is_researching(u)) {
 					for (UnitType t: Game.get_unit_type_data().keySet()) {
 						if (t.getAbilities().contains(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)) || t.getAbilities().contains(Game.get_ability_data().get(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)).getRemapsToAbility().orElse(Abilities.INVALID))) {
-							if ((t.equals(Units.ZERG_EVOLUTION_CHAMBER) || t.equals(Units.ZERG_SPIRE)) && BuildExecutor.count(t) < 2 && (BuildExecutor.count(Units.ZERG_DRONE) > 45)) {
+							if (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && BuildExecutor.count(t) < 3 && (BuildExecutor.count(Units.ZERG_DRONE) > 60)) {
 								if (Game.can_afford(t)) {
 									BaseManager.build(t);
 								}
 								Game.purchase(t);
-								continue outer;
+								return;
 							}
+							if (t == Units.ZERG_SPIRE && BuildExecutor.count(Units.ZERG_GREATER_SPIRE) < 1) continue outer;
 							for (UnitInPool up: GameInfoCache.get_units(Alliance.SELF, t)) {
 								if (up.unit().getOrders().size() == 0 && up.unit().getBuildProgress() > 0.999) {
 									for (AvailableAbility aa: Game.availible_abilities(up, true).getAbilities()) {

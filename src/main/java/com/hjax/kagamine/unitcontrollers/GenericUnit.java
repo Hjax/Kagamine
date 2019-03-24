@@ -23,6 +23,15 @@ import com.hjax.kagamine.knowledge.Wisdom;
 
 public class GenericUnit {
 	public static void on_frame(UnitInPool u, boolean moveOut) {
+		if (Game.hits_air(u.unit().getType())) {
+			for (UnitInPool medi: GameInfoCache.get_units(Alliance.ENEMY, Units.TERRAN_MEDIVAC)) {
+				if (medi.unit().getPosition().toPoint2d().distance(u.unit().getPosition().toPoint2d()) < 6) {
+					Game.unit_command(u, Abilities.ATTACK, medi.unit());
+					return;
+				}
+			}
+		}
+		
 		if (u.unit().getWeaponCooldown().orElse((float) 0) > 0.1) {
 			for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (e.unit().getType() == Units.PROTOSS_INTERCEPTOR) continue;
@@ -66,7 +75,7 @@ public class GenericUnit {
 			}
 			
 		}
-		if (!ThreatManager.under_attack() && Game.supply() < Build.push_supply) {
+		if (moveOut && !ThreatManager.under_attack() && Game.supply() < Build.push_supply) {
 			Base front = BaseManager.get_forward_base();
 			if (u.unit().getOrders().size() == 0) {
 				if (u.unit().getPosition().toPoint2d().distance(front.location) > 12) {

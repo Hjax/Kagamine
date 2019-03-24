@@ -29,7 +29,6 @@ public class BuildPlanner {
 			Chat.sendMessage("Sorry im not tycklish");
 			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
 					new ImmutablePair<Integer, UnitType>(14, Units.ZERG_SPAWNING_POOL)));
-			Build.composition = Collections.singletonList(Units.ZERG_ZERGLING);
 			Build.ideal_gases = 0;
 			Build.ideal_hatches = 1;
 			Build.scout = false;
@@ -45,7 +44,6 @@ public class BuildPlanner {
 														new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 														new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 														new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-			Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
 			Build.ideal_hatches = 3;
 			Build.scout = false;
 			Build.push_supply = 45;
@@ -59,7 +57,6 @@ public class BuildPlanner {
 		
 		if (GameInfoCache.count_enemy(Units.ZERG_ZERGLING) > 0 && Game.get_frame() < 2700) {
 			Chat.sendMessage("Oh you early pooled me, that wasn't very nice");
-			Build.composition = Arrays.asList(Units.ZERG_ZERGLING);
 			Build.ideal_gases = 1;
 			Build.ideal_hatches = 2;
 			Build.scout = false;
@@ -93,43 +90,13 @@ public class BuildPlanner {
 			is_all_in = false;
 			decide_build();
 		}
-		
-		if (GameInfoCache.count_enemy(Units.PROTOSS_COLOSSUS) > 0 && !Build.composition.contains(Units.ZERG_CORRUPTOR)) {
-			Chat.sendMessage("Did you know I can build corruptors vs colossus?");
-			Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR);
-		}
 
-		if (is_all_in && Game.supply() > 70 && Game.get_opponent_race() == Race.TERRAN) {
-			hunter_killer();
-		}
-		
-		if (Game.get_opponent_race() == Race.PROTOSS) {
-			if (GameInfoCache.count_enemy(Units.PROTOSS_CARRIER) > 0 ||
-					GameInfoCache.count_enemy(Units.PROTOSS_VOIDRAY) > 0 || 
-					GameInfoCache.count_enemy(Units.PROTOSS_TEMPEST) > 0 ||
-					GameInfoCache.count_enemy(Units.PROTOSS_MOTHERSHIP) > 0 ||
-					GameInfoCache.count_enemy(Units.PROTOSS_ARCHON) > 0 ||
-					GameInfoCache.count_enemy(Units.PROTOSS_STARGATE) > 0) {
-				if (Build.composition.contains(Units.ZERG_ROACH) || Build.composition.contains(Units.ZERG_MUTALISK)) {
-					Chat.sendMessage("I guess I don't need roaches vs your air units");
-					Build.build = new ArrayList<>();
-					Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
-					Build.ideal_hatches = -1;
-					Build.push_supply = 185;
-					Build.ideal_workers = 70;
-					Build.ideal_gases = 8;
-					Build.max_queens = -1;
-									
-				}
-			}
-		}
 	}
 
 
 	private static void do_ravager_all_in() {
 		is_all_in = true;
 		Build.build = new ArrayList<>();
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 				Build.ideal_gases = 2;
 				Build.ideal_hatches = 1;
 				Build.max_queens = 1;
@@ -140,17 +107,7 @@ public class BuildPlanner {
 				Build.pull_off_gas = false;
 	}
 	
-	private static void hunter_killer() {
-		Build.build = new ArrayList<>();
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
-				Build.ideal_gases = 6;
-				Build.ideal_hatches = -1;
-				Build.tech_drones = 40;
-				Build.scout = true;
-				Build.push_supply = 40;
-				Build.ideal_workers = 60;
-				Build.pull_off_gas = false;
-	}
+	// TODO replace hunter killer
 	
 	public static void decide_build() {
 		switch (Game.get_opponent_race()) {
@@ -159,7 +116,6 @@ public class BuildPlanner {
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK);
 				Build.ideal_hatches = -1;
 				Build.push_supply = 185;
 				Build.ideal_workers = 70;
@@ -173,7 +129,6 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.push_supply = 190;
@@ -188,23 +143,20 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_ROACH);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.ideal_gases = 8;
-				Build.push_supply = 190;
+				Build.push_supply = 170;
 				Build.ideal_workers = 75;
 				Build.max_queens = -1;
-				Build.pull_off_gas = false;
+				Build.pull_off_gas = true;
 				Build.tech_drones = 25;
-				Build.two_base_tech = true;
 				break;
 			default:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.composition = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 				Build.ideal_hatches = -1;
 				Build.scout = true;
 				Build.ideal_gases = 8;

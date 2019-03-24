@@ -15,13 +15,13 @@ import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 
 public class EnemyModel {
-	public static Set<Tag> registered = new HashSet<>();
+	public static Map<Tag, UnitType> registered = new HashMap<>();
 	public static Map<UnitType, Integer> counts = new HashMap<>();
 	public static Map<UnitType, Integer> inferred = new HashMap<>();
 	public static void on_frame() {
 		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (u.unit().getDisplayType() != DisplayType.SNAPSHOT && !registered.contains(u.getTag())) {
-				registered.add(u.getTag());
+			if (u.unit().getDisplayType() != DisplayType.SNAPSHOT && !registered.containsKey(u.getTag())) {
+				registered.put(u.getTag(), u.unit().getType());
 				if (counts.getOrDefault(u.unit().getType(), 0) == 0) {
 					if (Game.is_structure(u.unit().getType())) {
 						update(u.unit().getType());

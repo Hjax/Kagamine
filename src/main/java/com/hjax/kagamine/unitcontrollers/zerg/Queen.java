@@ -47,7 +47,7 @@ public class Queen {
 				}
 			}
 		} 
-		if (BaseDefense.assignments.containsKey(u.unit().getTag())) {
+		if (u.unit().getOrders().size() == 0) {
 			GenericUnit.on_frame(u, false);
 		}
 	}
