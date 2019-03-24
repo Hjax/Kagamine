@@ -21,6 +21,5 @@ public class Build {
 	public static boolean scout = true;
 	public static boolean pull_off_gas = false;
 	public static List<UnitType> composition = new ArrayList<>();
-	public static List<Upgrade> upgrades = new ArrayList<>();
 	public static List<Pair<Integer, UnitType>> build = new ArrayList<>();
 }

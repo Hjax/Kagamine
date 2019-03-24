@@ -131,7 +131,7 @@ public class BuildExecutor {
 				}
 			}
 
-			TechManager.on_frame();
+			UpgradeManager.on_frame();
 
 			for (UnitType u: Build.composition) {
 				if (!pulled_off_gas && ((count(Units.ZERG_DRONE) > Build.tech_drones || (Wisdom.all_in_detected() && count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && Game.get_opponent_race() == Race.ZERG && count(Units.ZERG_DRONE) >= 16))) {
@@ -216,15 +216,6 @@ public class BuildExecutor {
 							break;
 						}
 					}
-				}
-			}
-			
-			if (count(Units.ZERG_EXTRACTOR) >= 3) {
-				if (count(Units.ZERG_EVOLUTION_CHAMBER) < 2 && count(Units.ZERG_DRONE) > 40 && BaseManager.base_count(Alliance.SELF) > 3) {
-					if (Game.can_afford(Units.ZERG_EVOLUTION_CHAMBER)) {
-						BaseManager.build(Units.ZERG_EVOLUTION_CHAMBER);
-					}
-					Game.purchase(Units.ZERG_EVOLUTION_CHAMBER);
 				}
 			}
 			
