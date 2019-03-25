@@ -39,7 +39,7 @@ public class GenericUnit {
 					if (u.unit().getPosition().toPoint2d().distance(e.unit().getPosition().toPoint2d()) < new ArrayList<>(Game.get_unit_type_data().get(u.unit().getType()).getWeapons()).get(0).getRange()) {
 						Weapon best = null;
 						for (Weapon w: Game.get_unit_type_data().get(u.unit().getType()).getWeapons()) {
-							if (w.getTargetType() == TargetType.AIR || (w.getTargetType() == TargetType.AIR && e.unit().getFlying().orElse(false)) || ( (w.getTargetType() == TargetType.GROUND && !e.unit().getFlying().orElse(false)))) {
+							if ((w.getTargetType() == TargetType.AIR && e.unit().getFlying().orElse(false)) || ( (w.getTargetType() == TargetType.GROUND && !e.unit().getFlying().orElse(false)))) {
 								best = w;
 							}
 						}
@@ -63,10 +63,8 @@ public class GenericUnit {
 		
 		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack()) && moveOut) {
 			if (ArmyManager.has_target) {
-				if (u.unit().getOrders().size() == 0) {
-					Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);
-					return;
-				}
+				Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);
+				return;
 			} else {
 				if (u.unit().getOrders().size() == 0) {
 					Game.unit_command(u, Abilities.ATTACK, Game.get_game_info().findRandomLocation());

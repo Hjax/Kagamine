@@ -74,7 +74,7 @@ public class ArmyManager {
 										}
 									}
 								}
-								if (attackers >= 2) continue enemy_loop;
+								if (attackers >= 1) continue enemy_loop;
 								for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 									if (Worker.can_build(ally) && ally.unit().getHealth().orElse((float) 0) > 15) {
 										Game.unit_command(ally, Abilities.ATTACK, u.unit());
