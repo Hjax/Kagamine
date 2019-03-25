@@ -15,7 +15,7 @@ import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.MapAnalysis;
-import com.hjax.kagamine.unitcontrollers.Drone;
+import com.hjax.kagamine.unitcontrollers.Worker;
 
 public class Scouting {
 	public static UnitInPool scout = null;
@@ -156,7 +156,7 @@ public class Scouting {
 	
 	public static void assign_scout() {
 		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-			if (Drone.can_build(unit)) {
+			if (Worker.can_build(unit)) {
 				scout = unit;
 				return;
 			}
@@ -165,7 +165,7 @@ public class Scouting {
 	
 	public static void assign_patrol_scout() {
 		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-			if (Drone.can_build(unit)) {
+			if (Worker.can_build(unit)) {
 				patrol_scout = unit;
 				return;
 			}

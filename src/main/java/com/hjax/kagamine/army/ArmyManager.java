@@ -13,7 +13,7 @@ import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
-import com.hjax.kagamine.unitcontrollers.Drone;
+import com.hjax.kagamine.unitcontrollers.Worker;
 
 public class ArmyManager {
 	public static Point2d target;
@@ -76,7 +76,7 @@ public class ArmyManager {
 								}
 								if (attackers >= 2) continue enemy_loop;
 								for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-									if (Drone.can_build(ally) && ally.unit().getHealth().orElse((float) 0) > 15) {
+									if (Worker.can_build(ally) && ally.unit().getHealth().orElse((float) 0) > 15) {
 										Game.unit_command(ally, Abilities.ATTACK, u.unit());
 										continue enemy_loop;
 									}
@@ -91,7 +91,7 @@ public class ArmyManager {
 						if (enemy.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) <= 20) {
 							for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 								if (ally.unit().getHealth().orElse((float) 0) > 10) {
-									if (Drone.can_build(ally)) {
+									if (Worker.can_build(ally)) {
 										Game.unit_command(ally, Abilities.ATTACK, enemy.unit().getPosition().toPoint2d());
 									}
 								}

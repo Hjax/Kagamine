@@ -2,6 +2,7 @@ package com.hjax.kagamine;
 
 import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.army.BaseDefense;
 import com.hjax.kagamine.army.EnemySquadManager;
@@ -83,6 +84,13 @@ public class Kagamine extends S2Agent{
 	@Override
 	public void onUnitCreated(UnitInPool u) {
 		BaseManager.on_unit_created(u);
+	}
+	
+	@Override
+	public void onUnitDestroyed(UnitInPool u) {
+		if (u.unit().getAlliance() == Alliance.ENEMY) {
+			EnemyModel.removeFromModel(u);
+		}
 	}
 	
 	@Override

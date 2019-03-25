@@ -78,6 +78,10 @@ public class Wisdom {
 		return Game.army_killed() - Game.army_lost() > (200 * ((Game.get_frame() / Constants.FPS)/ 60.0));
 	}
 	
+	public static boolean shouldAttack() {
+		return ahead() || (Game.army_supply() > (3 * EnemyModel.enemyArmy())) || (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 10));
+	}
+	
 	public static boolean worker_rush() {
 		int total = 0;
 		outer: for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {

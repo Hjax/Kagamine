@@ -23,7 +23,7 @@ import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Scouting;
-import com.hjax.kagamine.unitcontrollers.Drone;
+import com.hjax.kagamine.unitcontrollers.Worker;
 
 public class BaseManager {
 	// the index of bases must never change
@@ -260,7 +260,7 @@ public class BaseManager {
 			for (Base b: bases) {
 				if (b.walking_drone == u) continue unitloop;
 			}
-			if (Drone.can_build(u)) {
+			if (Worker.can_build(u)) {
 				if (best == null || location.distance(u.unit().getPosition().toPoint2d()) < location.distance(best.unit().getPosition().toPoint2d())) {
 					best = u;
 				}

@@ -61,7 +61,7 @@ public class GenericUnit {
 				
 		if (Wisdom.cannon_rush()) return;
 		
-		if ((Game.supply() >= Build.push_supply || Wisdom.ahead()) && moveOut) {
+		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack()) && moveOut) {
 			if (ArmyManager.has_target) {
 				if (u.unit().getOrders().size() == 0) {
 					Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);
@@ -73,14 +73,12 @@ public class GenericUnit {
 					return;
 				}
 			}
-			
+
 		}
-		if (moveOut && !ThreatManager.under_attack() && Game.supply() < Build.push_supply) {
+		if (moveOut && !ThreatManager.under_attack() && !(Wisdom.shouldAttack() || Game.supply() >= Build.push_supply)) {
 			Base front = BaseManager.get_forward_base();
-			if (u.unit().getOrders().size() == 0) {
-				if (u.unit().getPosition().toPoint2d().distance(front.location) > 12) {
-					Game.unit_command(u, Abilities.MOVE, front.location);
-				}
+			if (u.unit().getPosition().toPoint2d().distance(front.location) > 12) {
+				Game.unit_command(u, Abilities.ATTACK, front.location);
 			}
 		}
 	}

@@ -39,7 +39,7 @@ public class Main {
 					.loadSettings(args)
 					.setRealtime(false)
 					.setParticipants(
-						//	S2Coordinator.createParticipant(choice, bot2),
+							//S2Coordinator.createParticipant(choice, bot2),
 							S2Coordinator.createParticipant(Race.ZERG, bot),
 							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
 					.launchStarcraft()

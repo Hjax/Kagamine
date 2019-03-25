@@ -8,8 +8,9 @@ import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.knowledge.Scouting;
 
-public class Drone {
+public class Worker {
 	public static void on_frame(UnitInPool u) {
+		
 		if (u.unit().getOrders().size() == 0 && can_build(u)) {
 			EconomyManager.assign_worker(u);
 		}

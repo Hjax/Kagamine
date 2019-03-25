@@ -1,9 +1,7 @@
 package com.hjax.kagamine.knowledge;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.UnitType;
@@ -11,6 +9,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.github.ocraft.s2client.protocol.unit.Tag;
+import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 
@@ -41,9 +40,19 @@ public class EnemyModel {
 				inferred.put(u.unit().getType(), Math.max(inferred.getOrDefault(u.unit().getType(), 0) - 1, 0));
 				counts.put(u.unit().getType(), counts.getOrDefault(u.unit().getType(), 0) + 1);
 			}
+			if (u.unit().getDisplayType() != DisplayType.SNAPSHOT && u.unit().getType() != registered.get(u.getTag())) {
+				counts.put(registered.get(u.getTag()), counts.getOrDefault(registered.get(u.getTag()), 0) - 1);
+				counts.put(u.unit().getType(), counts.getOrDefault(u.unit().getType(), 0) + 1);
+				registered.put(u.getTag(), u.unit().getType());
+			}
 		}
 		
-		//if (Game.get_frame() % (Constants.FRAME_SKIP * 100) == 0) printStats();
+		if (Game.get_frame() % (Constants.FRAME_SKIP * 100) == 0) Game.chat("You have " + enemyArmy() + " army supply");
+	}
+	
+	public static void removeFromModel(UnitInPool u) {
+		counts.put(u.unit().getType(), counts.getOrDefault(u.unit().getType(), 1) - 1);
+		registered.remove(u.unit().getTag());
 	}
 	
 	public static void update(UnitType u) {
@@ -78,6 +87,28 @@ public class EnemyModel {
 		res[0] += 1000; // free stuff can still be alive
 		res[1] -= Game.gas_killed();
 		return res;
+	}
+	
+	public static float enemySupply() {
+		float result = 0;
+		for (UnitType ut: counts.keySet()) {
+			result += Game.get_unit_type_data().get(ut).getFoodRequired().orElse(0.0f) * counts.get(ut);
+		}
+		return result;
+	}
+	
+	public static float enemyArmy() {
+		float result = 0;
+		for (UnitType ut: counts.keySet()) {
+			if (!Game.is_worker(ut)) {
+				result += Game.get_unit_type_data().get(ut).getFoodRequired().orElse(0.0f) * counts.get(ut);
+			}
+		}
+		return result;
+	}
+	
+	public static int enemyWorkers() {
+		return counts.getOrDefault(Units.TERRAN_SCV, 0) + counts.getOrDefault(Units.PROTOSS_PROBE, 0) + counts.getOrDefault(Units.ZERG_DRONE, 0);
 	}
 	
 	public static int enemyBaseCount() {

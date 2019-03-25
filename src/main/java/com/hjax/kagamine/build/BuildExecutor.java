@@ -18,7 +18,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Balance;
 import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.Wisdom;
-import com.hjax.kagamine.unitcontrollers.Drone;
+import com.hjax.kagamine.unitcontrollers.Worker;
 import com.hjax.kagamine.unitcontrollers.zerg.Larva;
 
 public class BuildExecutor {
@@ -264,7 +264,7 @@ public class BuildExecutor {
 		if (Build.build.get(Build.build_index).getKey() <= Game.supply()) {
 			if (Build.build.get(Build.build_index).getValue() == Units.ZERG_HATCHERY && !(BaseManager.get_next_base().has_walking_drone()) && Game.minerals() > 150) {
 				for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-					if (Drone.can_build(u)) {
+					if (Worker.can_build(u)) {
 						BaseManager.get_next_base().set_walking_drone(u);
 						return;
 					}
