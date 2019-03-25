@@ -18,6 +18,7 @@ import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class BuildPlanner {
@@ -55,15 +56,21 @@ public class BuildPlanner {
 			is_all_in = true;
 		}
 		
-		if (GameInfoCache.count_enemy(Units.ZERG_ZERGLING) > 0 && Game.get_frame() < 2700) {
-			Chat.sendMessage("Oh you early pooled me, that wasn't very nice");
-			Build.ideal_gases = 1;
-			Build.ideal_hatches = 2;
-			Build.scout = false;
-			Build.push_supply = 40;
-			Build.ideal_workers = 19;
-			Build.pull_off_gas = true;
-			Build.max_queens = 2;
+		
+		if (!is_all_in && Game.get_frame() < 2800) {
+			for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY, Units.ZERG_ZERGLING)) {
+				if (Game.get_frame() + ((u.unit().getPosition().toPoint2d().distance(BaseManager.main_base.location) / BaseManager.main_base.location.distance(Scouting.closest_enemy_spawn())) * 650) < 2800) {
+					Chat.sendMessage("Oh you early pooled me, that wasn't very nice");
+					Build.ideal_gases = 1;
+					Build.ideal_hatches = 2;
+					Build.scout = false;
+					Build.push_supply = 40;
+					Build.ideal_workers = 19;
+					Build.pull_off_gas = true;
+					Build.max_queens = 2;
+					is_all_in = true;
+				}
+			}
 		}
 		
 		if (!is_all_in && Game.get_opponent_race() != Race.ZERG) {

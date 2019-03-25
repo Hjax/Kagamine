@@ -62,10 +62,10 @@ public class Scouting {
 				}
 			}
 		}
-		if (scout == null && Build.scout) {
+		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 16 && Build.scout) {
 			assign_scout();
 		}
-		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 16 && spawns.size() >= 3 && Build.scout) {
+		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 12 && spawns.size() >= 3 && Build.scout) {
 			assign_scout();
 		}
 		if (Wisdom.confused() && Game.army_supply() < 20 && patrol_base < 7) {
