@@ -32,6 +32,18 @@ public class GenericUnit {
 			}
 		}
 		
+		if (u.unit().getOrders().size() > 0 && u.unit().getOrders().get(0).getAbility() == Abilities.ATTACK && u.unit().getOrders().get(0).getTargetedUnitTag().isPresent()) {
+			UnitInPool target = Game.get_unit(u.unit().getOrders().get(0).getTargetedUnitTag().get());
+			if (target != null && (Game.is_town_hall(target.unit().getType()) || target.unit().getType() == Units.TERRAN_BUNKER)) {
+				for (UnitInPool scv: GameInfoCache.get_units(Alliance.ENEMY, Units.TERRAN_SCV)) {
+					if (scv.unit().getPosition().toPoint2d().distance(target.unit().getPosition().toPoint2d()) < 7) {
+						Game.unit_command(u, Abilities.ATTACK, scv.unit());
+						return;
+					}
+				}
+			}
+		}
+		
 		if (u.unit().getWeaponCooldown().orElse((float) 0) > 0.1) {
 			for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (e.unit().getType() == Units.PROTOSS_INTERCEPTOR) continue;
