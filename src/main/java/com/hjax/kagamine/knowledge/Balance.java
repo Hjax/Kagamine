@@ -31,7 +31,7 @@ public class Balance {
 				current = Game.get_unit_type_data().get(current).getTechRequirement().orElse(Units.INVALID);
 			}
 			if (current == Units.ZERG_LAIR && GameInfoCache.get_units(Units.ZERG_HIVE).size() > 0) continue;
-			if (GameInfoCache.get_units(current).size() == 0) return true;
+			if (GameInfoCache.count_friendly(current) == 0) return true;
 		}
 		return false;
 	}
@@ -47,7 +47,7 @@ public class Balance {
 				current = Game.get_unit_type_data().get(current).getTechRequirement().orElse(Units.INVALID);
 			}
 			if (current == Units.ZERG_LAIR && GameInfoCache.get_units(Units.ZERG_HIVE).size() > 0) continue;
-			if (GameInfoCache.get_units(current).size() == 0) best = current;
+			if (GameInfoCache.count_friendly(current) == 0) best = current;
 		}
 		return best;
 	}

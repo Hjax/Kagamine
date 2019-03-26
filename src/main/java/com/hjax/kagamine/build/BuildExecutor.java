@@ -368,7 +368,7 @@ public class BuildExecutor {
 		}
 		if (Wisdom.ahead()) return true;
 		int target = (int) Math.max(2 + 2 * count(Units.ZERG_QUEEN), EnemyModel.enemyArmy());
-		if (Game.get_opponent_race() == Race.ZERG) target = 15;
+		//if (Game.get_opponent_race() == Race.ZERG) target = 15;
 		if (Wisdom.all_in_detected()) target = 10;
 		if (Wisdom.proxy_detected()) target = 10;
 		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < EnemyModel.enemyArmy() * 2)) {
