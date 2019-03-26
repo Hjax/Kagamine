@@ -50,10 +50,12 @@ public class BuildExecutor {
 			}
 			
 			if (count(Units.ZERG_DRONE) > 45 || count(Units.ZERG_EXTRACTOR) == 0) {
-				if ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) && ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < ((count(Units.ZERG_DRONE) - 15) / 8))) {
-					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
-						BaseManager.build(Units.ZERG_EXTRACTOR);
-						Game.purchase(Units.ZERG_EXTRACTOR);
+				if ((Game.gas() < 400 && GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) == 0) || Game.gas() < 150) {
+					if ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) && ((BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < ((count(Units.ZERG_DRONE) - 15) / 8))) {
+						if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
+							BaseManager.build(Units.ZERG_EXTRACTOR);
+							Game.purchase(Units.ZERG_EXTRACTOR);
+						}
 					}
 				}
 			}
@@ -251,9 +253,11 @@ public class BuildExecutor {
 			}
 
 			if ((count(Units.ZERG_DRONE) >= worker_cap() || count(Units.ZERG_HATCHERY) >= Build.ideal_hatches && Build.ideal_hatches > 0) && !should_build_drones() && BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
-				if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
-					BaseManager.build(Units.ZERG_EXTRACTOR);
-					Game.purchase(Units.ZERG_EXTRACTOR);
+				if ((Game.gas() < 400 && GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) == 0) || Game.gas() < 150) {
+					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
+						BaseManager.build(Units.ZERG_EXTRACTOR);
+						Game.purchase(Units.ZERG_EXTRACTOR);
+					}
 				}
 			}
 		}
