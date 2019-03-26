@@ -40,7 +40,7 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (should_build_army() && Game.army_supply() < 5) {
+			if (should_build_army()) {
 				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
 					if (next_army_unit() != Units.INVALID) {
 						Game.purchase(next_army_unit());
@@ -235,7 +235,7 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (should_build_army() || !should_build_drones()) {
+			if (!should_build_drones()) {
 				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
 					if (next_army_unit() != Units.INVALID) {
 						Game.purchase(next_army_unit());
@@ -301,7 +301,7 @@ public class BuildExecutor {
 	
 	public static UnitType next_army_unit() {
 		if (Game.get_opponent_race() == Race.ZERG) {
-			if (count(Units.ZERG_BANELING) == 0 && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return Units.ZERG_ZERGLING;
+			if (count(Units.ZERG_BANELING) == 0 && Composition.comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return Units.ZERG_ZERGLING;
 		}
 		UnitType best = Units.INVALID;
 		for (UnitType u: Composition.comp()) {
@@ -360,7 +360,7 @@ public class BuildExecutor {
 	
 	public static boolean should_build_army() {
 		if (Game.get_opponent_race() == Race.ZERG) {
-			if (count(Units.ZERG_BANELING) == 0 && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
+			if (count(Units.ZERG_BANELING) == 0 && Composition.comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
 		if (Wisdom.ahead()) return true;
 		int target = (int) Math.max(2 + 2 * count(Units.ZERG_QUEEN), EnemyModel.enemyArmy());

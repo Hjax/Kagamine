@@ -79,7 +79,10 @@ public class Wisdom {
 	}
 	
 	public static boolean shouldAttack() {
-		return ahead() || (Game.army_supply() > (3 * EnemyModel.enemyArmy())) || (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 10));
+		if (Game.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 10) {
+			return ahead() || (Game.army_supply() > (2 * EnemyModel.enemyArmy())) || ((Game.army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 6)));
+		}
+		return ahead() || (Game.army_supply() > (2.5 * EnemyModel.enemyArmy())) || ((Game.army_supply() > (EnemyModel.enemyArmy() * 1.2)) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 10)));
 	}
 	
 	public static boolean worker_rush() {

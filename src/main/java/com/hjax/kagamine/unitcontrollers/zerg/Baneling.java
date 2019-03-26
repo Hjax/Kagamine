@@ -20,7 +20,7 @@ public class Baneling {
 		if (u.unit().getOrders().size() != 0) return;
 		if (Wisdom.cannon_rush()) return;
 		
-		if ((Game.supply() >= Build.push_supply || Wisdom.ahead())) {
+		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack())) {
 			if (ArmyManager.has_target) {
 				if (u.unit().getOrders().size() == 0) {
 					Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);
