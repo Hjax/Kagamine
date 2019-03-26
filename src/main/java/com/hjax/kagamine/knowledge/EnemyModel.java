@@ -10,6 +10,8 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.economy.Base;
+import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 
@@ -112,7 +114,12 @@ public class EnemyModel {
 	}
 	
 	public static int enemyBaseCount() {
-		int result = 0;
+		int result = 1;
+		for (Base b : BaseManager.bases) {
+			if (b.has_command_structure() && b.location.distance(Scouting.closest_enemy_spawn()) < 5) {
+				result -= 1;
+			}
+		}
 		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.is_town_hall(u.unit().getType())) result++;
 		}

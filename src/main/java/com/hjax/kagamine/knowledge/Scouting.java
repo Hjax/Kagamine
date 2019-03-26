@@ -62,7 +62,7 @@ public class Scouting {
 				}
 			}
 		}
-		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 12 && Build.scout) {
+		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 16 && Build.scout) {
 			assign_scout();
 		}
 		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 12 && spawns.size() >= 3 && Build.scout) {
