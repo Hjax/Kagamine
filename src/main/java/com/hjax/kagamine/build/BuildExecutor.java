@@ -40,7 +40,7 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (should_build_army()) {
+			if (should_build_army() && EnemyModel.enemyArmy() > Game.army_supply() * 1.5) {
 				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
 					if (next_army_unit() != Units.INVALID) {
 						Game.purchase(next_army_unit());
@@ -237,7 +237,7 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (!should_build_drones()) {
+			if (!should_build_drones() || should_build_army() ) {
 				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
 					if (next_army_unit() != Units.INVALID) {
 						Game.purchase(next_army_unit());

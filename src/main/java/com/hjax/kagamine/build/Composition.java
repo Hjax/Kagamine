@@ -7,12 +7,13 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.EnemyModel;
 
 public class Composition {
 	public static List<UnitType> comp() {
 		if (Game.get_opponent_race() == Race.TERRAN) {
-			if (Game.army_supply() < 15) {
+			if (Game.army_supply() < 10 || GameInfoCache.count_friendly(Units.ZERG_DRONE) < 40) {
 				return Arrays.asList(Units.ZERG_ZERGLING);
 			}
 			if (Game.army_supply() < 80) {
