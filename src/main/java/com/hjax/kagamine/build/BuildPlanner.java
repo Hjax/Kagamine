@@ -57,7 +57,7 @@ public class BuildPlanner {
 		}
 		
 		
-		if (!is_all_in && Game.get_frame() < 2800) {
+		if (false && !is_all_in && Game.get_frame() < 2800) {
 			for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY, Units.ZERG_ZERGLING)) {
 				if (Game.get_frame() + ((u.unit().getPosition().toPoint2d().distance(BaseManager.main_base.location) / BaseManager.main_base.location.distance(Scouting.closest_enemy_spawn())) * 650) < 2800) {
 					Chat.sendMessage("Oh you early pooled me, that wasn't very nice");
@@ -120,8 +120,8 @@ public class BuildPlanner {
 		switch (Game.get_opponent_race()) {
 			case PROTOSS:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
-															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
+															new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
+															new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_hatches = -1;
 				Build.push_supply = 185;
@@ -133,8 +133,8 @@ public class BuildPlanner {
 				break;
 			case ZERG:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
+						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
+						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_hatches = -1;
 				Build.scout = true;
@@ -147,8 +147,8 @@ public class BuildPlanner {
 				break;			
 			case TERRAN:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
+						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
+						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_hatches = -1;
 				Build.scout = true;
@@ -161,8 +161,8 @@ public class BuildPlanner {
 				break;
 			default:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_HATCHERY),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_EXTRACTOR),
+						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
+						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_hatches = -1;
 				Build.scout = true;

@@ -75,17 +75,16 @@ public class GameInfoCache {
 							}
 						}
 					}
+					if (u.unit().getBuildProgress() < Constants.DONE) {
+						production.put(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 
+						production.getOrDefault(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 0) + 1);
+					}
 				} else if (u.unit().getAlliance() == Alliance.ENEMY) {
 					counts_enemy.put(u.unit().getType(), counts_enemy.getOrDefault(u.unit().getType(), 0) + 1);
 					visible_enemy.put(u.getTag(), u);
 				} else {
 					visible_neutral.put(u.getTag(), u);
 				}
-				if (u.unit().getBuildProgress() < Constants.DONE) {
-					production.put(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 
-					production.getOrDefault(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 0) + 1);
-				}
-				
 			}
 
 		}
