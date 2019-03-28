@@ -17,29 +17,9 @@ import com.hjax.kagamine.game.GameInfoCache;
 public class MiningOptimizer {
 	// mappings of drones to mineral patches
 	private static Map<Tag, Tag> assignments = new HashMap<>();
-	private static Map<Tag, Boolean> returnBoost = new HashMap<>();
-	private static Map<Tag, Boolean> isGas = new HashMap<>();
-	public static void on_frame() {
 	
-		for (UnitInPool up: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-			if (!returnBoost.containsKey(up.getTag()) || (up.unit().getOrders().size() > 0 && up.unit().getOrders().get(0).getAbility() == Abilities.HARVEST_GATHER)) {
-				isGas.put(up.getTag(), false);
-				if (up.unit().getOrders().size() > 0 && up.unit().getOrders().get(0).getTargetedUnitTag().isPresent()) {
-					UnitInPool resource = Game.get_unit(up.unit().getOrders().get(0).getTargetedUnitTag().get());
-					if (resource != null) {
-						if (resource.unit().getVespeneContents().orElse(0) > 0) {
-							isGas.put(up.getTag(), true);
-						}
-					}
-				}
-				returnBoost.put(up.getTag(), false);
-			}
-			if (!returnBoost.get(up.getTag()) && up.unit().getOrders().size() > 0 && up.unit().getOrders().get(0).getAbility() == Abilities.HARVEST_RETURN && !isGas.get(up.getTag())) {
-				Game.unit_command(up, Abilities.HARVEST_RETURN);
-				returnBoost.put(up.getTag(), true);
-			}
-
-		}
+	
+	public static void on_frame() {
 		
 		Set<Tag> to_remove = new HashSet<>();
 		for (Tag u: assignments.keySet()) {
