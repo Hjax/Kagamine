@@ -18,6 +18,8 @@ import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.BaseDefense;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.knowledge.EnemyModel;
+import com.hjax.kagamine.unitcontrollers.GenericUnit;
 
 public class Mutalisk {
 	
@@ -76,6 +78,12 @@ public class Mutalisk {
 
 	
 	public static void pressure(UnitInPool muta) {
+		
+		if (EnemyModel.enemyBaseCount() == 0) {
+			GenericUnit.on_frame(muta, true);
+			return;
+		}
+		
 		
 		List<Vector2d> negative_pressure = new ArrayList<>();
 		List<Vector2d> positive_pressure = new ArrayList<>();

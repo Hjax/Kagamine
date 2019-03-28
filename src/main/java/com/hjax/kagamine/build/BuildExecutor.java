@@ -397,7 +397,7 @@ public class BuildExecutor {
 	}
 	
 	public static boolean should_expand() {
-		if (count(Units.ZERG_HATCHERY) < 3 && count(Units.ZERG_DRONE) > 23) return true;
+		if (BaseManager.base_count(Alliance.SELF) < 3 && count(Units.ZERG_DRONE) > 23) return true;
 		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count(Alliance.SELF) < Build.ideal_hatches) || (Build.ideal_hatches == -1));
 	}
 	

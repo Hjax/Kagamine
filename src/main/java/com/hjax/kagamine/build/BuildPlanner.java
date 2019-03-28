@@ -136,9 +136,9 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_hatches = -1;
 				Build.scout = true;
-				Build.push_supply = 170;
+				Build.push_supply = 150;
 				Build.ideal_gases = 6;
-				Build.ideal_workers = 65;
+				Build.ideal_workers = 55;
 				Build.pull_off_gas = true;
 				Build.tech_drones = 25;
 				Build.max_queens = -1;		

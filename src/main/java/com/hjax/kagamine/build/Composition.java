@@ -22,11 +22,7 @@ public class Composition {
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
 		}
 		if (Game.get_opponent_race() == Race.ZERG) {
-			if (Game.army_supply() < 20) {
-				return Arrays.asList(Units.ZERG_ZERGLING);
-			} else {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
-			}
+			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 		}
 		if (Game.get_opponent_race() == Race.PROTOSS) {
 			if (EnemyModel.counts.getOrDefault(Units.PROTOSS_CARRIER, 0) > 0) {

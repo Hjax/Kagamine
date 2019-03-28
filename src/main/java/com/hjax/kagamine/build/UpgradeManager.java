@@ -11,6 +11,7 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrade;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
+import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.economy.BaseManager;
@@ -44,14 +45,14 @@ public class UpgradeManager {
 					if (u.toString().toLowerCase().contains("melee") && !Game.has_upgrade(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3) && (Composition.comp().contains(Units.ZERG_ROACH) || Composition.comp().contains(Units.ZERG_HYDRALISK))) continue;
 					for (UnitType t: Game.get_unit_type_data().keySet()) {
 						if (t.getAbilities().contains(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)) || t.getAbilities().contains(Game.get_ability_data().get(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)).getRemapsToAbility().orElse(Abilities.INVALID))) {
-							if (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && BuildExecutor.count(t) < 2 && (BuildExecutor.count(Units.ZERG_DRONE) > 60)) {
+							if ((t.equals(Units.ZERG_EVOLUTION_CHAMBER) && BuildExecutor.count(t) < 1 && (BuildExecutor.count(Units.ZERG_DRONE) > 35) && Game.get_opponent_race() == Race.ZERG) || (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && BuildExecutor.count(t) < 2 && (BuildExecutor.count(Units.ZERG_DRONE) > 60))) {
 								if (Game.can_afford(t)) {
 									BaseManager.build(t);
 								}
 								Game.purchase(t);
 								return;
 							}
-							if (t == Units.ZERG_SPIRE && BuildExecutor.count(Units.ZERG_GREATER_SPIRE) < 1) continue outer;
+							if (t == Units.ZERG_SPIRE && BuildExecutor.count(Units.ZERG_GREATER_SPIRE) < 1 && Composition.comp().contains(Units.ZERG_BROODLORD)) continue outer;
 							for (UnitInPool up: GameInfoCache.get_units(Alliance.SELF, t)) {
 								if (up.unit().getOrders().size() == 0 && up.unit().getBuildProgress() > 0.999) {
 									for (AvailableAbility aa: Game.availible_abilities(up, true).getAbilities()) {
