@@ -46,8 +46,11 @@ public class Kagamine extends S2Agent{
 	public void onStep() {
 		long startTime = System.nanoTime();
 		Game.start_frame(observation(), actions(), query(), debug());
+		
+		GameInfoCache.start_frame();
+		MiningOptimizer.on_frame();
+		
 		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
-			GameInfoCache.start_frame();
 			ResourceTracking.on_frame();
 			EnemyModel.on_frame();
 			Larva.start_frame();
@@ -57,7 +60,6 @@ public class Kagamine extends S2Agent{
 			ThreatManager.on_frame();
 			BaseManager.on_frame();
 			EconomyManager.on_frame();
-			MiningOptimizer.on_frame();
 			Creep.start_frame();
 			BuildPlanner.on_frame();
 			EnemySquadManager.on_frame();

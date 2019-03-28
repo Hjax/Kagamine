@@ -48,6 +48,7 @@ public class GenericUnit {
 		if (u.unit().getWeaponCooldown().orElse((float) 0) > 0.1) {
 			for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (e.unit().getType() == Units.PROTOSS_INTERCEPTOR) continue;
+				if (Game.is_changeling(e.unit().getType())) continue;
 				if (Game.get_unit_type_data().get(e.unit().getType()).getWeapons().size() > 0) {
 					float range = new ArrayList<>(Game.get_unit_type_data().get(u.unit().getType()).getWeapons()).get(0).getRange();
 					if (u.unit().getType() == Units.ZERG_HYDRALISK && Game.has_upgrade(Upgrades.EVOLVE_GROOVED_SPINES)) range++;

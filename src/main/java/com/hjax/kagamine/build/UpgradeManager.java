@@ -41,9 +41,10 @@ public class UpgradeManager {
 		for (UnitType ut : Composition.comp()) {
 			outer: for (Upgrade u : upgrades.getOrDefault(ut, Arrays.asList())) {
 				if (!(Game.has_upgrade(u)) && !GameInfoCache.is_researching(u)) {
+					if (u.toString().toLowerCase().contains("melee") && !Game.has_upgrade(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3) && (Composition.comp().contains(Units.ZERG_ROACH) || Composition.comp().contains(Units.ZERG_HYDRALISK))) continue;
 					for (UnitType t: Game.get_unit_type_data().keySet()) {
 						if (t.getAbilities().contains(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)) || t.getAbilities().contains(Game.get_ability_data().get(Game.get_upgrade_data().get(u).getAbility().orElse(Abilities.INVALID)).getRemapsToAbility().orElse(Abilities.INVALID))) {
-							if (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && BuildExecutor.count(t) < 3 && (BuildExecutor.count(Units.ZERG_DRONE) > 60)) {
+							if (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && BuildExecutor.count(t) < 2 && (BuildExecutor.count(Units.ZERG_DRONE) > 60)) {
 								if (Game.can_afford(t)) {
 									BaseManager.build(t);
 								}
