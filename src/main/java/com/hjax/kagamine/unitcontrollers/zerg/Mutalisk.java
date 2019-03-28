@@ -44,6 +44,19 @@ public class Mutalisk {
 		scores.put(Units.PROTOSS_SENTRY, 7);
 		scores.put(Units.PROTOSS_ARCHON, 6);
 		
+		scores.put(Units.ZERG_DRONE, 1);
+		scores.put(Units.ZERG_QUEEN, 2);
+		scores.put(Units.ZERG_HYDRALISK, 3);
+		scores.put(Units.ZERG_MUTALISK, 4);
+		scores.put(Units.ZERG_CORRUPTOR, 3);
+		scores.put(Units.ZERG_SPORE_CRAWLER, 5);
+		
+		threats.put(Units.ZERG_SPORE_CRAWLER, 10);
+		threats.put(Units.ZERG_QUEEN, 4);
+		threats.put(Units.ZERG_HYDRALISK, 4);
+		threats.put(Units.ZERG_MUTALISK, 2);
+		threats.put(Units.ZERG_CORRUPTOR, 4);
+		
 		threats.put(Units.TERRAN_MISSILE_TURRET, 5);
 		threats.put(Units.TERRAN_THOR, 15);
 		threats.put(Units.TERRAN_CYCLONE, 3);
@@ -85,13 +98,13 @@ public class Mutalisk {
 					positive_pressure.add(Utilities.direction_to(Vector2d.of(muta.unit().getPosition().toPoint2d()), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (1.2 / (Math.pow(Math.max((double) muta.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()), 3.0), 1.6)))));
 				}
 				else if (muta.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()) < 20) {
-					if (enemy.unit().getType() == Units.TERRAN_VIKING_FIGHTER || enemy.unit().getType() == Units.PROTOSS_VOIDRAY || enemy.unit().getType() == Units.PROTOSS_STALKER || enemy.unit().getType() == Units.PROTOSS_PHOENIX || enemy.unit().getType() == Units.TERRAN_MARINE || enemy.unit().getType() == Units.TERRAN_LIBERATOR) {
+					if (enemy.unit().getType() == Units.TERRAN_VIKING_FIGHTER || enemy.unit().getType() == Units.ZERG_HYDRALISK || enemy.unit().getType() == Units.ZERG_MUTALISK || enemy.unit().getType() == Units.ZERG_QUEEN || enemy.unit().getType() == Units.ZERG_CORRUPTOR || enemy.unit().getType() == Units.PROTOSS_VOIDRAY || enemy.unit().getType() == Units.PROTOSS_STALKER || enemy.unit().getType() == Units.PROTOSS_PHOENIX || enemy.unit().getType() == Units.TERRAN_MARINE || enemy.unit().getType() == Units.TERRAN_LIBERATOR) {
 						negative_pressure.add(Utilities.direction_to(Vector2d.of(muta.unit().getPosition().toPoint2d()), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (700 / Math.pow((double) muta.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()), 3))));
 					} else if (enemy.unit().getType() == Units.TERRAN_THOR) {
 						negative_pressure.add(Utilities.direction_to(Vector2d.of(muta.unit().getPosition().toPoint2d()), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (1000 / Math.pow((double) muta.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()), 2))));
 					} else if (enemy.unit().getType() == Units.TERRAN_BUNKER) {
 						negative_pressure.add(Utilities.direction_to(Vector2d.of(muta.unit().getPosition().toPoint2d()), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (500 / Math.pow((double) muta.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()), 3))));
-					} else if (enemy.unit().getType() == Units.TERRAN_MISSILE_TURRET) {
+					} else if (enemy.unit().getType() == Units.TERRAN_MISSILE_TURRET || enemy.unit().getType() == Units.ZERG_SPORE_CRAWLER) {
 						negative_pressure.add(Utilities.direction_to(Vector2d.of(muta.unit().getPosition().toPoint2d()), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (300 / Math.pow((double) muta.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()), 2))));
 					} else if (enemy.unit().getType() == Units.PROTOSS_PHOTON_CANNON) {
 						negative_pressure.add(Utilities.direction_to(Vector2d.of(muta.unit().getPosition().toPoint2d()), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (200 / Math.pow((double) muta.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()), 2))));

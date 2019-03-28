@@ -25,7 +25,7 @@ public class Composition {
 			if (Game.army_supply() < 20) {
 				return Arrays.asList(Units.ZERG_ZERGLING);
 			} else {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK);
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 			}
 		}
 		if (Game.get_opponent_race() == Race.PROTOSS) {
