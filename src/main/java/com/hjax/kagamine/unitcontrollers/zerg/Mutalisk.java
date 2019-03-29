@@ -141,9 +141,6 @@ public class Mutalisk {
 
 	public static void on_frame(UnitInPool muta) {
 		
-		// frame skip for mutas
-		if (Game.get_frame() % 5 != 0) return;
-		
 		float threat = 0;
 		int marines = 0;
 		int medivacs = 0;
