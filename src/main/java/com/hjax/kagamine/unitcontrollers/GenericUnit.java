@@ -92,7 +92,11 @@ public class GenericUnit {
 		if (moveOut && !ThreatManager.under_attack() && !(Wisdom.shouldAttack() || Game.supply() >= Build.push_supply)) {
 			Base front = BaseManager.get_forward_base();
 			if (u.unit().getPosition().toPoint2d().distance(front.location) > 12) {
-				Game.unit_command(u, Abilities.ATTACK, front.location);
+				if (BaseManager.closest_base(u.unit().getPosition().toPoint2d()).has_friendly_command_structure()) {
+					Game.unit_command(u, Abilities.ATTACK, front.location);
+				} else {
+					Game.unit_command(u, Abilities.MOVE, BaseManager.closest_friendly_base(u.unit().getPosition().toPoint2d()).location);
+				}
 			}
 		}
 	}

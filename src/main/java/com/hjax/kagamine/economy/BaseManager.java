@@ -323,11 +323,23 @@ public class BaseManager {
 		}
 	}
 	
-	static Base closest_base(Point2d p) {
+	public static Base closest_base(Point2d p) {
 		Base best = null;
 		for (Base b: bases) {
 			if (best == null || p.distance(best.location) > b.location.distance(p)) {
 				best = b;
+			}
+		}
+		return best;
+	}
+	
+	public static Base closest_friendly_base(Point2d p) {
+		Base best = null;
+		for (Base b: bases) {
+			if (b.has_friendly_command_structure()) {
+				if (best == null || p.distance(best.location) > b.location.distance(p)) {
+					best = b;
+				}
 			}
 		}
 		return best;

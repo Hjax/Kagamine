@@ -46,18 +46,20 @@ public class Mutalisk {
 		scores.put(Units.PROTOSS_SENTRY, 7);
 		scores.put(Units.PROTOSS_ARCHON, 6);
 		
-		scores.put(Units.ZERG_DRONE, 1);
-		scores.put(Units.ZERG_QUEEN, 2);
-		scores.put(Units.ZERG_HYDRALISK, 3);
-		scores.put(Units.ZERG_MUTALISK, 4);
-		scores.put(Units.ZERG_CORRUPTOR, 3);
-		scores.put(Units.ZERG_SPORE_CRAWLER, 5);
+		scores.put(Units.ZERG_OVERLORD, 1);
+		scores.put(Units.ZERG_OVERSEER, 1);
+		scores.put(Units.ZERG_DRONE, 2);
+		scores.put(Units.ZERG_QUEEN, 3);
+		scores.put(Units.ZERG_HYDRALISK, 5);
+		scores.put(Units.ZERG_MUTALISK, 6);
+		scores.put(Units.ZERG_CORRUPTOR, 4);
+		scores.put(Units.ZERG_SPORE_CRAWLER, 7);
 		
-		threats.put(Units.ZERG_SPORE_CRAWLER, 10);
-		threats.put(Units.ZERG_QUEEN, 4);
-		threats.put(Units.ZERG_HYDRALISK, 4);
+		threats.put(Units.ZERG_SPORE_CRAWLER, 8);
+		threats.put(Units.ZERG_QUEEN, 3);
+		threats.put(Units.ZERG_HYDRALISK, 3);
 		threats.put(Units.ZERG_MUTALISK, 2);
-		threats.put(Units.ZERG_CORRUPTOR, 4);
+		threats.put(Units.ZERG_CORRUPTOR, 3);
 		
 		threats.put(Units.TERRAN_MISSILE_TURRET, 5);
 		threats.put(Units.TERRAN_THOR, 15);
