@@ -141,7 +141,7 @@ public class BuildPlanner {
 				Build.ideal_workers = 55;
 				Build.pull_off_gas = true;
 				Build.tech_drones = 25;
-				Build.max_queens = -1;		
+				Build.max_queens = 4;		
 				break;			
 			case TERRAN:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),

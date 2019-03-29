@@ -367,7 +367,7 @@ public class BuildExecutor {
 			if (count(Units.ZERG_BANELING) == 0 && Composition.comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
 		if (Wisdom.ahead()) return true;
-		int target = (int) Math.max(2 + 2 * count(Units.ZERG_QUEEN), EnemyModel.enemyArmy());
+		int target = (int) Math.max(2 + 2 * count(Units.ZERG_QUEEN), EnemyModel.enemyArmy() + 2 * count(Units.ZERG_QUEEN));
 		//if (Game.get_opponent_race() == Race.ZERG) target = 15;
 		if (Wisdom.all_in_detected()) target = 10;
 		if (Wisdom.proxy_detected()) target = 10;

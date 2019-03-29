@@ -1,6 +1,7 @@
 package com.hjax.kagamine.army;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +24,17 @@ public class BanelingAvoidance {
 				to_remove.add(t);
 			}
 		}
+		for (Tag t: banelingAssignments.keySet()) {
+			if (Game.get_unit(banelingAssignments.get(t)) == null) {
+				to_remove.add(t);
+			}
+		}
 		for (Tag t: to_remove) {
 			banelingAssignments.remove(t);
 		}
 		
 		for (UnitInPool enemyBane: GameInfoCache.get_units(Alliance.ENEMY, Units.ZERG_BANELING)) {
-			if (!banelingAssignments.containsValue(enemyBane.getTag())) {
+			if (Collections.frequency(banelingAssignments.values(), enemyBane.getTag()) < 2) {
 				for (UnitInPool allyLing : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ZERGLING)) {
 					if (banelingAssignments.containsKey(allyLing.getTag())) continue;
 					if (allyLing.unit().getPosition().toPoint2d().distance(enemyBane.unit().getPosition().toPoint2d()) < 10) {
