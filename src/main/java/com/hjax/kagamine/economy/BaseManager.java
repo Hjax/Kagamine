@@ -19,6 +19,7 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
+import com.hjax.kagamine.army.EnemySquadManager;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
@@ -367,10 +368,17 @@ public class BaseManager {
 	public static Base get_forward_base() {
 		if (forward_base_frame != Game.get_frame()) {
 			Base best = null;
-			Base target = closest_base(Scouting.closest_enemy_spawn());
+			Point2d target = closest_base(Scouting.closest_enemy_spawn()).location;
+			int best_size = 0;
+			for (Set<UnitInPool> squad : EnemySquadManager.enemy_squads) {
+				if (squad.size() > best_size) {
+					target = EnemySquadManager.average_point(new ArrayList<>(squad));
+					best_size = squad.size();
+				}
+			}
 			for (Base b: bases) {
 				if (b.has_friendly_command_structure() && !(b.command_structure.unit().getBuildProgress() < 0.999)) {
-					if (best == null || get_distance(b, target) < get_distance(best, target)) {
+					if (best == null || b.location.distance(target) < best.location.distance(target)) {
 						best = b;
 					}
 				}

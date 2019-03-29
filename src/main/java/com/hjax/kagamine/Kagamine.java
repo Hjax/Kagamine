@@ -39,7 +39,7 @@ public class Kagamine extends S2Agent{
 		Scouting.start_game();
 		BuildPlanner.decide_build();
 		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
-		Chat.sendMessage("You are playing vs 032919");
+		Chat.sendMessage("You are playing vs 032919v2");
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
