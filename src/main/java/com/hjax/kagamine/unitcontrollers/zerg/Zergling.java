@@ -2,15 +2,36 @@ package com.hjax.kagamine.unitcontrollers.zerg;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
+import com.hjax.kagamine.army.BanelingAvoidance;
 import com.hjax.kagamine.army.BaseDefense;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.unitcontrollers.GenericUnit;
 
 public class Zergling {
 	public static void on_frame(UnitInPool u) {
+		
+		if (BanelingAvoidance.banelingAssignments.containsKey(u.getTag())) {
+			if (Game.get_unit(BanelingAvoidance.banelingAssignments.get(u.getTag())) != null) {
+				Game.unit_command(u, Abilities.ATTACK, Game.get_unit(BanelingAvoidance.banelingAssignments.get(u.getTag())).unit());
+				return;
+			}
+		}
+		
+		for (UnitInPool enemyBane: GameInfoCache.get_units(Alliance.ENEMY, Units.ZERG_BANELING)) {
+			if (u.unit().getPosition().toPoint2d().distance(enemyBane.unit().getPosition().toPoint2d()) < 4) {
+				Vector2d offset = new Vector2d(u.unit().getPosition().toPoint2d().getX() - enemyBane.unit().getPosition().toPoint2d().getX(), u.unit().getPosition().toPoint2d().getY() - enemyBane.unit().getPosition().toPoint2d().getY());
+				offset = Utilities.normalize(offset);
+				Game.unit_command(u, Abilities.MOVE, offset.add(Vector2d.of(u.unit().getPosition().toPoint2d())).scale(1.5f).toPoint2d());
+				return;
+			}
+		}
+		
 		if (BaseDefense.assignments.containsKey(u.unit().getTag()) && BaseDefense.surroundCenter.containsKey(u.getTag())) {
 			if (BaseDefense.surroundCenter.get(u.getTag()).distance(BaseDefense.assignments.get(u.getTag())) < 1) {
 				Game.unit_command(u, Abilities.ATTACK, BaseDefense.assignments.get(u.getTag()));

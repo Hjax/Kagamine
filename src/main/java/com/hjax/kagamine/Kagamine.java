@@ -4,6 +4,7 @@ import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.ArmyManager;
+import com.hjax.kagamine.army.BanelingAvoidance;
 import com.hjax.kagamine.army.BaseDefense;
 import com.hjax.kagamine.army.EnemySquadManager;
 import com.hjax.kagamine.army.ThreatManager;
@@ -47,27 +48,26 @@ public class Kagamine extends S2Agent{
 		long startTime = System.nanoTime();
 		Game.start_frame(observation(), actions(), query(), debug());
 		
-		if ((Game.get_frame() % Constants.FRAME_SKIP) == 0) {
-			GameInfoCache.start_frame();
-			MiningOptimizer.on_frame();
-			ResourceTracking.on_frame();
-			EnemyModel.on_frame();
-			Larva.start_frame();
-			ControlGroups.on_frame();
-			Scouting.on_frame();
-			ArmyManager.on_frame();
-			ThreatManager.on_frame();
-			BaseManager.on_frame();
-			EconomyManager.on_frame();
-			Creep.start_frame();
-			BuildPlanner.on_frame();
-			EnemySquadManager.on_frame();
-			BaseDefense.on_frame();
-			BuildExecutor.on_frame();
-			UnitManager.on_frame();
-			MapAnalysis.on_frame();
-			GameInfoCache.end_frame();
-		}
+		GameInfoCache.start_frame();
+		MiningOptimizer.on_frame();
+		BanelingAvoidance.on_frame();
+		ResourceTracking.on_frame();
+		EnemyModel.on_frame();
+		Larva.start_frame();
+		ControlGroups.on_frame();
+		Scouting.on_frame();
+		ArmyManager.on_frame();
+		ThreatManager.on_frame();
+		BaseManager.on_frame();
+		EconomyManager.on_frame();
+		Creep.start_frame();
+		BuildPlanner.on_frame();
+		EnemySquadManager.on_frame();
+		BaseDefense.on_frame();
+		BuildExecutor.on_frame();
+		UnitManager.on_frame();
+		MapAnalysis.on_frame();
+		GameInfoCache.end_frame();
 
 		if (Constants.DEBUG) {
 			Game.debug.sendDebug();

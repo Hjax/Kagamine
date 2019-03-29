@@ -48,8 +48,6 @@ public class EnemyModel {
 				registered.put(u.getTag(), u.unit().getType());
 			}
 		}
-		
-		if (Game.get_frame() % (Constants.FRAME_SKIP * 100) == 0) Game.chat("You have " + enemyArmy() + " army supply");
 	}
 	
 	public static void removeFromModel(UnitInPool u) {

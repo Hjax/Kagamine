@@ -22,7 +22,7 @@ public class ThreatManager {
 		Set<Tag> to_remove = new HashSet<>();
 		for (Tag t: seen.keySet()) {
 			seen.put(t, seen.get(t) + 1);
-			if (Game.get_unit(t) == null || !Game.get_unit(t).isAlive() || seen.get(t) > (Constants.FPS * 20) / Constants.FRAME_SKIP) {
+			if (Game.get_unit(t) == null || !Game.get_unit(t).isAlive() || seen.get(t) > (Constants.FPS * 20)) {
 				to_remove.add(t);
 			}
 		}
