@@ -15,7 +15,6 @@ public class LadderMain {
                     .setParticipants(S2Coordinator.createParticipant(Race.ZERG, bot))
                     .connectToLadder()
                     .joinGame();
-
         while (s2Coordinator.update()) {
         }
         s2Coordinator.quit();
