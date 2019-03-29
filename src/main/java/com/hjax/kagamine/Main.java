@@ -41,7 +41,7 @@ public class Main {
 					.setParticipants(
 							//S2Coordinator.createParticipant(choice, bot2),
 							S2Coordinator.createParticipant(Race.ZERG, bot),
-							S2Coordinator.createComputer(choice, Difficulty.CHEAT_INSANE))
+							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
 					.launchStarcraft()
 					.startGame(LocalMap.of(Paths.get("BlueshiftLE.SC2Map")));
 			while (s2Coordinator.update()) {

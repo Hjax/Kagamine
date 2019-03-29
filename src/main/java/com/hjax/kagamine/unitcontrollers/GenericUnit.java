@@ -37,7 +37,7 @@ public class GenericUnit {
 			UnitInPool target = Game.get_unit(u.unit().getOrders().get(0).getTargetedUnitTag().get());
 			if (target != null && (Game.is_town_hall(target.unit().getType()) || target.unit().getType() == Units.TERRAN_BUNKER)) {
 				for (UnitInPool scv: GameInfoCache.get_units(Alliance.ENEMY, Units.TERRAN_SCV)) {
-					if (scv.unit().getPosition().toPoint2d().distance(target.unit().getPosition().toPoint2d()) < 7) {
+					if (scv.unit().getPosition().toPoint2d().distance(target.unit().getPosition().toPoint2d()) < 5) {
 						Game.unit_command(u, Abilities.ATTACK, scv.unit());
 						return;
 					}
@@ -92,7 +92,7 @@ public class GenericUnit {
 		if (moveOut && !ThreatManager.under_attack() && !(Wisdom.shouldAttack() || Game.supply() >= Build.push_supply)) {
 			Base front = BaseManager.get_forward_base();
 			if (u.unit().getPosition().toPoint2d().distance(front.location) > 12) {
-				if (BaseManager.closest_base(u.unit().getPosition().toPoint2d()).has_friendly_command_structure()) {
+				if (!BaseManager.closest_base(u.unit().getPosition().toPoint2d()).has_enemy_command_structure()) {
 					Game.unit_command(u, Abilities.ATTACK, front.location);
 				} else {
 					Game.unit_command(u, Abilities.MOVE, BaseManager.closest_friendly_base(u.unit().getPosition().toPoint2d()).location);

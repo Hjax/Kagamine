@@ -13,6 +13,8 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.UnitTypeData;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrade;
+import com.github.ocraft.s2client.protocol.game.PlayerInfo;
+import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.UnitOrder;
@@ -152,6 +154,43 @@ public class GameInfoCache {
 			}
 		}
 		return production.getOrDefault(Game.get_upgrade_data().get(u).getAbility().get(), 0) > 0;
+	}
+	
+	public static Race get_opponent_race() {
+		if (counts_enemy.getOrDefault(Units.PROTOSS_PROBE, 0) > 0) return Race.PROTOSS;
+		if (counts_enemy.getOrDefault(Units.PROTOSS_PYLON, 0) > 0) return Race.PROTOSS;
+		if (counts_enemy.getOrDefault(Units.PROTOSS_GATEWAY, 0) > 0) return Race.PROTOSS;
+		if (counts_enemy.getOrDefault(Units.PROTOSS_PHOTON_CANNON, 0) > 0) return Race.PROTOSS;
+		
+		if (counts_enemy.getOrDefault(Units.TERRAN_SCV, 0) > 0) return Race.TERRAN;
+		if (counts_enemy.getOrDefault(Units.TERRAN_SUPPLY_DEPOT, 0) > 0) return Race.TERRAN;
+		if (counts_enemy.getOrDefault(Units.TERRAN_BARRACKS, 0) > 0) return Race.TERRAN;
+		if (counts_enemy.getOrDefault(Units.TERRAN_MARINE, 0) > 0) return Race.TERRAN;
+		for (PlayerInfo player: Game.get_game_info().getPlayersInfo()) {
+			if (player.getPlayerId() != Game.get_player_id()) {
+				if (player.getRequestedRace() != Race.RANDOM) {
+					return player.getRequestedRace();
+				}
+			}
+		}
+		return Race.ZERG;
+	}
+	
+	private static long aas_frame = -1;
+	private static float aas_value = 0;
+	public static float attacking_army_supply() {
+		if (Game.get_frame() == aas_frame) {
+			return aas_value;
+		}
+		float result = 0;
+		for (UnitInPool u: get_units(Alliance.SELF)) {
+			if (u.unit().getBuildProgress() > 0.99 && Game.is_combat(u.unit().getType()) && !(u.unit().getType() == Units.ZERG_QUEEN)) {
+				result += Game.get_unit_type_data().get(u.unit().getType()).getFoodRequired().orElse(0f);
+			}
+		}
+		aas_frame = Game.get_frame();
+		aas_value = result;
+		return result;
 	}
 	
 }

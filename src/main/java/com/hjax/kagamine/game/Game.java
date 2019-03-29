@@ -282,15 +282,6 @@ public class Game {
 		return observation.getPlayerId();
 	}
 	
-	public static Race get_opponent_race() {
-		for (PlayerInfo player: get_game_info().getPlayersInfo()) {
-			if (player.getPlayerId() != get_player_id()) {
-				return player.getRequestedRace();
-			}
-		}
-		return Race.RANDOM;
-	}
-	
 	public static boolean pathable(Point2d p) {
 		return observation.isPathable(p);
 	}

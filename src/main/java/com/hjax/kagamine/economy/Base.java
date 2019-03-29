@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
+import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 
 public class Base {
@@ -15,6 +16,8 @@ public class Base {
 	public UnitInPool walking_drone = null;
 	public UnitInPool queen = null;
 	public UnitInPool command_structure = null;
+	
+	public long last_seen_frame = 0;
 	
 	public Base(Point2d l) {
 		location = l;
@@ -36,6 +39,7 @@ public class Base {
 				}
 			}
 		}
+		if (Game.isVisible(location)) last_seen_frame = Game.get_frame();
 	}
 	
 	public void set_walking_drone(UnitInPool p) {

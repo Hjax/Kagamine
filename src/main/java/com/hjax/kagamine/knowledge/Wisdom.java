@@ -70,7 +70,7 @@ public class Wisdom {
 	}
 	
 	public static boolean confused() {
-		if (Game.get_opponent_race() == Race.ZERG) return false;
+		if (GameInfoCache.get_opponent_race() == Race.ZERG) return false;
 		return enemy_production() == 0 && enemy_bases() >= 1;
 	}
 	
@@ -79,10 +79,10 @@ public class Wisdom {
 	}
 	
 	public static boolean shouldAttack() {
-		if (Game.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
-			return ahead() || (Game.army_supply() > (2 * EnemyModel.enemyArmy())) || ((Game.army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 6)));
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
+			return ahead() || (GameInfoCache.attacking_army_supply() > (2 * EnemyModel.enemyArmy())) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 6)));
 		}
-		return ahead() || (Game.army_supply() > (2.5 * EnemyModel.enemyArmy())) || ((Game.army_supply() > (EnemyModel.enemyArmy() * 1.5)) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 10)));
+		return ahead() || (GameInfoCache.attacking_army_supply() > (2 * EnemyModel.enemyArmy() + GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) * 4)) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy() * 1.5 + GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) * 4)) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 10)));
 	}
 	
 	public static boolean worker_rush() {
