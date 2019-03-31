@@ -106,13 +106,9 @@ public class BuildExecutor {
 
 			if (count(Units.ZERG_DRONE) >= 20) {
 				boolean needs_spores = Wisdom.air_detected();
-				for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (u.unit().getCloakState().orElse(CloakState.NOT_CLOAKED) == CloakState.CLOAKED_DETECTED || u.unit().getFlying().orElse(false)) {
-						if (u.unit().getType() != Units.ZERG_OVERLORD && 
-							u.unit().getType() != Units.ZERG_OVERSEER &&
-							u.unit().getType() != Units.TERRAN_MEDIVAC &&
-							u.unit().getType() != Units.TERRAN_RAVEN &&
-							u.unit().getType() != Units.PROTOSS_OBSERVER) {
+				for (UnitType u : EnemyModel.counts.keySet()) {
+					if (u == Units.ZERG_MUTALISK || u == Units.PROTOSS_DARK_TEMPLAR || u == Units.TERRAN_BANSHEE || u == Units.PROTOSS_PHOENIX || u == Units.PROTOSS_ORACLE) {
+						if (EnemyModel.counts.get(u) > 0) {
 							needs_spores = true;
 						}
 					}
@@ -210,12 +206,14 @@ public class BuildExecutor {
 						break;
 					}
 				}
-				if (Game.minerals() >= 150 && Game.gas() >= 150 && GameInfoCache.count_friendly(Units.ZERG_CORRUPTOR) > 0 && Composition.comp().contains(Units.ZERG_BROODLORD)) {
-					Game.spend(150, 150);
-					for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CORRUPTOR)) {
-						Game.unit_command(u, Abilities.MORPH_BROODLORD);
-						break;
+				if (GameInfoCache.count_friendly(Units.ZERG_CORRUPTOR) > 0 && Composition.comp().contains(Units.ZERG_BROODLORD) && count(Units.ZERG_BROODLORD) < 15) {
+					if (Game.minerals() >= 150 && Game.gas() >= 150) {
+						for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CORRUPTOR)) {
+							Game.unit_command(u, Abilities.MORPH_BROODLORD);
+							break;
+						}
 					}
+					Game.spend(150, 150);
 				}
 				if (GameInfoCache.get_opponent_race() != Race.ZERG) {
 					if ((Game.minerals() > 25 && Game.gas() > 25 && (GameInfoCache.count_friendly(Units.ZERG_ZERGLING) >= 20) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) * 2 && Composition.comp().contains(Units.ZERG_BANELING))) {
@@ -335,7 +333,7 @@ public class BuildExecutor {
 		if (Composition.comp().contains(Units.ZERG_QUEEN) && count(Units.ZERG_QUEEN) < 25) return true;
 		
 		if (ThreatManager.under_attack() && count(Units.ZERG_LARVA) > 0) return false; 
-		if (count(Units.ZERG_DRONE) < 35 && count(Units.ZERG_LARVA) > 0) return false; 
+		if (count(Units.ZERG_DRONE) < 35 && count(Units.ZERG_LARVA) > 0 && count(Units.ZERG_QUEEN) < 2 && count(Units.ZERG_DRONE) > 15) return false; 
 		
 		int queen_target = 0;
 		if (Build.max_queens == -1) {
@@ -378,7 +376,7 @@ public class BuildExecutor {
 			}
 		}
 		
-		if (Game.army_supply() * Math.max(EnemyModel.enemyBaseCount(), 1) < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (15 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) {
+		if (GameInfoCache.attacking_army_supply() * Math.max(EnemyModel.enemyBaseCount(), 1) < count(Units.ZERG_DRONE) && count(Units.ZERG_DRONE) > (10 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) {
 			return true;
 		}
 		

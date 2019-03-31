@@ -14,10 +14,13 @@ import com.hjax.kagamine.knowledge.Wisdom;
 public class Composition {
 	public static List<UnitType> comp() {
 		if (GameInfoCache.get_opponent_race() == Race.TERRAN) {
+			if (GameInfoCache.count_friendly(Units.ZERG_DRONE) > 50 && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) > 0) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
+			}
 			if (BuildPlanner.is_all_in && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 			}
-			if (Game.army_supply() < 10 || GameInfoCache.count_friendly(Units.ZERG_DRONE) < 40) {
+			if (Game.army_supply() < 10 || GameInfoCache.count_friendly(Units.ZERG_DRONE) < 35) {
 				return Arrays.asList(Units.ZERG_ZERGLING);
 			}
 			if (Game.army_supply() < 80) {
