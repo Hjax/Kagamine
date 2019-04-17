@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.Scanner;
 
 import com.github.ocraft.s2client.bot.S2Coordinator;
+import com.github.ocraft.s2client.protocol.game.AiBuild;
 import com.github.ocraft.s2client.protocol.game.Difficulty;
 import com.github.ocraft.s2client.protocol.game.LocalMap;
 import com.github.ocraft.s2client.protocol.game.Race;
@@ -41,7 +42,7 @@ public class Main {
 					.setParticipants(
 							//S2Coordinator.createParticipant(choice, bot2),
 							S2Coordinator.createParticipant(Race.ZERG, bot),
-							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD))
+							S2Coordinator.createComputer(choice, Difficulty.CHEAT_INSANE, AiBuild.RUSH))
 					.launchStarcraft()
 					.startGame(LocalMap.of(Paths.get("BlueshiftLE.SC2Map")));
 			while (s2Coordinator.update()) {

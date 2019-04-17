@@ -19,6 +19,8 @@ public class UnitManager {
 				Zergling.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_LARVA) {
 				Larva.on_frame(u);
+			} else if (u.unit().getType() == Units.ZERG_LURKER_MP || u.unit().getType() == Units.ZERG_LURKER_MP_BURROWED) {
+				Lurker.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_EXTRACTOR) {
 				Extractor.on_frame(u);
 			} else if (u.unit().getType() == Units.ZERG_OVERLORD) {

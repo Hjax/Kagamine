@@ -215,6 +215,15 @@ public class BuildExecutor {
 					}
 					Game.spend(150, 150);
 				}
+				if (GameInfoCache.count_friendly(Units.ZERG_HYDRALISK) > 0 && Composition.comp().contains(Units.ZERG_LURKER_MP) && count(Units.ZERG_LURKER_MP) < 15) {
+					if (Game.minerals() >= 50 && Game.gas() >= 100) {
+						for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HYDRALISK)) {
+							Game.unit_command(u, Abilities.MORPH_LURKER);
+							break;
+						}
+					}
+					Game.spend(50, 100);
+				}
 				if (GameInfoCache.get_opponent_race() != Race.ZERG) {
 					if ((Game.minerals() > 25 && Game.gas() > 25 && (GameInfoCache.count_friendly(Units.ZERG_ZERGLING) >= 20) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) * 2 && Composition.comp().contains(Units.ZERG_BANELING))) {
 						for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ZERGLING)) {
@@ -310,6 +319,7 @@ public class BuildExecutor {
 			if (u == Units.ZERG_BANELING) continue;
 			if (u == Units.ZERG_RAVAGER) continue;
 			if (u == Units.ZERG_BROODLORD) continue;
+			if (u == Units.ZERG_LURKER_MP) continue;
 			if (u == Units.ZERG_CORRUPTOR && count(Units.ZERG_CORRUPTOR) >= 20) continue;
 			if (u == Units.ZERG_CORRUPTOR && count(Units.ZERG_CORRUPTOR) >= 10 && Composition.comp().contains(Units.ZERG_BROODLORD)) continue;
 			if (u == Units.ZERG_CORRUPTOR && count(Units.ZERG_CORRUPTOR) < 5 && Game.army_supply() > 30 && BaseManager.active_extractors() >= 4 && GameInfoCache.count_friendly(Units.ZERG_SPIRE) > 0) return Units.ZERG_CORRUPTOR;
