@@ -422,4 +422,8 @@ public class Game {
 	public static boolean is_resource(UnitType u) {
 		return is_mineral(u) || is_gas(u);
 	}
+	
+	public static List<Point> expansions() {
+		return query.calculateExpansionLocations(observation);
+	}
 }

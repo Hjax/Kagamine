@@ -43,6 +43,7 @@ public class MapAnalysis {
 					for (int x_offset = -2; x_offset <= 2; x_offset++) {
 						for (int y_offset = -2; y_offset <= 2; y_offset++) {
 							if (y_offset * y_offset + x_offset * x_offset > 5) continue;
+							if (x + x_offset < 0 || y + y_offset < 0) continue;
 							if (!air_safe[x + x_offset][y + y_offset]) continue inner;
 						}
 					}
@@ -53,9 +54,11 @@ public class MapAnalysis {
 					}
 					for (int x_offset = -2; x_offset <= 2; x_offset += 4) {
 						for (int y_offset = -2; y_offset <= 2; y_offset += 4) {
-							if (pathable[x + x_offset][y + y_offset]) {
-								overlord_spots.add(Point2d.of((float) (x / 2.0), (float) (y / 2.0)));
-								continue inner;
+							if (x + x_offset > 0 && y + y_offset > 0) {
+								if (pathable[x + x_offset][y + y_offset]) {
+									overlord_spots.add(Point2d.of((float) (x / 2.0), (float) (y / 2.0)));
+									continue inner;
+								}
 							}
 						}
 					}

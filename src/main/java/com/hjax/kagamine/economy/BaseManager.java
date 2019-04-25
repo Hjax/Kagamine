@@ -15,6 +15,7 @@ import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
+import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
@@ -34,9 +35,19 @@ public class BaseManager {
 	
 	public static void start_game() {
 		bases.clear();
-		calculate_expansions();
 		
-		for (Point2d e: expos) bases.add(new Base(e));
+		for (Point p : Game.expansions()) {
+			//bases.add(new Base(p.toPoint2d()));
+			Game.draw_box(p.toPoint2d(), Color.YELLOW);
+		}
+		
+		calculate_expansions();
+		for (Point2d e: expos) {
+			Game.draw_box(e, Color.RED);
+			bases.add(new Base(e));
+		}
+		
+		
 		UnitInPool main = GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY).get(0);
 		// Fix the placement for our main base
 		for (Base b : bases) {
@@ -446,7 +457,7 @@ public class BaseManager {
 				Game.draw_line(first.unit().getPosition().toPoint2d(), u.unit().getPosition().toPoint2d(), Color.GREEN);
 			}
 		}
-
+		
 		for (Set<UnitInPool> line : mineral_lines) {
 			float x = 0;
 			float y = 0;
@@ -465,22 +476,29 @@ public class BaseManager {
 			List<Point2d> points = new ArrayList<>();
 			for (int x_offset = -10; x_offset < 11; x_offset++) {
 				for (int y_offset = -10; y_offset < 11; y_offset++) {
-					Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
-					points.add(current);
-				}
-			}
-			List<Boolean> results = Game.can_place(Abilities.BUILD_HATCHERY, points);
-			for (int x_offset = -10; x_offset < 11; x_offset++) {
-				for (int y_offset = -10; y_offset < 11; y_offset++) {
-					Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
-					if (best == null || average.toPoint2d().distance(current) < average.toPoint2d().distance(best)) {
-						if (results.get((x_offset + 10) * 21 + (y_offset + 10))) {
-							best = current;
-						}
+					if ((average.x + x_offset) > 0 && (average.y + y_offset) > 0) {
+						Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
+						points.add(current);
 					}
 				}
 			}
-			
+			List<Boolean> results = Game.can_place(Abilities.BUILD_HATCHERY, points);
+			int skipped = 0;
+			for (int x_offset = -10; x_offset < 11; x_offset++) {
+				for (int y_offset = -10; y_offset < 11; y_offset++) {
+					if ((average.x + x_offset) > 0 && (average.y + y_offset) > 0) {
+						Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
+						if (best == null || average.toPoint2d().distance(current) < average.toPoint2d().distance(best)) {
+							if (results.get((x_offset + 10) * 21 + (y_offset + 10) - skipped)) {
+								best = current;
+							}
+						}
+					} else {
+						skipped++;
+					}
+				}
+			}
+
 			if (best != null) {
 				expos.add(best);
 			}

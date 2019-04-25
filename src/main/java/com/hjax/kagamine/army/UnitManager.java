@@ -32,6 +32,7 @@ public class UnitManager {
 			} else if (u.unit().getType() == Units.ZERG_EGG) {
 			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR) {
 			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR_QUEEN) {
+			} else if (u.unit().getType() == Units.ZERG_BROODLING) {
 			} else if (u.unit().getType() == Units.ZERG_CREEP_TUMOR_BURROWED) {
 				Creep.on_frame(u);
 			} else if (!Game.is_structure(u.unit().getType())) {
