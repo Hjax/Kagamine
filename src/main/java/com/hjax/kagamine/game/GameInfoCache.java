@@ -1,8 +1,9 @@
-package com.hjax.kagamine.game;
+	package com.hjax.kagamine.game;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,12 +26,13 @@ public class GameInfoCache {
 	static Map<Ability, Integer> production = new HashMap<>();
 	public static Map<Tag, UnitInPool> all_units = new HashMap<>();
 	
-	static Map<UnitType, Integer> counts_friendly = new HashMap<>();
-	static Map<UnitType, Integer> counts_enemy = new HashMap<>();
-	
 	static Map<Tag, UnitInPool> visible_friendly = new HashMap<>();
 	static Map<Tag, UnitInPool> visible_enemy = new HashMap<>();
 	static Map<Tag, UnitInPool> visible_neutral = new HashMap<>();
+	
+	static Map<UnitType, List<UnitInPool>> visible_friendly_types = new HashMap<>();
+	static Map<UnitType, List<UnitInPool>> visible_enemy_types = new HashMap<>();
+	static Map<UnitType, List<UnitInPool>> visible_neutral_types = new HashMap<>();
 	
 	
 	static Set<Tag> claimed_gases = new HashSet<>();
@@ -41,12 +43,14 @@ public class GameInfoCache {
 		production.clear();
 		
 		morphing_drones.clear();
-		visible_friendly.clear();
-		visible_enemy.clear();
 		
-		counts_friendly.clear();
-		counts_enemy.clear();
+		visible_enemy.clear();
+		visible_friendly.clear();
 		visible_neutral.clear();
+		
+		visible_friendly_types.clear();
+		visible_enemy_types.clear();
+		visible_neutral_types.clear();
 		
 		claimed_gases.clear(); 
 		
@@ -56,10 +60,13 @@ public class GameInfoCache {
 			
 			if (u.isAlive()) {
 				if (u.unit().getAlliance() == Alliance.SELF) {
-					if (u.unit().getBuildProgress() > 0.999) {
-						counts_friendly.put(u.unit().getType(), counts_friendly.getOrDefault(u.unit().getType(), 0) + 1);
-					}
 					visible_friendly.put(u.getTag(), u);
+					if (visible_friendly_types.containsKey(u.unit().getType())) {
+						visible_friendly_types.get(u.unit().getType()).add(u);
+					} else {
+						visible_friendly_types.put(u.unit().getType(), new ArrayList<>(List.of(u)));
+					}
+					
 					for (UnitOrder o: u.unit().getOrders()) {
 						production.put(o.getAbility(), production.getOrDefault(o.getAbility(), 0) + 1);
 						if (Game.is_worker(u.unit().getType())) {
@@ -82,10 +89,19 @@ public class GameInfoCache {
 						production.getOrDefault(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 0) + 1);
 					}
 				} else if (u.unit().getAlliance() == Alliance.ENEMY) {
-					counts_enemy.put(u.unit().getType(), counts_enemy.getOrDefault(u.unit().getType(), 0) + 1);
 					visible_enemy.put(u.getTag(), u);
+					if (visible_enemy_types.containsKey(u.unit().getType())) {
+						visible_enemy_types.get(u.unit().getType()).add(u);
+					} else {
+						visible_enemy_types.put(u.unit().getType(), new ArrayList<>(List.of(u)));
+					}
 				} else {
 					visible_neutral.put(u.getTag(), u);
+					if (visible_neutral_types.containsKey(u.unit().getType())) {
+						visible_neutral_types.get(u.unit().getType()).add(u);
+					} else {
+						visible_neutral_types.put(u.unit().getType(), new ArrayList<>(List.of(u)));
+					}
 				}
 			}
 
@@ -95,11 +111,11 @@ public class GameInfoCache {
 	public static void end_frame() {}
 	
 	public static int count_friendly(UnitType type) {
-		return counts_friendly.getOrDefault(type, 0);
+		return visible_friendly_types.getOrDefault(type, new ArrayList<>()).size();
 	}
 	
 	public static int count_enemy(UnitType type) {
-		return counts_enemy.getOrDefault(type, 0);
+		return visible_enemy_types.getOrDefault(type, new ArrayList<>()).size();
 	}
 	
 	public static ArrayList<UnitInPool> get_units(UnitType type) {
@@ -117,21 +133,13 @@ public class GameInfoCache {
 	}
 	
 	public static ArrayList<UnitInPool> get_units(Alliance team, UnitType type) {
-		ArrayList<UnitInPool> units = new ArrayList<>();
 		if (team == Alliance.SELF) {
-			for (UnitInPool u: visible_friendly.values()) {
-				if (u.unit().getType() == type) units.add(u);
-			}
+			return (ArrayList<UnitInPool>) visible_friendly_types.getOrDefault(type, new ArrayList<>());
 		} else if (team == Alliance.ENEMY){
-			for (UnitInPool u: visible_enemy.values()) {
-				if (u.unit().getType() == type) units.add(u);
-			}
+			return (ArrayList<UnitInPool>) visible_enemy_types.getOrDefault(type, new ArrayList<>());
 		} else {
-			for (UnitInPool u: visible_neutral.values()) {
-				if (u.unit().getType() == type) units.add(u);
-			}
+			return (ArrayList<UnitInPool>) visible_neutral_types.getOrDefault(type, new ArrayList<>());
 		}
-		return units;
 	}
 	
 	public static boolean geyser_is_free(UnitInPool u) {
@@ -157,15 +165,15 @@ public class GameInfoCache {
 	}
 	
 	public static Race get_opponent_race() {
-		if (counts_enemy.getOrDefault(Units.PROTOSS_PROBE, 0) > 0) return Race.PROTOSS;
-		if (counts_enemy.getOrDefault(Units.PROTOSS_PYLON, 0) > 0) return Race.PROTOSS;
-		if (counts_enemy.getOrDefault(Units.PROTOSS_GATEWAY, 0) > 0) return Race.PROTOSS;
-		if (counts_enemy.getOrDefault(Units.PROTOSS_PHOTON_CANNON, 0) > 0) return Race.PROTOSS;
+		if (count_enemy(Units.PROTOSS_PROBE) > 0) return Race.PROTOSS;
+		if (count_enemy(Units.PROTOSS_PYLON) > 0) return Race.PROTOSS;
+		if (count_enemy(Units.PROTOSS_GATEWAY) > 0) return Race.PROTOSS;
+		if (count_enemy(Units.PROTOSS_PHOTON_CANNON) > 0) return Race.PROTOSS;
 		
-		if (counts_enemy.getOrDefault(Units.TERRAN_SCV, 0) > 0) return Race.TERRAN;
-		if (counts_enemy.getOrDefault(Units.TERRAN_SUPPLY_DEPOT, 0) > 0) return Race.TERRAN;
-		if (counts_enemy.getOrDefault(Units.TERRAN_BARRACKS, 0) > 0) return Race.TERRAN;
-		if (counts_enemy.getOrDefault(Units.TERRAN_MARINE, 0) > 0) return Race.TERRAN;
+		if (count_enemy(Units.TERRAN_SCV) > 0) return Race.TERRAN;
+		if (count_enemy(Units.TERRAN_SUPPLY_DEPOT) > 0) return Race.TERRAN;
+		if (count_enemy(Units.TERRAN_BARRACKS) > 0) return Race.TERRAN;
+		if (count_enemy(Units.TERRAN_MARINE) > 0) return Race.TERRAN;
 		for (PlayerInfo player: Game.get_game_info().getPlayersInfo()) {
 			if (player.getPlayerId() != Game.get_player_id()) {
 				if (player.getRequestedRace() != Race.RANDOM) {
