@@ -29,7 +29,10 @@ public class Composition {
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
 		}
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
+			if (Game.army_supply() < 30) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH);
+			}
+			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);
 		}
 		if (GameInfoCache.get_opponent_race() == Race.PROTOSS) {
 			if (BuildPlanner.is_all_in && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {

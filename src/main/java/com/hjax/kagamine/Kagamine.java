@@ -11,6 +11,7 @@ import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.army.UnitManager;
 import com.hjax.kagamine.build.BuildExecutor;
 import com.hjax.kagamine.build.BuildPlanner;
+import com.hjax.kagamine.build.UpgradeManager;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.economy.MiningOptimizer;
@@ -38,8 +39,9 @@ public class Kagamine extends S2Agent{
 		BaseManager.start_game();
 		Scouting.start_game();
 		BuildPlanner.decide_build();
+		UpgradeManager.start_game();
 		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
-		Chat.sendMessage("You are playing vs 041719");
+		Chat.sendMessage("You are playing vs 052719");
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 

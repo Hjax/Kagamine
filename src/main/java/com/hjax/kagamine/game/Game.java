@@ -1,5 +1,6 @@
 package com.hjax.kagamine.game;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -339,6 +340,7 @@ public class Game {
 				u.equals(Units.TERRAN_SCV) ||
 				u.equals(Units.PROTOSS_PROBE);
 	}
+	
 	
 	public static boolean is_structure(UnitType u) {
 		if (is_town_hall(u)) return true;

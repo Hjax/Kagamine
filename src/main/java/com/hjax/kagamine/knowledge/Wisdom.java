@@ -83,12 +83,19 @@ public class Wisdom {
 		return Game.army_killed() - Game.army_lost() > (200 * ((Game.get_frame() / Constants.FPS)/ 60.0));
 	}
 	
+	private static long shouldAttackFrame = -1;
+	private static boolean shouldAttack = false;
 	public static boolean shouldAttack() {
-		if (EnemyModel.enemyArmy() < 5) return true;
-		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
-			return ahead() || (GameInfoCache.attacking_army_supply() > (2 * EnemyModel.enemyArmy())) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 6)));
+		if (shouldAttackFrame != Game.get_frame()) {
+			shouldAttackFrame = Game.get_frame();
+			if (EnemyModel.enemyArmy() < 5) return true;
+			else if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
+				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (2 * EnemyModel.enemyArmy())) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 6)));
+			} else {
+				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (2 * EnemyModel.enemyArmy() + GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) * 4)) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy() * 1.5 + GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) * 4)) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 10)));
+			}
 		}
-		return ahead() || (GameInfoCache.attacking_army_supply() > (2 * EnemyModel.enemyArmy() + GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) * 4)) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy() * 1.5 + GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) * 4)) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 10)));
+		return shouldAttack;
 	}
 	
 	public static boolean worker_rush() {
