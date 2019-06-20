@@ -244,12 +244,10 @@ public class BuildExecutor {
 				}
 			}
 			
-			if (!Wisdom.should_build_drones() || Wisdom.should_build_army() ) {
+			if (!Wisdom.should_build_drones() || (Wisdom.should_build_army() && next_army_unit() != Units.INVALID)) {
 				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
-					if (next_army_unit() != Units.INVALID) {
-						Game.purchase(next_army_unit());
-						Larva.produce_unit(next_army_unit());
-					}
+					Game.purchase(next_army_unit());
+					Larva.produce_unit(next_army_unit());
 				}
 			}
 			else if (Wisdom.should_build_drones()) {

@@ -89,7 +89,7 @@ public class BuildPlanner {
 				Build.ideal_hatches = -1;
 				Build.push_supply = 185;
 				Build.ideal_workers = 70;
-				Build.ideal_gases = 8;
+				Build.ideal_gases = 9;
 				Build.tech_drones = 25;
 				Build.pull_off_gas = true;
 				Build.max_queens = -1;			

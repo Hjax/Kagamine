@@ -24,7 +24,7 @@ public class Composition {
 				return Arrays.asList(Units.ZERG_ZERGLING);
 			}
 			if (Game.army_supply() < 80) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_HYDRALISK);
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
 		}

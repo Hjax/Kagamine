@@ -111,7 +111,7 @@ public class GameInfoCache {
 	public static void end_frame() {}
 	
 	public static int count_friendly(UnitType type) {
-		return visible_friendly_types.getOrDefault(type, new ArrayList<>()).size();
+		return visible_friendly_types.getOrDefault(type, new ArrayList<>()).size() - in_progress(type);
 	}
 	
 	public static int count_enemy(UnitType type) {
