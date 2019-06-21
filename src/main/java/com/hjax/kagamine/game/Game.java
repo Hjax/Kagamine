@@ -1,8 +1,10 @@
 package com.hjax.kagamine.game;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import com.github.ocraft.s2client.bot.gateway.ActionInterface;
 import com.github.ocraft.s2client.bot.gateway.DebugInterface;
@@ -49,6 +51,10 @@ public class Game {
 	static Map<Upgrade, UpgradeData> upgrade_data = null;
 	static Map<Ability, AbilityData> ability_data = null;
 	static Map<Effect, EffectData> effect_data = null;
+	
+	static Map<Ability, Set<Tag>> normal_abilities = new HashMap<>();
+	static Map<Ability, Map<Point2d, Set<Tag>>> point_target_abilities = new HashMap<>();
+	static Map<Ability, Map<Unit, Set<Tag>>> unit_target_abilities = new HashMap<>();
 
 	
 	/**
@@ -63,6 +69,10 @@ public class Game {
 		action = a;
 		query = q;
 		debug = d;
+		
+		normal_abilities.clear();
+		point_target_abilities.clear();
+		unit_target_abilities.clear();
 
 		spending = new int[2];
 	}
@@ -72,6 +82,23 @@ public class Game {
 	}
 	
 	public static void end_frame() {
+		
+		for (Ability a : normal_abilities.keySet()) {
+			action.unitCommand(normal_abilities.get(a), a, false);
+		}
+		
+		for (Ability a : point_target_abilities.keySet()) {
+			for (Point2d p : point_target_abilities.get(a).keySet()) {
+				action.unitCommand(point_target_abilities.get(a).get(p), a, p, false);
+			}
+		}
+		
+		for (Ability a : unit_target_abilities.keySet()) {
+			for (Unit t : unit_target_abilities.get(a).keySet()) {
+				action.unitCommand(unit_target_abilities.get(a).get(t), a, t, false);
+			}
+		}
+		
 		action.sendActions();
 	}
 	
@@ -86,7 +113,19 @@ public class Game {
 			}
 		}
 		Counter.increment(u.getType().toString());
-		action.unitCommand(u, a, t, queued);
+		
+		if (!queued) {
+			if (!unit_target_abilities.containsKey(a)) {
+				unit_target_abilities.put(a, new HashMap<>());
+			}
+			if (!unit_target_abilities.get(a).containsKey(t)) {
+				unit_target_abilities.get(a).put(t, new HashSet<>());
+			}
+			unit_target_abilities.get(a).get(t).add(u.getTag());
+		} else {
+			action.unitCommand(u, a, t, queued);
+		}
+
 	}
 	
 	public static void unit_command(Unit u, Ability a, Point2d p, boolean queued) {
@@ -100,12 +139,32 @@ public class Game {
 			}
 		}
 		Counter.increment(u.getType().toString());
-		action.unitCommand(u, a, p, queued);
+
+		if (!queued) {
+			if (!point_target_abilities.containsKey(a)) {
+				point_target_abilities.put(a, new HashMap<>());
+			}
+			if (!point_target_abilities.get(a).containsKey(p)) {
+				point_target_abilities.get(a).put(p, new HashSet<>());
+			}
+			point_target_abilities.get(a).get(p).add(u.getTag());
+		} else {
+			action.unitCommand(u, a, p, queued);
+		}
+		
 	}
 	
 	public static void unit_command(Unit u, Ability a, boolean queued) {
 		Counter.increment(u.getType().toString());
-		action.unitCommand(u, a, queued);
+		
+		if (!queued) {
+			if (!normal_abilities.containsKey(a)) {
+				normal_abilities.put(a, new HashSet<>());
+			}
+			normal_abilities.get(a).add(u.getTag());
+		} else {
+			action.unitCommand(u, a, queued);
+		}
 	}
 	
 	public static List<EffectLocations> get_effects() {
