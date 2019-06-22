@@ -119,22 +119,27 @@ public class Wisdom {
 			if (BuildExecutor.count(Units.ZERG_BANELING) == 0 && Composition.comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
 		if (ahead()) return true;
-		double army_multiplier = 1.2;
+		double army_multiplier = 0.7;
 		if (BaseManager.base_count(Alliance.SELF) <= 4) {
 			if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 				if (BaseManager.base_count(Alliance.SELF) > EnemyModel.enemyBaseCount()) {
-					army_multiplier = 2;
+					army_multiplier = 1.5;
 				}
 			} else {
 				if (BaseManager.base_count(Alliance.SELF) > EnemyModel.enemyBaseCount() + 1) {
-					army_multiplier = 2;
+					army_multiplier = 1.5;
 				}
+			}
+			if (all_in_detected()) {
+				army_multiplier = 1.1;
 			}
 		}
 		int target = (int) Math.max(2 + 2 * BuildExecutor.count(Units.ZERG_QUEEN), EnemyModel.enemyArmy() * army_multiplier + BuildExecutor.count(Units.ZERG_QUEEN) * 2);
 		//if (GameInfoCache.get_opponent_race() == Race.ZERG) target = 15;
-		if (all_in_detected()) target = 10;
-		if (proxy_detected()) target = 10;
+		if (target < 10) {
+			if (all_in_detected()) target = 10;
+			if (proxy_detected()) target = 10;
+		}
 		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < EnemyModel.enemyArmy() * 2)) {
 			if (BuildExecutor.next_army_unit() != Units.INVALID) {
 				return true;
@@ -153,8 +158,12 @@ public class Wisdom {
 	public static boolean should_build_queens() {
 		if (worker_rush()) return false;
 		if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) return false;
-		
+
 		if (Composition.comp().contains(Units.ZERG_QUEEN) && BuildExecutor.count(Units.ZERG_QUEEN) < 25) return true;
+		
+		if (GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) > 20 && BuildExecutor.count(Units.ZERG_QUEEN) >= 3) {
+			return false;
+		}
 		
 		if (ThreatManager.under_attack() && BuildExecutor.count(Units.ZERG_LARVA) > 0) return false; 
 		if (BuildExecutor.count(Units.ZERG_DRONE) < 35 && BuildExecutor.count(Units.ZERG_LARVA) > 0 && BuildExecutor.count(Units.ZERG_QUEEN) < 2 && BuildExecutor.count(Units.ZERG_DRONE) > 15) return false; 

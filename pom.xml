@@ -24,7 +24,7 @@
     <dependency>
     	<groupId>com.github.ocraft</groupId>
     	<artifactId>ocraft-s2client-bot</artifactId>
-    	<version>0.3.7</version>
+    	<version>0.3.8</version>
     </dependency>
     <dependency>
   <groupId>org.apache.commons</groupId>

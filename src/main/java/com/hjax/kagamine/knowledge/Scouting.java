@@ -112,7 +112,7 @@ public class Scouting {
 			}
 		}
 		
-		if (!has_pulled_back || Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
+		if (Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
 			Base best_base = null;
 			for (Base b: BaseManager.bases) {
 				if (Game.get_frame() - b.last_seen_frame > Constants.FPS * 30) {

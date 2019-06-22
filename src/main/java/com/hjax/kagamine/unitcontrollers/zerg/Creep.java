@@ -11,6 +11,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -62,11 +63,13 @@ public class Creep {
 		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
 		for (int x = (int) min.getX(); x <= max.getX(); x += Constants.CREEP_RESOLUTION) {
 			for (int y = (int) min.getY(); y <= max.getY(); y += Constants.CREEP_RESOLUTION) {
-				if (bases[x][y] == 0 && Game.pathable(Point2d.of(x, y))) {
-					if (Game.on_creep(Point2d.of(x, y))) {
+				if (Game.pathable(Point2d.of(x, y))) {
+					if (bases[x][y] == 0 && Game.on_creep(Point2d.of(x, y))) {
+						Game.draw_box(Point2d.of(x, y), Color.GREEN);
 						terrain[x][y] = 1;
 					}
 				} else {
+					Game.draw_box(Point2d.of(x, y), Color.RED);
 					terrain[x][y] = -1;
 				}
 			}
