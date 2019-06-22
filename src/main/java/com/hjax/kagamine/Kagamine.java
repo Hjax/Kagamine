@@ -22,6 +22,7 @@ import com.hjax.kagamine.game.MapAnalysis;
 import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.ResourceTracking;
 import com.hjax.kagamine.knowledge.Scouting;
+import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.zerg.Creep;
 import com.hjax.kagamine.unitcontrollers.zerg.Larva;
 
@@ -37,11 +38,10 @@ public class Kagamine extends S2Agent{
 		Game.start_frame(observation(), actions(), query(), debug());
 		GameInfoCache.start_frame();
 		BaseManager.start_game();
-		Scouting.start_game();
 		BuildPlanner.decide_build();
 		UpgradeManager.start_game();
 		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
-		Chat.sendMessage("You are playing vs 052719");
+		Chat.sendMessage("You are playing vs 062119");
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
@@ -72,7 +72,26 @@ public class Kagamine extends S2Agent{
 			MapAnalysis.on_frame();
 			GameInfoCache.end_frame();
 		}
-
+		
+		if (Wisdom.cannon_rush()) {
+			Game.write_text("Enemy Strategy: Cannon Rush");
+		} else if (Wisdom.worker_rush()) {
+			Game.write_text("Enemy Strategy: Worker Rush");
+		} else if (Wisdom.proxy_detected()) {
+			Game.write_text("Enemy Strategy: Proxy Cheese");
+		} else if (Wisdom.all_in_detected()) {
+			Game.write_text("Enemy Strategy: All-in");
+		} else {
+			Game.write_text("Enemy Strategy: Macro");
+		}
+		
+		int[] resources = EnemyModel.resourceEstimate();
+		Game.write_text("Enemy Supply: " + EnemyModel.enemySupply());;
+		Game.write_text("Enemy Army: " + EnemyModel.enemyArmy());
+		Game.write_text("Enemy Workers: " + EnemyModel.enemyWorkers());
+		Game.write_text("Enemy Bases: " + EnemyModel.enemyBaseCount());
+		Game.write_text("Enemy resources : " + resources[0] + " " + resources[1]);
+		
 		if (Constants.DEBUG) {
 			Game.debug.sendDebug();
 			time_sum += ((System.nanoTime() - startTime) / 1000000.0);
@@ -84,6 +103,8 @@ public class Kagamine extends S2Agent{
 			//System.out.println("Max " + max);
 			//System.out.println("----------------------------------");
 		}
+		
+		Game.end_frame();
 	}
 	
 	@Override

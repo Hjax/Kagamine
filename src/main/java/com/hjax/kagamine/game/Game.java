@@ -56,6 +56,7 @@ public class Game {
 	static Map<Ability, Map<Point2d, Set<Tag>>> point_target_abilities = new HashMap<>();
 	static Map<Ability, Map<Unit, Set<Tag>>> unit_target_abilities = new HashMap<>();
 
+	static int lines = 0;
 	
 	/**
 	 * The money that has been spent this frame
@@ -75,6 +76,8 @@ public class Game {
 		unit_target_abilities.clear();
 
 		spending = new int[2];
+		
+		lines = 0;
 	}
 	
 	public static void on_frame() {
@@ -486,5 +489,9 @@ public class Game {
 	
 	public static List<Point> expansions() {
 		return query.calculateExpansionLocations(observation);
+	}
+	
+	public static void write_text(String text) {
+		debug.debugTextOut(text, Point2d.of((float) 0.1, (float) ((100.0 + 20.0 * lines++) / 1080.0)), Color.WHITE, 15);
 	}
 }

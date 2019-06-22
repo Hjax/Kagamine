@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
+import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 
@@ -17,7 +18,7 @@ public class Base {
 	public UnitInPool queen = null;
 	public UnitInPool command_structure = null;
 	
-	public long last_seen_frame = 0;
+	public long last_seen_frame = (long) (Constants.FPS * -60);
 	
 	public Base(Point2d l) {
 		location = l;

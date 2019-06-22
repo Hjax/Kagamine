@@ -23,16 +23,16 @@ import com.hjax.kagamine.Constants;
 
 public class GameInfoCache {
 	
-	static Map<Ability, Integer> production = new HashMap<>();
+	public static Map<Ability, Integer> production = new HashMap<>();
 	public static Map<Tag, UnitInPool> all_units = new HashMap<>();
 	
-	static Map<Tag, UnitInPool> visible_friendly = new HashMap<>();
-	static Map<Tag, UnitInPool> visible_enemy = new HashMap<>();
-	static Map<Tag, UnitInPool> visible_neutral = new HashMap<>();
+	public static Map<Tag, UnitInPool> visible_friendly = new HashMap<>();
+	public static Map<Tag, UnitInPool> visible_enemy = new HashMap<>();
+	public static Map<Tag, UnitInPool> visible_neutral = new HashMap<>();
 	
-	static Map<UnitType, List<UnitInPool>> visible_friendly_types = new HashMap<>();
-	static Map<UnitType, List<UnitInPool>> visible_enemy_types = new HashMap<>();
-	static Map<UnitType, List<UnitInPool>> visible_neutral_types = new HashMap<>();
+	public static Map<UnitType, List<UnitInPool>> visible_friendly_types = new HashMap<>();
+	public static Map<UnitType, List<UnitInPool>> visible_enemy_types = new HashMap<>();
+	public static Map<UnitType, List<UnitInPool>> visible_neutral_types = new HashMap<>();
 	
 	
 	static Set<Tag> claimed_gases = new HashSet<>();

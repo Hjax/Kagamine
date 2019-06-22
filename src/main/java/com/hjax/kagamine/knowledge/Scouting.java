@@ -7,14 +7,16 @@ import java.util.Map;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
+import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.build.Build;
+import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
-import com.hjax.kagamine.game.MapAnalysis;
 import com.hjax.kagamine.unitcontrollers.Worker;
 
 public class Scouting {
@@ -27,13 +29,7 @@ public class Scouting {
 	public static boolean scared = false;
 	public static boolean has_pulled_back = false;
 	
-	public static Map<Point2d, Tag> overlords = new HashMap<>();
-	
-	public static void start_game() {
-		for (Point2d p : MapAnalysis.overlord_spots) {
-			overlords.put(p, null);
-		}
-	}
+	public static Map<Tag, Base> overlords = new HashMap<>();
 	
 	public static void start_frame() {
 		
@@ -96,7 +92,7 @@ public class Scouting {
 			}
 		}
 
-		if (!has_pulled_back) {
+		if (!has_pulled_back && !Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
 			if (Wisdom.proxy_detected() || Wisdom.all_in_detected() || Wisdom.air_detected()) {
 				has_pulled_back = true;
 				for (UnitInPool overlord: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
@@ -105,25 +101,45 @@ public class Scouting {
 			}
 		}
 		
-		// send overlords to vision spots, dont replace them if / when they die
-		if (!has_pulled_back && overlord_count < 3) {
-			for (UnitInPool o: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
-				Point2d best = null;
-				if (o.unit().getOrders().size() == 0 && !overlords.containsValue(o.getTag())) {
-					for (Point2d p : overlords.keySet()) {
-						if (overlords.get(p) == null) {
-							if (best == null || best.distance(closest_enemy_spawn()) > p.distance(closest_enemy_spawn())) {
-								best = p;
-							}
+		for (Tag t: overlords.keySet()) {
+			if (!GameInfoCache.visible_friendly.containsKey(t)) {
+				overlords.remove(t);
+				break;
+			}
+			if (GameInfoCache.visible_friendly.get(t).unit().getPosition().toPoint2d().distance(overlords.get(t).location) < 4) {
+				overlords.remove(t);
+				break;
+			}
+		}
+		
+		if (!has_pulled_back || Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
+			Base best_base = null;
+			for (Base b: BaseManager.bases) {
+				if (Game.get_frame() - b.last_seen_frame > Constants.FPS * 60) {
+					if (!overlords.containsValue(b)) {
+						if (best_base == null || best_base.location.distance(closest_enemy_spawn()) > b.location.distance(closest_enemy_spawn())) {
+							best_base = b;
 						}
 					}
 				}
-				if (best != null) {
-					overlords.put(best, o.getTag());
-					Game.unit_command(o, Abilities.MOVE, best);
-					overlord_count++;
+			}
+			if (best_base != null) {
+				UnitInPool best_scout = null;
+				for (UnitInPool o : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
+					if (!overlords.containsKey(o.getTag())) {
+						if (best_scout == null || o.unit().getPosition().toPoint2d().distance(best_base.location) < best_scout.unit().getPosition().toPoint2d().distance(best_base.location)) {
+							best_scout = o;
+						}
+					}
+				}
+				if (best_scout != null) {
+					overlords.put(best_scout.getTag(), best_base);
 				}
 			}
+		}
+
+		if (Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
+			
 		}
 		
 	}

@@ -89,6 +89,13 @@ public class EnemyModel {
 		return res;
 	}
 	
+	public static int[] resourceEstimate() {
+		int[] res = resourcesSpent();
+		res[0] = ResourceTracking.estimate_enemy_minerals() - res[0];
+		res[1] = ResourceTracking.estimate_enemy_gas() - res[1];
+		return res;
+	}
+	
 	public static float enemySupply() {
 		float result = 0;
 		for (UnitType ut: counts.keySet()) {
