@@ -115,7 +115,7 @@ public class Scouting {
 		if (!has_pulled_back || Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
 			Base best_base = null;
 			for (Base b: BaseManager.bases) {
-				if (Game.get_frame() - b.last_seen_frame > Constants.FPS * 60) {
+				if (Game.get_frame() - b.last_seen_frame > Constants.FPS * 30) {
 					if (!overlords.containsValue(b)) {
 						if (best_base == null || best_base.location.distance(closest_enemy_spawn()) > b.location.distance(closest_enemy_spawn())) {
 							best_base = b;
