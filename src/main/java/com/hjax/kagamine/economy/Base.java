@@ -1,6 +1,7 @@
 package com.hjax.kagamine.economy;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
@@ -27,6 +28,7 @@ public class Base {
 	}
 	
 	public void update() {
+		
 		minerals =  new ArrayList<>();
 		gases =  new ArrayList<>();
 		if (has_walking_drone() && !walking_drone.isAlive()) walking_drone = null;

@@ -20,6 +20,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.UnitOrder;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.build.Composition;
 
 public class GameInfoCache {
 	
@@ -29,6 +30,8 @@ public class GameInfoCache {
 	public static Map<Tag, UnitInPool> visible_friendly = new HashMap<>();
 	public static Map<Tag, UnitInPool> visible_enemy = new HashMap<>();
 	public static Map<Tag, UnitInPool> visible_neutral = new HashMap<>();
+	
+	public static Map<Tag, Integer> last_seen_frame = new HashMap<>();
 	
 	public static Map<UnitType, List<UnitInPool>> visible_friendly_types = new HashMap<>();
 	public static Map<UnitType, List<UnitInPool>> visible_enemy_types = new HashMap<>();
@@ -55,6 +58,9 @@ public class GameInfoCache {
 		claimed_gases.clear(); 
 		
 		for (UnitInPool u: Game.get_units()) {
+			
+			last_seen_frame.put(u.getTag(), (int) Game.get_frame());
+			
 			all_units.put(u.getTag(), u);
 	
 			
@@ -155,6 +161,11 @@ public class GameInfoCache {
 		return production.getOrDefault(Game.get_unit_type_data().get(t).getAbility().orElse(Abilities.INVALID), 0);
 	}
 	
+	public static int last_seen(Tag t) {
+		return last_seen_frame.get(t);
+		
+	}
+	
 	public static boolean is_researching(Upgrade u) {
 		if (Game.get_ability_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().isPresent()) {
 			if (production.getOrDefault(Game.get_ability_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().get(), 0) > 0) {
@@ -191,8 +202,9 @@ public class GameInfoCache {
 			return aas_value;
 		}
 		float result = 0;
+		boolean queens_count = Composition.comp().contains(Units.ZERG_QUEEN);
 		for (UnitInPool u: get_units(Alliance.SELF)) {
-			if (u.unit().getBuildProgress() > 0.99 && Game.is_combat(u.unit().getType()) && !(u.unit().getType() == Units.ZERG_QUEEN)) {
+			if (u.unit().getBuildProgress() > 0.99 && Game.is_combat(u.unit().getType()) && !(!queens_count && u.unit().getType() == Units.ZERG_QUEEN)) {
 				result += Game.get_unit_type_data().get(u.unit().getType()).getFoodRequired().orElse(0f);
 			}
 		}

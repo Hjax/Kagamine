@@ -23,6 +23,7 @@ public class ResourceTracking {
 	private static Map<Tag, ImmutablePair<Integer, Integer>> previous_value = new HashMap<>();
 	private static Set<Tag> gas = new HashSet<>();
 	private static Set<Tag> my_resources = new HashSet<>();
+	private static Set<Tag> enemy_resources = new HashSet<>();
 	
 	public static void on_frame() {
 		
@@ -34,6 +35,14 @@ public class ResourceTracking {
 				}
 				for (UnitInPool r: b.gases) {
 					my_resources.add(r.getTag());
+				}
+			}
+			if (b.has_enemy_command_structure()) {
+				for (UnitInPool r: b.minerals) {
+					enemy_resources.add(r.getTag());
+				}
+				for (UnitInPool r: b.gases) {
+					enemy_resources.add(r.getTag());
 				}
 			}
 		}
@@ -77,7 +86,7 @@ public class ResourceTracking {
 				if (!my_resources.contains(u) && previous_value.containsKey(u)) {
 					float rate = ((float) (previous_value.get(u).right - recent_value.get(u).right) / (float) (recent_value.get(u).left - previous_value.get(u).left));
 					long frames = Game.get_frame() - recent_value.get(u).left;
-					total += Math.min(rate * frames, start_value.get(u)); // predicted mining
+					total += Math.min(rate * frames, recent_value.get(u).right); // predicted mining
 				}
 				if (self_mined.containsKey(u)) {
 					total -= self_mined.get(u);
@@ -97,7 +106,7 @@ public class ResourceTracking {
 		for (Tag u : recent_value.keySet()) {
 			if (gas.contains(u)) {
 				total += start_value.get(u) - recent_value.get(u).right; // known mining
-				if (!my_resources.contains(u) && previous_value.containsKey(u)) {
+				if (!my_resources.contains(u) && previous_value.containsKey(u) && enemy_resources.contains(u)) {
 					float rate = ((float) (previous_value.get(u).right - recent_value.get(u).right) / (float) (recent_value.get(u).left - previous_value.get(u).left));
 					long frames = Game.get_frame() - recent_value.get(u).left;
 					total += Math.min(rate * frames, start_value.get(u)); // predicted mining

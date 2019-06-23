@@ -41,7 +41,7 @@ public class Kagamine extends S2Agent{
 		BuildPlanner.decide_build();
 		UpgradeManager.start_game();
 		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
-		Chat.sendMessage("You are playing vs 062119");
+		Chat.sendMessage("You are playing vs 062319");
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
@@ -91,6 +91,11 @@ public class Kagamine extends S2Agent{
 		Game.write_text("Enemy Workers: " + EnemyModel.enemyWorkers());
 		Game.write_text("Enemy Bases: " + EnemyModel.enemyBaseCount());
 		Game.write_text("Enemy resources : " + resources[0] + " " + resources[1]);
+		
+		Game.write_text("My army: " + GameInfoCache.attacking_army_supply());
+		Game.write_text("Ahead: " + Wisdom.ahead());
+		Game.write_text("Should Attack: " + Wisdom.shouldAttack());
+		
 		
 		if (Constants.DEBUG) {
 			Game.debug.sendDebug();

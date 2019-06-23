@@ -20,6 +20,9 @@ public class Composition {
 			if (BuildPlanner.is_all_in && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 			}
+			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) >= 2) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
+			}
 			if (Game.army_supply() < 10 || GameInfoCache.count_friendly(Units.ZERG_DRONE) < 35) {
 				return Arrays.asList(Units.ZERG_ZERGLING);
 			}

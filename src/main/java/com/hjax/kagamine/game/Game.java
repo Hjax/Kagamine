@@ -452,11 +452,11 @@ public class Game {
 	}
 	
 	public static int minerals_killed() {
-		return (int) (Game.observation.getScore().getDetails().getKilledMinerals().getArmy() + Game.observation.getScore().getDetails().getKilledMinerals().getEconomy() + Game.observation.getScore().getDetails().getKilledMinerals().getTechnology()) ;
+		return (int) (Game.observation.getScore().getDetails().getKilledMinerals().getArmy() + Game.observation.getScore().getDetails().getKilledMinerals().getUpgrade() + Game.observation.getScore().getDetails().getKilledMinerals().getNone() + Game.observation.getScore().getDetails().getKilledMinerals().getEconomy() + Game.observation.getScore().getDetails().getKilledMinerals().getTechnology()) ;
 	}
 	
 	public static int gas_killed() {
-		return (int) (Game.observation.getScore().getDetails().getKilledVespene().getArmy() + Game.observation.getScore().getDetails().getKilledVespene().getEconomy() + Game.observation.getScore().getDetails().getKilledVespene().getTechnology()) ;
+		return (int) (Game.observation.getScore().getDetails().getKilledVespene().getArmy() + Game.observation.getScore().getDetails().getKilledVespene().getUpgrade() + Game.observation.getScore().getDetails().getKilledVespene().getNone() + Game.observation.getScore().getDetails().getKilledVespene().getEconomy() + Game.observation.getScore().getDetails().getKilledVespene().getTechnology()) ;
 	}
 
 	public static boolean hits_air(UnitType u) {
