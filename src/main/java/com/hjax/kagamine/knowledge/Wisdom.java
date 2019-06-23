@@ -37,13 +37,10 @@ public class Wisdom {
 	}
 	public static boolean all_in_detected() {
 		if (Game.army_supply() >= 60) return false;
+		if (enemy_bases() > 3) return false;
 		return enemy_production() >= 3 * Math.max(enemy_bases(), 1);
 	}
-	public static boolean aggression_detected() {
-		if (Game.army_supply() >= 30) return false;
-		int t1 = GameInfoCache.count_enemy(Units.TERRAN_BARRACKS) + GameInfoCache.count_enemy(Units.PROTOSS_GATEWAY) + + GameInfoCache.count_enemy(Units.PROTOSS_WARP_GATE);
-		return t1 >= 2 * Math.max(enemy_bases(), 1);
-	}
+
 	public static int enemy_bases() {
 		int result = 0;
 		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
@@ -79,7 +76,8 @@ public class Wisdom {
 	}
 	
 	public static boolean ahead() {
-		return Game.army_killed() - Game.army_lost() > (200 * ((Game.get_frame() / Constants.FPS)/ 60.0));
+		int[] res = EnemyModel.resourceEstimate();
+		return EnemyModel.enemyArmy() + ((Math.max(res[0], 0) + Math.max(res[1], 0) * 2) / 100) < GameInfoCache.attacking_army_supply();
 	}
 	
 	private static long shouldAttackFrame = -1;

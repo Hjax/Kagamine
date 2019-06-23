@@ -87,7 +87,7 @@ public class BuildPlanner {
 															new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_hatches = -1;
-				Build.push_supply = 185;
+				Build.push_supply = 195;
 				Build.ideal_workers = 70;
 				Build.ideal_gases = 9;
 				Build.tech_drones = 25;
@@ -103,7 +103,7 @@ public class BuildPlanner {
 				Build.scout = true;
 				Build.push_supply = 150;
 				Build.ideal_gases = 6;
-				Build.ideal_workers = 65;
+				Build.ideal_workers = 75;
 				Build.pull_off_gas = true;
 				Build.tech_drones = 25;
 				Build.max_queens = 4;		
@@ -115,8 +115,8 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_hatches = -1;
 				Build.scout = true;
-				Build.ideal_gases = 8;
-				Build.push_supply = 170;
+				Build.ideal_gases = 9;
+				Build.push_supply = 195;
 				Build.ideal_workers = 75;
 				Build.max_queens = -1;
 				Build.pull_off_gas = true;

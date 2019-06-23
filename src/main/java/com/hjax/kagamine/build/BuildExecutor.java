@@ -5,6 +5,7 @@ import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.CloakState;
@@ -61,7 +62,7 @@ public class BuildExecutor {
 			}
 			
 			// TODO make this less of a hack
-			if ((count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && !(GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPAWNING_POOL).get(0).unit().getOrders().size() == 0) && Build.pull_off_gas)) {
+			if ((count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || ((GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED) || Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) && (GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED)) && Build.pull_off_gas)) {
 				pulled_off_gas = true;
 				for (UnitInPool drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 					if (!(drone.unit().getOrders().size() == 0) && 
@@ -71,6 +72,7 @@ public class BuildExecutor {
 					}
 				}
 			}
+			
 			if ((count(Units.ZERG_DRONE) > 30 && pulled_off_gas) || !Build.pull_off_gas) {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;

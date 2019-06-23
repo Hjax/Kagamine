@@ -35,6 +35,9 @@ public class Composition {
 			if (Game.army_supply() < 30) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH);
 			}
+			if (EnemyModel.counts.getOrDefault(Units.ZERG_MUTALISK, 0) > 0) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);
 		}
 		if (GameInfoCache.get_opponent_race() == Race.PROTOSS) {
@@ -49,6 +52,9 @@ public class Composition {
 			}
 			if (Game.army_supply() < 15) {
 				return Arrays.asList(Units.ZERG_ZERGLING);
+			}
+			if (Wisdom.all_in_detected() && Game.army_supply() < 50) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_QUEEN);
 			}
 			if (Game.army_supply() < 80) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);

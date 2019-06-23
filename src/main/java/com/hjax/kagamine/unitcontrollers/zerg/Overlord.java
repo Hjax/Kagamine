@@ -43,7 +43,7 @@ public class Overlord {
 			if (enemy.isAlive()) {
 				if (ovie.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()) < 15) {
 					if (Game.hits_air(enemy.unit().getType())) {
-						negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.unit().getPosition().toPoint2d()), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (50 / Math.pow((double) ovie.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()), 2))));
+						negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.unit().getPosition().toPoint2d()), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (70 / Math.pow((double) ovie.unit().getPosition().toPoint2d().distance(enemy.unit().getPosition().toPoint2d()), 1.7))));
 					} 
 				}
 			}
