@@ -16,6 +16,7 @@ import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class BuildPlanner {
@@ -37,7 +38,7 @@ public class BuildPlanner {
 		}
 		
 		if (!is_all_in && GameInfoCache.get_opponent_race() != Race.ZERG) {
-			if (BuildExecutor.count(Units.ZERG_DRONE) < 30 && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
+			if (GameInfoCache.count(Units.ZERG_DRONE) < 30 && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
 				Chat.sendMessage("Oh you are cheesing me, I guess I can't play a macro game");
 				do_ravager_all_in();
 				if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {

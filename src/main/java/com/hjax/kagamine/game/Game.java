@@ -494,4 +494,8 @@ public class Game {
 	public static void write_text(String text) {
 		debug.debugTextOut(text, Point2d.of((float) 0.1, (float) ((100.0 + 20.0 * lines++) / 1080.0)), Color.WHITE, 15);
 	}
+	
+	public static int worker_count() {
+		return observation.getFoodWorkers();
+	}
 }

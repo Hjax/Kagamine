@@ -63,14 +63,14 @@ public class UpgradeManager {
 				if (!(Game.has_upgrade(u)) && !GameInfoCache.is_researching(u)) {
 					if (u.toString().toLowerCase().contains("melee") && !Game.has_upgrade(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3) && (Composition.comp().contains(Units.ZERG_ROACH) || Composition.comp().contains(Units.ZERG_HYDRALISK))) continue;
 					for (UnitType t: upgraders.get(u)) {
-						if ((t.equals(Units.ZERG_EVOLUTION_CHAMBER) && BuildExecutor.count(t) < 1 && (BuildExecutor.count(Units.ZERG_DRONE) > 35) && GameInfoCache.get_opponent_race() == Race.ZERG) || (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && BuildExecutor.count(t) < 2 && (BuildExecutor.count(Units.ZERG_DRONE) > 60))) {
+						if ((t.equals(Units.ZERG_EVOLUTION_CHAMBER) && GameInfoCache.count(t) < 1 && (GameInfoCache.count(Units.ZERG_DRONE) > 35) && GameInfoCache.get_opponent_race() == Race.ZERG) || (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && GameInfoCache.count(t) < 2 && (GameInfoCache.count(Units.ZERG_DRONE) > 60))) {
 							if (Game.can_afford(t)) {
 								BaseManager.build(t);
 							}
 							Game.purchase(t);
 							return;
 						}
-						if (t == Units.ZERG_SPIRE && BuildExecutor.count(Units.ZERG_GREATER_SPIRE) < 1 && Composition.comp().contains(Units.ZERG_BROODLORD)) continue outer;
+						if (t == Units.ZERG_SPIRE && GameInfoCache.count(Units.ZERG_GREATER_SPIRE) < 1 && Composition.comp().contains(Units.ZERG_BROODLORD)) continue outer;
 						for (UnitInPool up: GameInfoCache.get_units(Alliance.SELF, t)) {
 							if (up.unit().getOrders().size() == 0 && up.unit().getBuildProgress() > 0.999) {
 								for (AvailableAbility aa: Game.availible_abilities(up, true).getAbilities()) {

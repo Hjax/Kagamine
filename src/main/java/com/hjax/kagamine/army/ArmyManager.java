@@ -117,7 +117,7 @@ public class ArmyManager {
 						}
 					}
 					if (best > 20) EconomyManager.assign_worker(ally);
-					if (ally.unit().getHealth().orElse((float) 0) <= 5) EconomyManager.assign_worker(ally);
+					if (ally.unit().getHealth().orElse((float) 0) <= 10) EconomyManager.assign_worker(ally);
 				}
 			}
 		}

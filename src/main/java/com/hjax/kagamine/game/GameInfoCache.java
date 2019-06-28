@@ -117,11 +117,18 @@ public class GameInfoCache {
 	public static void end_frame() {}
 	
 	public static int count_friendly(UnitType type) {
-		return visible_friendly_types.getOrDefault(type, new ArrayList<>()).size() - in_progress(type);
+		if (Game.is_worker(type)) return Game.worker_count();
+		int result = visible_friendly_types.getOrDefault(type, new ArrayList<>()).size();
+		if (Game.is_structure(type)) result -= in_progress(type);
+		return result;
 	}
 	
 	public static int count_enemy(UnitType type) {
 		return visible_enemy_types.getOrDefault(type, new ArrayList<>()).size();
+	}
+	
+	public static int count(UnitType u) {
+		return count_friendly(u) + in_progress(u);
 	}
 	
 	public static ArrayList<UnitInPool> get_units(UnitType type) {
