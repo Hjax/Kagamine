@@ -212,7 +212,7 @@ public class GameInfoCache {
 		boolean queens_count = Composition.comp().contains(Units.ZERG_QUEEN);
 		for (UnitInPool u: get_units(Alliance.SELF)) {
 			if (u.unit().getBuildProgress() > 0.99 && Game.is_combat(u.unit().getType()) && !(!queens_count && u.unit().getType() == Units.ZERG_QUEEN)) {
-				result += Game.get_unit_type_data().get(u.unit().getType()).getFoodRequired().orElse(0f);
+				result += Game.supply(u.unit().getType());
 			}
 		}
 		aas_frame = Game.get_frame();

@@ -16,7 +16,6 @@ import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
-import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class BuildPlanner {
@@ -89,7 +88,7 @@ public class BuildPlanner {
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_hatches = -1;
 				Build.push_supply = 195;
-				Build.ideal_workers = 70;
+				Build.ideal_workers = 80;
 				Build.ideal_gases = 9;
 				Build.tech_drones = 25;
 				Build.pull_off_gas = true;
@@ -104,7 +103,7 @@ public class BuildPlanner {
 				Build.scout = true;
 				Build.push_supply = 150;
 				Build.ideal_gases = 6;
-				Build.ideal_workers = 75;
+				Build.ideal_workers = 80;
 				Build.pull_off_gas = true;
 				Build.tech_drones = 25;
 				Build.max_queens = 4;		
@@ -118,7 +117,7 @@ public class BuildPlanner {
 				Build.scout = true;
 				Build.ideal_gases = 9;
 				Build.push_supply = 195;
-				Build.ideal_workers = 75;
+				Build.ideal_workers = 80;
 				Build.max_queens = -1;
 				Build.pull_off_gas = true;
 				Build.tech_drones = 25;

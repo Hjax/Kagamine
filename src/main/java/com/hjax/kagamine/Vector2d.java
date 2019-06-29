@@ -3,8 +3,10 @@ package com.hjax.kagamine;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 
 public class Vector2d {
+	
 	public float x;
 	public float y;
+	
 	public Vector2d(float mx, float my) {
 		x = mx;
 		y = my;
@@ -23,4 +25,5 @@ public class Vector2d {
 	public Vector2d scale(float i) {
 		return new Vector2d(x * i, y * i);
 	}
+	
 }

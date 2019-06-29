@@ -116,7 +116,7 @@ public class EnemyModel {
 	public static float enemySupply() {
 		float result = 0;
 		for (UnitType ut: counts.keySet()) {
-			result += Game.get_unit_type_data().get(ut).getFoodRequired().orElse(0.0f) * counts.get(ut);
+			result += Game.supply(ut) * counts.get(ut);
 		}
 		return result;
 	}
@@ -124,8 +124,8 @@ public class EnemyModel {
 	public static float enemyArmy() {
 		float result = 0;
 		for (UnitType ut: counts.keySet()) {
-			if (!Game.is_worker(ut)) {
-				result += Game.get_unit_type_data().get(ut).getFoodRequired().orElse(0.0f) * counts.get(ut);
+			if (!Game.is_worker(ut) && !(ut == Units.ZERG_QUEEN)) {
+				result += Game.supply(ut) * counts.get(ut);
 			}
 		}
 		return result;

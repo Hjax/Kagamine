@@ -2,7 +2,9 @@ package com.hjax.kagamine;
 
 public class Utilities {
 	public static Vector2d normalize(Vector2d v) {
+		
 		double length = Math.sqrt(v.x * v.x + v.y * v.y);
+		
 		return new Vector2d((float) (v.x / length), (float) (v.y / length));
 	}
 	

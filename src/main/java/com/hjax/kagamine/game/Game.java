@@ -277,7 +277,7 @@ public class Game {
 		float result = 0;
 		for (UnitInPool u:  get_units()) {
 			if (u.unit().getAlliance() == Alliance.SELF && is_combat(u.unit().getType()) && u.unit().getBuildProgress() > 0.999) {
-				result += get_unit_type_data().get(u.unit().getType()).getFoodRequired().orElse((float) 0);
+				result += supply(u.unit().getType());
 			}
 		}
 		return result;
@@ -497,5 +497,9 @@ public class Game {
 	
 	public static int worker_count() {
 		return observation.getFoodWorkers();
+	}
+	
+	public static double supply(UnitType u) {
+		return get_unit_type_data().get(u).getFoodRequired().orElse(0.0f);
 	}
 }

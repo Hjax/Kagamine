@@ -4,10 +4,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Counter {
+	
 	public static Map<String, Integer> values = new HashMap<>();
+	
 	public static void increment(String s) {
 		values.put(s, values.getOrDefault(s, 0) + 1);
 	}
+	
 	public static void print() {
 		int total = 0;
 		for (String s : values.keySet()) {
@@ -17,4 +20,5 @@ public class Counter {
 		System.out.println("Total " + total);
 		values.clear();
 	}
+	
 }

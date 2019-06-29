@@ -34,9 +34,9 @@ public class BaseDefense {
 				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && b.location.distance(average) < Constants.THREAT_DISTANCE) {
 					for (UnitInPool enemy : enemy_squad) {
 						if (enemy.unit().getFlying().orElse(false)) {
-							flyer_supply += Game.get_unit_type_data().get(enemy.unit().getType()).getFoodRequired().orElse((float) 0);
+							flyer_supply += Game.supply(enemy.unit().getType());
 						} else {
-							ground_supply += Game.get_unit_type_data().get(enemy.unit().getType()).getFoodRequired().orElse((float) 0);
+							ground_supply += Game.supply(enemy.unit().getType());
 						}
 					}
 					ArrayList<UnitInPool> assigned = new ArrayList<>();
@@ -45,14 +45,14 @@ public class BaseDefense {
 						UnitInPool current = closest_free(average, false);
 						if (current == null) current = closest_free(average, true);
 						if (current == null) break;
-						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);
+						assigned_supply += Game.supply(current.unit().getType());
 						assigned.add(current);
 					}
 					assigned_supply = 0;
 					while (assigned_supply < flyer_supply * 1 || flyer_supply > 30) {
 						UnitInPool current = closest_free(average, true);
 						if (current == null) break;
-						assigned_supply += Game.get_unit_type_data().get(current.unit().getType()).getFoodRequired().orElse((float) 0);
+						assigned_supply += Game.supply(current.unit().getType());
 						assigned.add(current);
 					}
 					Point2d center = average_point_zergling(assigned, average);
