@@ -67,7 +67,10 @@ public class GameInfoCache {
 			if (u.isAlive()) {
 				if (u.unit().getAlliance() == Alliance.SELF) {
 					visible_friendly.put(u.getTag(), u);
-					if (visible_friendly_types.containsKey(u.unit().getType())) {
+					if (u.unit().getBuildProgress() < Constants.DONE) {
+						production.put(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 
+						production.getOrDefault(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 0) + 1);
+					} else if (visible_friendly_types.containsKey(u.unit().getType())) {
 						visible_friendly_types.get(u.unit().getType()).add(u);
 					} else {
 						visible_friendly_types.put(u.unit().getType(), new ArrayList<>(List.of(u)));
@@ -89,10 +92,6 @@ public class GameInfoCache {
 								break;
 							}
 						}
-					}
-					if (u.unit().getBuildProgress() < Constants.DONE) {
-						production.put(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 
-						production.getOrDefault(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 0) + 1);
 					}
 				} else if (u.unit().getAlliance() == Alliance.ENEMY) {
 					visible_enemy.put(u.getTag(), u);
@@ -118,9 +117,7 @@ public class GameInfoCache {
 	
 	public static int count_friendly(UnitType type) {
 		if (Game.is_worker(type)) return Game.worker_count();
-		int result = visible_friendly_types.getOrDefault(type, new ArrayList<>()).size();
-		if (Game.is_structure(type)) result -= in_progress(type);
-		return result;
+		return visible_friendly_types.getOrDefault(type, new ArrayList<>()).size();
 	}
 	
 	public static int count_enemy(UnitType type) {
