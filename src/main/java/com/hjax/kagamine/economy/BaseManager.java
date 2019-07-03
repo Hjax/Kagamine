@@ -402,6 +402,18 @@ public class BaseManager {
 		return p;
 	}
 	
+	public static Base closest_occupied_base(Point2d p) {
+		Base best = null;
+		for (Base b : bases) {
+			if (b.has_command_structure()) {
+				if (best == null || b.location.distance(p) < best.location.distance(p)) {
+					best = b;
+				}
+			}
+		}
+		return best;
+	}
+	
 	static Point2d get_spore_placement_location(Base b) {
 		float x = 0;
 		float y = 0;
@@ -497,17 +509,6 @@ public class BaseManager {
 				expos.add(best);
 			}
 		}
-	}
-	
-	public static boolean needs_expand() {
-		int patches = 0;
-		int gases = BaseManager.active_extractors();
-		for (Base b : BaseManager.bases) {
-			if (b.has_friendly_command_structure()) {
-				patches += b.minerals.size();
-			}
-		}
-		return GameInfoCache.count_friendly(Units.ZERG_DRONE) > (3 * gases + 2 * patches);
 	}
 
 }

@@ -12,6 +12,7 @@ import com.hjax.kagamine.build.Composition;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
+import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 
@@ -154,7 +155,7 @@ public class Wisdom {
 		
 		if (all_in_detected() && Game.army_supply() < GameInfoCache.count(Units.ZERG_DRONE) && GameInfoCache.count(Units.ZERG_DRONE) > 30) return true;
 		if (GameInfoCache.count(Units.ZERG_DRONE) > 50 && Game.gas() > 100 && BuildExecutor.next_army_unit() == Units.ZERG_MUTALISK && GameInfoCache.count(Units.ZERG_MUTALISK) < 10) return true;
-		return GameInfoCache.count(Units.ZERG_DRONE) >= BuildExecutor.worker_cap();
+		return GameInfoCache.count(Units.ZERG_DRONE) >= Wisdom.worker_cap();
 	}
 	
 	public static boolean should_build_queens() {
@@ -206,6 +207,15 @@ public class Wisdom {
 			return false;
 		}
 
-		return (GameInfoCache.count(Units.ZERG_DRONE) < BuildExecutor.worker_cap());
+		return (GameInfoCache.count(Units.ZERG_DRONE) < Wisdom.worker_cap());
+	}
+	public static boolean should_expand() {
+		if (BaseManager.base_count(Alliance.SELF) > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
+		if (BaseManager.base_count(Alliance.SELF) < 3 && GameInfoCache.count(Units.ZERG_DRONE) > 23) return true;
+		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count(Alliance.SELF) < Build.ideal_hatches) || (Build.ideal_hatches == -1));
+	}
+	public static int worker_cap() {
+		int drone_target = 100;
+		return Math.min(drone_target, Build.ideal_workers);
 	}
 }

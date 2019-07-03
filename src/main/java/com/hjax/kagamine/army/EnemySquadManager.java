@@ -54,4 +54,5 @@ public class EnemySquadManager {
 		}
 		return Point2d.of(x / n, y / n);
 	}
+	
 }

@@ -1,4 +1,4 @@
-package com.hjax.kagamine.knowledge;
+package com.hjax.kagamine.enemymodel;
 
 import java.util.HashMap;
 import java.util.HashSet;

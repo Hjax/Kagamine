@@ -8,16 +8,15 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.github.ocraft.s2client.protocol.unit.CloakState;
 import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
+import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Balance;
-import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.Worker;
 import com.hjax.kagamine.unitcontrollers.zerg.Larva;
@@ -91,7 +90,7 @@ public class BuildExecutor {
 			}
 
 			if (ThreatManager.is_safe(BaseManager.get_next_base().location) ) {
-				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 60 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && should_expand()) {
+				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 60 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && Wisdom.should_expand()) {
 					if (!Game.can_afford(Units.ZERG_HATCHERY)) {
 						if (!BaseManager.get_next_base().has_walking_drone() && Game.minerals() > 100) {
 							UnitInPool drone = BaseManager.get_free_worker(BaseManager.get_next_base().location);
@@ -117,7 +116,6 @@ public class BuildExecutor {
 				}
 				// TODO remove this hack
 				if (GameInfoCache.count_enemy(Units.PROTOSS_DARK_SHRINE) > 0) needs_spores = true;
-				if (GameInfoCache.get_opponent_race() == Race.PROTOSS && GameInfoCache.count(Units.ZERG_DRONE) > 30 + 10 * Math.min(EnemyModel.enemyBaseCount(), 4)) needs_spores = true;
 				if (needs_spores) {
 					if (!Game.can_afford(Units.ZERG_SPORE_CRAWLER) && GameInfoCache.count(Units.ZERG_SPORE_CRAWLER) < 1) return;
 					BaseManager.build_defensive_spores();
@@ -261,7 +259,7 @@ public class BuildExecutor {
 				}
 			}
 
-			if ((GameInfoCache.count(Units.ZERG_DRONE) >= worker_cap() || GameInfoCache.count(Units.ZERG_HATCHERY) >= Build.ideal_hatches && Build.ideal_hatches > 0) && !Wisdom.should_build_drones() && BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) >= Wisdom.worker_cap() || GameInfoCache.count(Units.ZERG_HATCHERY) >= Build.ideal_hatches && Build.ideal_hatches > 0) && !Wisdom.should_build_drones() && BaseManager.active_extractors() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
 				if ((Game.gas() < 400 && GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) == 0) || Game.gas() < 150) {
 					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
 						BaseManager.build(Units.ZERG_EXTRACTOR);
@@ -333,16 +331,5 @@ public class BuildExecutor {
 		}
 		return best;
 	}
-	
-	public static int worker_cap() {
-		int drone_target = 100;
-		return Math.min(drone_target, Build.ideal_workers);
-	}
-	
-	public static boolean should_expand() {
-		if (BaseManager.base_count(Alliance.SELF) < 3 && GameInfoCache.count(Units.ZERG_DRONE) > 23) return true;
-		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count(Alliance.SELF) < Build.ideal_hatches) || (Build.ideal_hatches == -1));
-	}
-	
 	
 }

@@ -15,12 +15,12 @@ import com.hjax.kagamine.build.UpgradeManager;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.economy.MiningOptimizer;
+import com.hjax.kagamine.enemymodel.EnemyModel;
+import com.hjax.kagamine.enemymodel.ResourceTracking;
 import com.hjax.kagamine.game.ControlGroups;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.MapAnalysis;
-import com.hjax.kagamine.knowledge.EnemyModel;
-import com.hjax.kagamine.knowledge.ResourceTracking;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.zerg.Creep;
@@ -104,9 +104,9 @@ public class Kagamine extends S2Agent{
 				max = (System.nanoTime() - startTime) / 1000000.0;
 			}
 			frame++;
-			//System.out.println("Average " + (time_sum / frame));
-			//System.out.println("Max " + max);
-			//System.out.println("----------------------------------");
+			System.out.println("Average " + (time_sum / frame));
+			System.out.println("Max " + max);
+			System.out.println("----------------------------------");
 		}
 		
 		Game.end_frame();

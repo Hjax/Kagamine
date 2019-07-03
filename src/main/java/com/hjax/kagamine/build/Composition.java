@@ -6,9 +6,9 @@ import java.util.List;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.Race;
+import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
-import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class Composition {
@@ -55,6 +55,9 @@ public class Composition {
 			}
 			if (Wisdom.all_in_detected() && Game.army_supply() < 50) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_QUEEN);
+			}
+			if (Wisdom.all_in_detected() && Game.army_supply() < 80) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK);
 			}
 			if (Game.army_supply() < 80) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);

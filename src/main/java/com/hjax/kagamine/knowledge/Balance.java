@@ -15,7 +15,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 
 public class Balance {
 	
-	static Map<UnitType, UnitType> overrides;
+	public static Map<UnitType, UnitType> overrides;
 	static {
 		overrides = new HashMap<>();
 		overrides.put(Units.ZERG_LAIR, Units.ZERG_SPAWNING_POOL);
@@ -52,7 +52,7 @@ public class Balance {
 		return best;
 	}
 	
-	static Set<UnitType> get_production_structures(UnitType u) {
+	public static Set<UnitType> get_production_structures(UnitType u) {
 		Set<UnitType> result = new HashSet<>();
 		for (UnitTypeData d : Game.get_unit_type_data().values()) {
 			for (Ability a: d.getUnitType().getAbilities()) {

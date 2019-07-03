@@ -1,4 +1,4 @@
-package com.hjax.kagamine.knowledge;
+package com.hjax.kagamine.enemymodel;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +16,8 @@ import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.knowledge.Balance;
+import com.hjax.kagamine.knowledge.Scouting;
 
 public class EnemyModel {
 	public static Map<Tag, UnitType> registered = new HashMap<>();

@@ -81,5 +81,15 @@ public class EconomyManager {
 		}
 		return result;
 	}
+	
+	public static int total_minerals() {
+		int result = 0;
+		for (Base b: BaseManager.bases) {
+			if (b.has_friendly_command_structure())  {
+				result += b.command_structure.unit().getIdealHarvesters().orElse(0);
+			}
+		}
+		return result;
+	}
 
 }

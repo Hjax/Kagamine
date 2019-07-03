@@ -60,7 +60,7 @@ public class ArmyManager {
 			}
 		}
 
-		if (Game.completed_army_supply() < 2) {
+		if (Game.completed_army_supply() * 2 < ThreatManager.seen.size() && ThreatManager.seen.size() < 15) {
 			if (!Wisdom.worker_rush()) {
 				if (!Wisdom.cannon_rush() && !Wisdom.proxy_detected()) {
 					enemy_loop: for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {

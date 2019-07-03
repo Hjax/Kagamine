@@ -77,7 +77,9 @@ public class BaseDefense {
 			if (aa != Game.hits_air(ally.unit().getType())) continue;
 			if (!Game.is_structure(ally.unit().getType()) && Game.is_combat(ally.unit().getType())) {
 				if (!used.contains(ally.getTag())) {
-					if (best == null || (best.unit().getPosition().toPoint2d().distance(p) / Game.get_unit_type_data().get(best.unit().getType()).getMovementSpeed().orElse((float) 1)) > (ally.unit().getPosition().toPoint2d().distance(p)) / Game.get_unit_type_data().get(ally.unit().getType()).getMovementSpeed().orElse((float) 1)) {
+					if (best == null || 
+							(best.unit().getPosition().toPoint2d().distance(p) / Game.get_unit_type_data().get(best.unit().getType()).getMovementSpeed().orElse((float) 1)) > 
+							(ally.unit().getPosition().toPoint2d().distance(p)) / Game.get_unit_type_data().get(ally.unit().getType()).getMovementSpeed().orElse((float) 1)) {
 						best = ally;
 					}
 				}

@@ -16,9 +16,9 @@ import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
-import com.hjax.kagamine.knowledge.EnemyModel;
 import com.hjax.kagamine.unitcontrollers.GenericUnit;
 
 public class Mutalisk {
