@@ -1,9 +1,6 @@
 package com.hjax.kagamine;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 import com.github.ocraft.s2client.bot.S2Agent;
@@ -51,7 +48,7 @@ public class Kagamine extends S2Agent{
 		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
 
 		try {
-			InputStream is = this.getClass().getResourceAsStream("/commit.txt");
+			InputStream is = this.getClass().getResourceAsStream("commit.txt");
 			Scanner dateScanner = new Scanner(is);
 			String date = dateScanner.nextLine();
 			dateScanner.close();
