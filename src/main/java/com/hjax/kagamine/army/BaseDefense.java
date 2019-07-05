@@ -19,10 +19,12 @@ import com.hjax.kagamine.game.ControlGroups;
 import com.hjax.kagamine.game.Game;
 
 public class BaseDefense {
+	
 	public static Set<Tag> used = new HashSet<>();
 	public static Map<Tag, Point2d> assignments = new HashMap<>();
 	public static Map<Tag, Point2d> surroundCenter = new HashMap<>();
 	public static void on_frame() {
+		
 		used.clear();
 		assignments.clear();
 		surroundCenter.clear();
