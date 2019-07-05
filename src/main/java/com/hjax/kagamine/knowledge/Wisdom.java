@@ -98,6 +98,7 @@ public class Wisdom {
 		if (shouldAttackFrame != Game.get_frame()) {
 			shouldAttackFrame = Game.get_frame();
 			if (EnemyModel.enemyArmy() < 5) return true;
+			if (all_in_detected() && GameInfoCache.attacking_army_supply() > (2.2 * EnemyModel.enemyArmy())) return false;
 			else if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
 				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.2 * EnemyModel.enemyArmy())) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 6)));
 			} else {
