@@ -1,8 +1,10 @@
 package com.hjax.kagamine;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Scanner;
 
 import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
@@ -47,13 +49,17 @@ public class Kagamine extends S2Agent{
 		BuildPlanner.decide_build();
 		UpgradeManager.start_game();
 		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
-		
+
 		try {
-			String date = new String(Files.readAllBytes(Paths.get("commit.txt")));
+			InputStream is = this.getClass().getResourceAsStream("/commit.txt");
+			Scanner dateScanner = new Scanner(is);
+			String date = dateScanner.nextLine();
+			dateScanner.close();
 			Chat.sendMessage("This version of Kagamine was built on:");
 			Chat.sendMessage(date);
-		} catch (IOException e) {}
-		
+		} catch (Exception e) {}
+
+
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
