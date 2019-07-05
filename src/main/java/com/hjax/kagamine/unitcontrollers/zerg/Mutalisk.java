@@ -89,6 +89,10 @@ public class Mutalisk {
 	public static List<UnitInPool> swarm = new ArrayList<UnitInPool>();
 	public static void on_frame() {
 		
+		if (EnemyModel.enemyBaseCount() == 0) {
+			return;
+		}
+		
 		swarm_center = null;
 		swarm_target = null;
 		target = null;
@@ -112,7 +116,7 @@ public class Mutalisk {
 		if (swarm_center != null) {
 			target = EnemyBaseDefense.best_air_target(swarm.size() * 3);
 			if (target != null) {
-				Game.draw_line(target.location, swarm_center, Color.GREEN);
+				Game.draw_line(swarm_target, swarm_center, Color.GREEN);
 				swarm_target = pressure(swarm_center, target.location);
 			}
 		}

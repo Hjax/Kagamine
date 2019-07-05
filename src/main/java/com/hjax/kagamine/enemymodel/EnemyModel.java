@@ -149,5 +149,14 @@ public class EnemyModel {
 		}
 		return result;
 	}
+	
+	public static boolean enemy_floated() {
+		for (UnitInPool u : GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_structure(u.unit().getType()) && !u.unit().getFlying().orElse(false)) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 }
