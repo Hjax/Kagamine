@@ -47,11 +47,13 @@ public class Kagamine extends S2Agent{
 		BuildPlanner.decide_build();
 		UpgradeManager.start_game();
 		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
+		
 		try {
 			String date = new String(Files.readAllBytes(Paths.get("commit.txt")));
 			Chat.sendMessage("This version of Kagamine was built on:");
 			Chat.sendMessage(date);
 		} catch (IOException e) {}
+		
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
