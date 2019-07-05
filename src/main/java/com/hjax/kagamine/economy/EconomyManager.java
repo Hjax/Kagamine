@@ -86,7 +86,7 @@ public class EconomyManager {
 		int result = 0;
 		for (Base b: BaseManager.bases) {
 			if (b.has_friendly_command_structure())  {
-				result += b.command_structure.unit().getIdealHarvesters().orElse(0);
+				result += b.minerals.size() * 2;
 			}
 		}
 		return result;

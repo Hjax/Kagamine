@@ -61,7 +61,7 @@ public class BuildExecutor {
 			}
 			
 			// TODO make this less of a hack
-			if ((GameInfoCache.count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || ((GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED) || Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) && (GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED)) && Build.pull_off_gas)) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || (Build.pull_off_gas && Game.gas() > 200) || ((GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED) || Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) && (GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED)) && Build.pull_off_gas)) {
 				pulled_off_gas = true;
 				for (UnitInPool drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 					if (!(drone.unit().getOrders().size() == 0) && 
@@ -77,13 +77,15 @@ public class BuildExecutor {
 				Build.pull_off_gas = false;
 			}
 			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count(Alliance.SELF) < 3) {
-				if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
-					if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count(Alliance.SELF) > 1 || Wisdom.proxy_detected())) {
-						if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
-							if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
-								BaseManager.build(Units.ZERG_SPINE_CRAWLER);
+				if (GameInfoCache.get_opponent_race() != Race.ZERG) {
+					if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
+						if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count(Alliance.SELF) > 1 || Wisdom.proxy_detected())) {
+							if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
+								if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
+									BaseManager.build(Units.ZERG_SPINE_CRAWLER);
+								}
+								Game.purchase(Units.ZERG_SPINE_CRAWLER);
 							}
-							Game.purchase(Units.ZERG_SPINE_CRAWLER);
 						}
 					}
 				}
@@ -114,8 +116,13 @@ public class BuildExecutor {
 						}
 					}
 				}
+				
+				if (EnemyModel.counts.getOrDefault(Units.ZERG_MUTALISK, 0) > 5 || EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) > 1 || EnemyModel.counts.getOrDefault(Units.PROTOSS_PHOENIX, 0) > 3) {
+					if (GameInfoCache.count(Units.ZERG_DRONE) > 30) {
+						BaseManager.build_triangle_spores();
+					}
+				}
 				// TODO remove this hack
-				if (GameInfoCache.count_enemy(Units.PROTOSS_DARK_SHRINE) > 0) needs_spores = true;
 				if (needs_spores) {
 					if (!Game.can_afford(Units.ZERG_SPORE_CRAWLER) && GameInfoCache.count(Units.ZERG_SPORE_CRAWLER) < 1) return;
 					BaseManager.build_defensive_spores();

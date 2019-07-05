@@ -9,14 +9,16 @@ import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
+import com.hjax.kagamine.enemymodel.EnemyBaseDefense;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.Worker;
+import com.github.ocraft.s2client.protocol.game.Race;
 
 public class ArmyManager {
-	public static Point2d target;
+	private static Point2d target;
 	public static boolean has_target = false;
 	static {
 		target = Scouting.closest_enemy_spawn();
@@ -60,9 +62,9 @@ public class ArmyManager {
 			}
 		}
 
-		if (Game.completed_army_supply() * 2 < ThreatManager.seen.size() && ThreatManager.seen.size() < 15) {
+		if (Game.completed_army_supply() * 2 < (ThreatManager.seen.size() + 1) && ThreatManager.seen.size() < 15) {
 			if (!Wisdom.worker_rush()) {
-				if (!Wisdom.cannon_rush() && !Wisdom.proxy_detected()) {
+				if (GameInfoCache.get_opponent_race() == Race.ZERG || (!Wisdom.cannon_rush() && !Wisdom.proxy_detected())) {
 					enemy_loop: for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
 						for (Base b : BaseManager.bases) {
 							if (b.has_friendly_command_structure() && u.unit().getPosition().toPoint2d().distance(b.location) < 12) {
@@ -74,7 +76,8 @@ public class ArmyManager {
 										}
 									}
 								}
-								if (attackers >= 2) continue enemy_loop;
+								if (Game.is_structure(u.unit().getType()) && attackers >= 4) continue enemy_loop;
+								else if (attackers >= 2) continue enemy_loop;
 								for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 									if (Worker.can_build(ally) && ally.unit().getHealth().orElse((float) 0) > 15) {
 										Game.unit_command(ally, Abilities.ATTACK, u.unit());
@@ -122,5 +125,9 @@ public class ArmyManager {
 			}
 		}
 		
+	}
+	
+	public static Point2d get_target() {
+		return target;
 	}
 }

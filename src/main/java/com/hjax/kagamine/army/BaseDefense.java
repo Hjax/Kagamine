@@ -41,7 +41,7 @@ public class BaseDefense {
 					}
 					ArrayList<UnitInPool> assigned = new ArrayList<>();
 					float assigned_supply = 0;
-					while (assigned_supply < ground_supply * 2.5 || ground_supply > 30) {
+					while (assigned_supply < ground_supply * 1.5 || ground_supply > 30) {
 						UnitInPool current = closest_free(average, false);
 						if (current == null) current = closest_free(average, true);
 						if (current == null) break;

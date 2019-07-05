@@ -170,6 +170,22 @@ public class Game {
 		}
 	}
 	
+	
+	public static void unit_command(List<UnitInPool> u, Ability a, Unit target) {
+		List<Unit> list = new ArrayList<>();
+		for (UnitInPool unit : u) list.add(unit.unit());
+		action.unitCommand(list, a, target, false);
+		
+	}
+	
+	public static void unit_command(List<UnitInPool> u, Ability a, Point2d target) {
+		List<Unit> list = new ArrayList<>();
+		for (UnitInPool unit : u) list.add(unit.unit());
+		action.unitCommand(list, a, target, false);
+		
+	}
+	
+	
 	public static List<EffectLocations> get_effects() {
 		return observation.getEffects();
 	}
@@ -439,7 +455,7 @@ public class Game {
 	
 	public static void draw_line(Point2d a, Point2d b, Color c) {
 		if (Constants.DEBUG) {
-			debug.debugLineOut(Point.of(a.getX(), a.getY(), (float) (Game.height(a) + .5)), Point.of((float) (b.getX()), (float) (b.getY()), (float) (Game.height(b) + .5)), c);
+			debug.debugLineOut(Point.of(a.getX(), a.getY(), (float) (Game.height(a) + 1)), Point.of((float) (b.getX()), (float) (b.getY()), (float) (Game.height(b) + 1)), c);
 		}
 	}
 	
@@ -493,6 +509,10 @@ public class Game {
 	
 	public static void write_text(String text) {
 		debug.debugTextOut(text, Point2d.of((float) 0.1, (float) ((100.0 + 20.0 * lines++) / 1080.0)), Color.WHITE, 15);
+	}
+	
+	public static void write_text(String text, Point2d location) {
+		debug.debugTextOut(text, Point.of(location.getX(), location.getY()), Color.WHITE, 15);
 	}
 	
 	public static int worker_count() {

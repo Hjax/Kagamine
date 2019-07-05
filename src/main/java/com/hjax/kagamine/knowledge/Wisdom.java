@@ -17,6 +17,9 @@ import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 
 public class Wisdom {
+	
+	public static boolean early_cheese = false;
+	
 	public static boolean proxy_detected() {
 		if (Game.army_supply() >= 30) return false;
 		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
@@ -37,6 +40,14 @@ public class Wisdom {
 		return false;
 	}
 	public static boolean all_in_detected() {
+		if (EnemyModel.counts.getOrDefault(Units.ZERG_ZERGLING, 0) > 0 && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) {
+			early_cheese = true;
+		}
+		if (Game.get_frame() < 2 * 60 * Constants.FPS) {
+			if (early_cheese) {
+				return true;
+			}
+		}
 		if (Game.army_supply() >= 60) return false;
 		if (enemy_bases() > 3) return false;
 		return enemy_production() >= 3 * Math.max(enemy_bases(), 1);
@@ -141,7 +152,7 @@ public class Wisdom {
 		//if (GameInfoCache.get_opponent_race() == Race.ZERG) target = 15;
 		if (target < 10) {
 			if (all_in_detected()) target = 10;
-			if (proxy_detected()) target = 10;
+			if (proxy_detected()) target = 30;
 		}
 		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < EnemyModel.enemyArmy() * 2)) {
 			if (BuildExecutor.next_army_unit() != Units.INVALID) {
@@ -210,7 +221,8 @@ public class Wisdom {
 		return (GameInfoCache.count(Units.ZERG_DRONE) < Wisdom.worker_cap());
 	}
 	public static boolean should_expand() {
-		if (BaseManager.base_count(Alliance.SELF) > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
+		if (all_in_detected() && BaseManager.base_count(Alliance.SELF) < 4 && BaseManager.base_count(Alliance.SELF) > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && all_in_detected() && BaseManager.base_count(Alliance.SELF) < 4 && BaseManager.base_count(Alliance.SELF) >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (BaseManager.base_count(Alliance.SELF) < 3 && GameInfoCache.count(Units.ZERG_DRONE) > 23) return true;
 		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count(Alliance.SELF) < Build.ideal_hatches) || (Build.ideal_hatches == -1));
 	}

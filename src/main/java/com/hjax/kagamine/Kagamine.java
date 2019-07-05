@@ -15,6 +15,7 @@ import com.hjax.kagamine.build.UpgradeManager;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.economy.MiningOptimizer;
+import com.hjax.kagamine.enemymodel.EnemyBaseDefense;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.enemymodel.ResourceTracking;
 import com.hjax.kagamine.game.ControlGroups;
@@ -25,6 +26,7 @@ import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.zerg.Creep;
 import com.hjax.kagamine.unitcontrollers.zerg.Larva;
+import com.hjax.kagamine.unitcontrollers.zerg.Mutalisk;
 
 public class Kagamine extends S2Agent{
 
@@ -52,12 +54,14 @@ public class Kagamine extends S2Agent{
 		
 		if (Game.get_frame() % Constants.FRAME_SKIP == 0) {
 			GameInfoCache.start_frame();
-			MiningOptimizer.on_frame();
-			BanelingAvoidance.on_frame();
 			ResourceTracking.on_frame();
 			EnemyModel.on_frame();
-			Larva.start_frame();
 			ControlGroups.on_frame();
+			MiningOptimizer.on_frame();
+			BanelingAvoidance.on_frame();
+			EnemyBaseDefense.on_frame();
+			Mutalisk.on_frame();
+			Larva.start_frame();
 			Scouting.on_frame();
 			ArmyManager.on_frame();
 			ThreatManager.on_frame();
@@ -71,30 +75,32 @@ public class Kagamine extends S2Agent{
 			UnitManager.on_frame();
 			MapAnalysis.on_frame();
 			GameInfoCache.end_frame();
+			
+			
+			if (Wisdom.cannon_rush()) {
+				Game.write_text("Enemy Strategy: Cannon Rush");
+			} else if (Wisdom.worker_rush()) {
+				Game.write_text("Enemy Strategy: Worker Rush");
+			} else if (Wisdom.proxy_detected()) {
+				Game.write_text("Enemy Strategy: Proxy Cheese");
+			} else if (Wisdom.all_in_detected()) {
+				Game.write_text("Enemy Strategy: All-in");
+			} else {
+				Game.write_text("Enemy Strategy: Macro");
+			}
+			
+			int[] resources = EnemyModel.resourceEstimate();
+			Game.write_text("Enemy Supply: " + EnemyModel.enemySupply());;
+			Game.write_text("Enemy Army: " + EnemyModel.enemyArmy());
+			Game.write_text("Enemy Workers: " + EnemyModel.enemyWorkers());
+			Game.write_text("Enemy Bases: " + EnemyModel.enemyBaseCount());
+			Game.write_text("Enemy resources : " + resources[0] + " " + resources[1]);
+			
+			Game.write_text("My army: " + GameInfoCache.attacking_army_supply());
+			Game.write_text("Ahead: " + Wisdom.ahead());
+			Game.write_text("Should Attack: " + Wisdom.shouldAttack());
 		}
-		
-		if (Wisdom.cannon_rush()) {
-			Game.write_text("Enemy Strategy: Cannon Rush");
-		} else if (Wisdom.worker_rush()) {
-			Game.write_text("Enemy Strategy: Worker Rush");
-		} else if (Wisdom.proxy_detected()) {
-			Game.write_text("Enemy Strategy: Proxy Cheese");
-		} else if (Wisdom.all_in_detected()) {
-			Game.write_text("Enemy Strategy: All-in");
-		} else {
-			Game.write_text("Enemy Strategy: Macro");
-		}
-		
-		int[] resources = EnemyModel.resourceEstimate();
-		Game.write_text("Enemy Supply: " + EnemyModel.enemySupply());;
-		Game.write_text("Enemy Army: " + EnemyModel.enemyArmy());
-		Game.write_text("Enemy Workers: " + EnemyModel.enemyWorkers());
-		Game.write_text("Enemy Bases: " + EnemyModel.enemyBaseCount());
-		Game.write_text("Enemy resources : " + resources[0] + " " + resources[1]);
-		
-		Game.write_text("My army: " + GameInfoCache.attacking_army_supply());
-		Game.write_text("Ahead: " + Wisdom.ahead());
-		Game.write_text("Should Attack: " + Wisdom.shouldAttack());
+
 		
 		
 		if (Constants.DEBUG) {

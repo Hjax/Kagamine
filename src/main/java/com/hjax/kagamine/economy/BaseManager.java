@@ -306,29 +306,6 @@ public class BaseManager {
 		return get_numbers.get(n);
 	}
 	
-	public static void build_defensive_spores() {
-		outer: for (Base b: bases) {
-			if (Game.minerals() < 75) {
-				return;
-			}
-			if (b.has_friendly_command_structure() && !(b.command_structure.unit().getBuildProgress() < .999)) {
-				for (UnitInPool spore: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
-					if (spore.unit().getPosition().toPoint2d().distance(b.location) <= 9) {
-						continue outer;
-					}
-				}
-				Point2d spore = get_spore_placement_location(b);
-				if (spore.distance(Point2d.of(0, 0)) < 5) continue outer;
-				UnitInPool worker = get_free_worker(spore);
-				if (worker != null) {
-					Game.unit_command(worker, Abilities.BUILD_SPORE_CRAWLER, spore);
-					Game.spend(75, 0);
-					return;
-				}
-			}
-		}
-	}
-	
 	public static Base closest_base(Point2d p) {
 		Base best = null;
 		for (Base b: bases) {
@@ -396,12 +373,6 @@ public class BaseManager {
 		return forward_base;
 	}
 	
-	static Point2d[] get_spore_triangle_placement_locations(Base b) {
-		Point2d[] p = new Point2d[3];
-		// TODO complete
-		return p;
-	}
-	
 	public static Base closest_occupied_base(Point2d p) {
 		Base best = null;
 		for (Base b : bases) {
@@ -427,6 +398,11 @@ public class BaseManager {
 		}
 		x /= total;
 		y /= total;
+		for (UnitInPool spore : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
+			if (spore.unit().getPosition().toPoint2d().distance(Point2d.of(x, y)) < 4) {
+				return null;
+			}
+		}
 		x = b.location.getX() - x;
 		y = b.location.getY() - y;
 		Vector2d offset = Utilities.normalize(new Vector2d(x, y));
@@ -436,7 +412,90 @@ public class BaseManager {
 				return p;
 			}
 		}
-		return Point2d.of(0, 0);
+		return null;
+	}
+	
+	private static Point2d get_spore_placement(Base b, Point2d slider) {
+		
+		for (UnitInPool spore : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
+			if (spore.unit().getPosition().toPoint2d().distance(slider) < 3) {
+				return null;
+			}
+		}
+		
+		Vector2d offset = Utilities.normalize(Utilities.direction_to(Vector2d.of(b.location), Vector2d.of(slider)));
+		for (int i = 0; i < 20; i++) {
+			Point2d p = Point2d.of((float) (slider.getX() - (2.5 + 0.1 * i) * offset.x), (float) (slider.getY() - (2.5 * 0.1 * i) * offset.y));
+			if (Game.can_place(Abilities.MORPH_SPORE_CRAWLER_ROOT, p)) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
+	public static void build_defensive_spores() {
+		for (Base b: bases) {
+			if (Game.minerals() < 75) {
+				return;
+			}
+			if (b.has_friendly_command_structure() && !(b.command_structure.unit().getBuildProgress() < .999)) {
+				Point2d spore = get_spore_placement_location(b);
+				if (spore != null) {
+					UnitInPool worker = get_free_worker(spore);
+					if (worker != null) {
+						Game.unit_command(worker, Abilities.BUILD_SPORE_CRAWLER, spore);
+						Game.spend(75, 0);
+						return;
+					}
+				}
+			}
+		}
+	}
+	
+	public static void build_triangle_spores() {
+		for (Base b: bases) {
+			if (Game.minerals() < 75) {
+				return;
+			}
+			if (b.has_friendly_command_structure() && !(b.command_structure.unit().getBuildProgress() < .999)) {
+				Point2d[] spore = get_spore_triangle_placement_locations(b);
+				for (Point2d p : spore) {
+					if (p != null) {
+						UnitInPool worker = get_free_worker(p);
+						if (worker != null) {
+							Game.unit_command(worker, Abilities.BUILD_SPORE_CRAWLER, p);
+							Game.spend(75, 0);
+							return;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	static Point2d[] get_spore_triangle_placement_locations(Base b) {
+		
+		Point2d[] results = new Point2d[2];
+		
+		UnitInPool first = null;
+		UnitInPool second = null;
+		double best = -1;
+		List<UnitInPool> resources = new ArrayList<>();
+		resources.addAll(b.minerals);
+		resources.addAll(b.gases);
+		for (UnitInPool res1 : resources) {
+			for (UnitInPool res2: resources) {
+				if (res1.unit().getPosition().distance(res2.unit().getPosition()) > best) {
+					first = res1;
+					second = res2;
+					best = res1.unit().getPosition().distance(res2.unit().getPosition());
+				}
+			}
+		}
+		results[0] = get_spore_placement(b, first.unit().getPosition().toPoint2d());
+		results[1] = get_spore_placement(b, second.unit().getPosition().toPoint2d());
+		
+		return results;
 	}
 	
 	static void calculate_expansions() {

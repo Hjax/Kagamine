@@ -18,6 +18,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.knowledge.Wisdom;
 
 public class UpgradeManager {
 	
@@ -58,8 +59,14 @@ public class UpgradeManager {
 	
 	
 	public static void on_frame() {
+		
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 10 && (Wisdom.all_in_detected() || Wisdom.cannon_rush())) {
+			return;
+		}
+		
 		for (UnitType ut : Composition.comp()) {
 			outer: for (Upgrade u : upgrades.getOrDefault(ut, Arrays.asList())) {
+				if (u == Upgrades.OVERLORD_SPEED && !(Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED) || GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED))) continue;
 				if (!(Game.has_upgrade(u)) && !GameInfoCache.is_researching(u)) {
 					if (u.toString().toLowerCase().contains("melee") && !Game.has_upgrade(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3) && (Composition.comp().contains(Units.ZERG_ROACH) || Composition.comp().contains(Units.ZERG_HYDRALISK))) continue;
 					for (UnitType t: upgraders.get(u)) {

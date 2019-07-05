@@ -136,10 +136,31 @@ public class Scouting {
 					overlords.put(best_scout.getTag(), best_base);
 				}
 			}
-		}
-
-		if (Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
-			
+		} else {
+			Base best_base = null;
+			for (int i = 0; i < 5; i++) {
+				Base b = BaseManager.closest_base(BaseManager.get_base(i));
+				if (Game.get_frame() - b.last_seen_frame > Constants.FPS * 30) {
+					if (!overlords.containsValue(b)) {
+						if (best_base == null || best_base.location.distance(BaseManager.main_base().location) > b.location.distance(BaseManager.main_base().location)) {
+							best_base = b;
+						}
+					}
+				}
+			}
+			if (best_base != null) {
+				UnitInPool best_scout = null;
+				for (UnitInPool o : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
+					if (!overlords.containsKey(o.getTag())) {
+						if (best_scout == null || o.unit().getPosition().toPoint2d().distance(best_base.location) < best_scout.unit().getPosition().toPoint2d().distance(best_base.location)) {
+							best_scout = o;
+						}
+					}
+				}
+				if (best_scout != null) {
+					overlords.put(best_scout.getTag(), best_base);
+				}
+			}
 		}
 		
 	}

@@ -8,6 +8,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.data.Weapon;
 import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
@@ -79,7 +80,8 @@ public class GenericUnit {
 		
 		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack()) && moveOut) {
 			if (ArmyManager.has_target) {
-				Game.unit_command(u, Abilities.ATTACK, ArmyManager.target);
+				Game.draw_line(u.unit().getPosition().toPoint2d(), ArmyManager.get_target(), Color.PURPLE);
+				Game.unit_command(u, Abilities.ATTACK, ArmyManager.get_target());
 				return;
 			} else {
 				if (u.unit().getOrders().size() == 0) {
