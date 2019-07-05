@@ -29,6 +29,12 @@ public class Composition {
 			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) > 2) {
 				return Arrays.asList(Units.ZERG_HYDRALISK);
 			}
+			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) >= 2 && GameInfoCache.count_friendly(Units.ZERG_SPIRE) > 0) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_CORRUPTOR);
+			}
+			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) >= 2) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR);
+			}
 			if (Game.army_supply() < 80) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			}
