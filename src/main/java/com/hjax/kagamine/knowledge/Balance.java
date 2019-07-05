@@ -19,6 +19,7 @@ public class Balance {
 	static {
 		overrides = new HashMap<>();
 		overrides.put(Units.ZERG_LAIR, Units.ZERG_SPAWNING_POOL);
+		overrides.put(Units.ZERG_HIVE, Units.ZERG_INFESTATION_PIT);
 	}
 	
 	public static boolean has_tech_requirement(UnitType u) {
