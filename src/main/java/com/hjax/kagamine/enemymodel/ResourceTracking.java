@@ -48,7 +48,7 @@ public class ResourceTracking {
 		}
 		
 		for (HjaxUnit u: GameInfoCache.get_units()) {
-			if (u.is_snapshot() && Game.is_resource(u.type())) {
+			if (!u.is_snapshot() && Game.is_resource(u.type())) {
 				if (recent_value.containsKey(u.tag())) {
 					if ((Game.get_frame() - recent_value.get(u.tag()).left > Constants.RESOURCE_UPDATE_TIMER) && Game.isVisible(u.location())) {
 						previous_value.put(u.tag(), recent_value.get(u.tag()));
