@@ -4,10 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.tuple.Pair;
-
 import com.github.ocraft.s2client.protocol.data.UnitType;
-import com.github.ocraft.s2client.protocol.data.Upgrade;
-
 
 public class Build {
 	public static int build_index = 0;

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
@@ -17,11 +16,12 @@ import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.unitcontrollers.Worker;
 
 public class Scouting {
-	public static UnitInPool scout = null;
-	public static UnitInPool patrol_scout = null;
+	public static HjaxUnit scout = null;
+	public static HjaxUnit patrol_scout = null;
 	public static ArrayList<Point2d> spawns = new ArrayList<>();
 	public static int patrol_base = 2;
 	public static int overlord_count = 0;
@@ -39,9 +39,9 @@ public class Scouting {
 			Game.get_game_info().getStartRaw().ifPresent(StartRaw -> spawns = new ArrayList<>(StartRaw.getStartLocations()));
 		}
 		if (spawns.size() > 1) {
-			for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (Game.is_structure(u.unit().getType())) {
-					Point2d spawn = closest_enemy_spawn(u.unit().getPosition().toPoint2d());
+			for (HjaxUnit unit: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (unit.is_structure()) {
+					Point2d spawn = closest_enemy_spawn(unit.location());
 					spawns = new ArrayList<>();
 					spawns.add(spawn);
 					break;
@@ -49,10 +49,10 @@ public class Scouting {
 			}
 		}
 		if (spawns.size() > 1) {
-			outer: for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF)) {
-				for (Point2d s: spawns) {
-					if (s.distance(u.unit().getPosition().toPoint2d()) < 8) {
-						spawns.remove(s);
+			outer: for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF)) {
+				for (Point2d spawn: spawns) {
+					if (unit.distance(spawn) < 8) {
+						spawns.remove(spawn);
 						break outer;
 					}
 				}
@@ -70,33 +70,33 @@ public class Scouting {
 			}
 		} else {
 			if (patrol_scout != null) {
-				if (patrol_scout.isAlive()) {
-					Game.unit_command(patrol_scout, Abilities.STOP);
+				if (patrol_scout.alive()) {
+					patrol_scout.stop();
 				}
 				patrol_scout = null;
 			}
 		}
 		
-		if (scout != null && scout.isAlive()) {
-			if (scout.unit().getOrders().size() == 0 || scout.unit().getOrders().get(0).getAbility() != Abilities.MOVE) {
-				Game.unit_command(scout, Abilities.MOVE, BaseManager.get_placement_location(Units.PROTOSS_PYLON, closest_enemy_spawn(scout.unit().getPosition().toPoint2d()), 5, 15));
+		if (scout != null && scout.alive()) {
+			if (scout.idle() || scout.orders().get(0).getAbility() != Abilities.MOVE) {
+				scout.move(BaseManager.get_placement_location(Units.PROTOSS_PYLON, closest_enemy_spawn(scout.location()), 5, 15));
 			}
 		}
 		
-		if (patrol_scout != null && patrol_scout.isAlive()) {
+		if (patrol_scout != null && patrol_scout.alive()) {
 			Point2d target = BaseManager.get_base(patrol_base);
-			if (target.distance(patrol_scout.unit().getPosition().toPoint2d()) < 4) {
+			if (patrol_scout.distance(target) < 4) {
 				patrol_base++;
-			} else if (patrol_scout.unit().getOrders().size() == 0 || patrol_scout.unit().getOrders().get(0).getAbility() != Abilities.MOVE) {
-				Game.unit_command(patrol_scout, Abilities.MOVE, target);
+			} else if (patrol_scout.idle() || patrol_scout.orders().get(0).getAbility() != Abilities.MOVE) {
+				patrol_scout.move(target);
 			}
 		}
 
 		if (!has_pulled_back && !Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
 			if (Wisdom.proxy_detected() || Wisdom.all_in_detected() || Wisdom.air_detected()) {
 				has_pulled_back = true;
-				for (UnitInPool overlord: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
-					Game.unit_command(overlord, Abilities.MOVE, BaseManager.main_base().location);
+				for (HjaxUnit overlord: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
+					overlord.move(BaseManager.main_base().location);
 				}
 			}
 		}
@@ -106,7 +106,7 @@ public class Scouting {
 				overlords.remove(t);
 				break;
 			}
-			if (GameInfoCache.visible_friendly.get(t).unit().getPosition().toPoint2d().distance(overlords.get(t).location) < 4) {
+			if (GameInfoCache.visible_friendly.get(t).distance(overlords.get(t).location) < 4) {
 				overlords.remove(t);
 				break;
 			}
@@ -124,16 +124,16 @@ public class Scouting {
 				}
 			}
 			if (best_base != null) {
-				UnitInPool best_scout = null;
-				for (UnitInPool o : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
-					if (!overlords.containsKey(o.getTag())) {
-						if (best_scout == null || o.unit().getPosition().toPoint2d().distance(best_base.location) < best_scout.unit().getPosition().toPoint2d().distance(best_base.location)) {
-							best_scout = o;
+				HjaxUnit best_scout = null;
+				for (HjaxUnit overlord : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
+					if (!overlords.containsKey(overlord.tag())) {
+						if (best_scout == null || overlord.distance(best_base.location) < best_scout.distance(best_base.location)) {
+							best_scout = overlord;
 						}
 					}
 				}
 				if (best_scout != null) {
-					overlords.put(best_scout.getTag(), best_base);
+					overlords.put(best_scout.tag(), best_base);
 				}
 			}
 		} else {
@@ -148,16 +148,16 @@ public class Scouting {
 				}
 			}
 			if (best_base != null) {
-				UnitInPool best_scout = null;
-				for (UnitInPool o : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
-					if (!overlords.containsKey(o.getTag())) {
-						if (best_scout == null || o.unit().getPosition().toPoint2d().distance(best_base.location) < best_scout.unit().getPosition().toPoint2d().distance(best_base.location)) {
-							best_scout = o;
+				HjaxUnit best_scout = null;
+				for (HjaxUnit overlord : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
+					if (!overlords.containsKey(overlord.tag())) {
+						if (best_scout == null || overlord.distance(best_base.location) < best_scout.distance(best_base.location)) {
+							best_scout = overlord;
 						}
 					}
 				}
 				if (best_scout != null) {
-					overlords.put(best_scout.getTag(), best_base);
+					overlords.put(best_scout.tag(), best_base);
 				}
 			}
 		}
@@ -191,7 +191,7 @@ public class Scouting {
 	}
 	
 	public static void assign_scout() {
-		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 			if (Worker.can_build(unit)) {
 				scout = unit;
 				return;
@@ -200,7 +200,7 @@ public class Scouting {
 	}
 	
 	public static void assign_patrol_scout() {
-		for (UnitInPool unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 			if (Worker.can_build(unit)) {
 				patrol_scout = unit;
 				return;
@@ -208,8 +208,8 @@ public class Scouting {
 		}
 	}
 	
-	public static boolean is_scout(UnitInPool a) {
-		return (scout != null && a.getTag().equals(scout.getTag())) || (patrol_scout != null && a.getTag().equals(patrol_scout.getTag()));
+	public static boolean is_scout(HjaxUnit ally) {
+		return (scout != null && ally.tag().equals(scout.tag())) || (patrol_scout != null && ally.tag().equals(patrol_scout.tag()));
 	}
 	
 	

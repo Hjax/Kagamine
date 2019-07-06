@@ -1,23 +1,22 @@
 package com.hjax.kagamine.unitcontrollers;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.build.BuildExecutor;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
-import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.HjaxUnit;
 
 public class Extractor {
-	public static void on_frame(UnitInPool u) {
-		if (!ThreatManager.is_safe(u.unit().getPosition().toPoint2d())) return;
-		if (u.unit().getBuildProgress() > 0.999) {
-			if (!BuildExecutor.pulled_off_gas && is_near_base(u.unit().getPosition().toPoint2d())) {
-				if (u.unit().getAssignedHarvesters().get() < u.unit().getIdealHarvesters().get()) {
-					UnitInPool best = BaseManager.get_free_worker(u.unit().getPosition().toPoint2d());
+	public static void on_frame(HjaxUnit unit) {
+		if (!ThreatManager.is_safe(unit.location())) return;
+		if (unit.done()) {
+			if (!BuildExecutor.pulled_off_gas && is_near_base(unit.location())) {
+				if (unit.assigned_workers() < unit.ideal_workers()) {
+					HjaxUnit best = BaseManager.get_free_worker(unit.location());
 					if (best != null) {
-						Game.unit_command(best, Abilities.SMART, u.unit());
+						best.use_ability(Abilities.SMART, unit);
 					}
 				}
 			}

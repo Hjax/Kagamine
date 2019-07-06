@@ -5,8 +5,6 @@ import java.util.Arrays;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
-import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.Race;
@@ -16,6 +14,7 @@ import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class BuildPlanner {
@@ -41,12 +40,12 @@ public class BuildPlanner {
 				Chat.sendMessage("Oh you are cheesing me, I guess I can't play a macro game");
 				do_ravager_all_in();
 				if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {
-					for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
-						if (u.unit().getBuildProgress() < 0.999) {
-							Game.unit_command(u, Abilities.CANCEL);
-							for (Base b: BaseManager.bases) {
-								if (b.location.distance(u.unit().getPosition().toPoint2d()) < 4) {
-									b.set_walking_drone(null);
+					for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
+						if (!unit.done()) {
+							unit.cancel();
+							for (Base base: BaseManager.bases) {
+								if (unit.distance(base.location) < 4) {
+									base.set_walking_drone(null);
 								}
 							}
 						}

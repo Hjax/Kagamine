@@ -12,6 +12,7 @@ import com.github.ocraft.s2client.bot.gateway.ObservationInterface;
 import com.github.ocraft.s2client.bot.gateway.QueryInterface;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.action.ActionChat.Channel;
+import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Ability;
 import com.github.ocraft.s2client.protocol.data.AbilityData;
 import com.github.ocraft.s2client.protocol.data.Effect;
@@ -24,7 +25,6 @@ import com.github.ocraft.s2client.protocol.data.UpgradeData;
 import com.github.ocraft.s2client.protocol.data.Weapon;
 import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.debug.Color;
-import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.observation.raw.EffectLocations;
 import com.github.ocraft.s2client.protocol.observation.raw.Visibility;
@@ -245,7 +245,7 @@ public class Game {
 		return observation.getUnits();
 	}
 
-	public static UnitInPool get_unit(Tag t) {
+	protected static UnitInPool get_unit(Tag t) {
 		return observation.getUnit(t);
 	}
 	
@@ -440,6 +440,14 @@ public class Game {
 		return query.getAbilitiesForUnit(u.unit(), ignore);
 	}
 	
+	public static AvailableAbilities availible_abilities(HjaxUnit u, boolean ignore) {
+		return query.getAbilitiesForUnit(u.unit(), ignore);
+	}
+	
+	public static AvailableAbilities availible_abilities(HjaxUnit u) {
+		return query.getAbilitiesForUnit(u.unit(), false);
+	}
+	
 	public static List<AvailableAbilities> availible_abilities(List<UnitInPool> u) {
 		List<Unit> parsed = new ArrayList<>();
 		for (UnitInPool up: u) parsed.add(up.unit());
@@ -521,5 +529,9 @@ public class Game {
 	
 	public static double supply(UnitType u) {
 		return get_unit_type_data().get(u).getFoodRequired().orElse(0.0f);
+	}
+	
+	public static Ability production_ability(UnitType u) {
+		return Game.get_unit_type_data().get(u).getAbility().orElse(Abilities.INVALID);
 	}
 }

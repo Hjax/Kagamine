@@ -7,13 +7,13 @@ import java.util.Set;
 
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
-import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 
 public class ResourceTracking {
 	
@@ -30,46 +30,46 @@ public class ResourceTracking {
 		my_resources.clear();
 		for (Base b: BaseManager.bases) {
 			if (b.has_friendly_command_structure()) {
-				for (UnitInPool r: b.minerals) {
-					my_resources.add(r.getTag());
+				for (HjaxUnit r: b.minerals) {
+					my_resources.add(r.tag());
 				}
-				for (UnitInPool r: b.gases) {
-					my_resources.add(r.getTag());
+				for (HjaxUnit r: b.gases) {
+					my_resources.add(r.tag());
 				}
 			}
 			if (b.has_enemy_command_structure()) {
-				for (UnitInPool r: b.minerals) {
-					enemy_resources.add(r.getTag());
+				for (HjaxUnit r: b.minerals) {
+					enemy_resources.add(r.tag());
 				}
-				for (UnitInPool r: b.gases) {
-					enemy_resources.add(r.getTag());
+				for (HjaxUnit r: b.gases) {
+					enemy_resources.add(r.tag());
 				}
 			}
 		}
 		
-		for (UnitInPool u: Game.get_units()) {
-			if (u.unit().getDisplayType() != DisplayType.SNAPSHOT && Game.is_resource(u.unit().getType())) {
-				if (recent_value.containsKey(u.getTag())) {
-					if ((Game.get_frame() - recent_value.get(u.getTag()).left > Constants.RESOURCE_UPDATE_TIMER) && Game.isVisible(u.unit().getPosition().toPoint2d())) {
-						previous_value.put(u.getTag(), recent_value.get(u.getTag()));
-						recent_value.put(u.getTag(), new ImmutablePair<>((int) Game.get_frame(), u.unit().getVespeneContents().orElse(0) + u.unit().getMineralContents().orElse(0)));
-						if (my_resources.contains(u.getTag())) {
-							self_mined.put(u.getTag(), self_mined.getOrDefault(u.getTag(), 0) + previous_value.get(u.getTag()).right - recent_value.get(u.getTag()).right);
+		for (HjaxUnit u: GameInfoCache.get_units()) {
+			if (u.is_snapshot() && Game.is_resource(u.type())) {
+				if (recent_value.containsKey(u.tag())) {
+					if ((Game.get_frame() - recent_value.get(u.tag()).left > Constants.RESOURCE_UPDATE_TIMER) && Game.isVisible(u.location())) {
+						previous_value.put(u.tag(), recent_value.get(u.tag()));
+						recent_value.put(u.tag(), new ImmutablePair<>((int) Game.get_frame(), u.gas() + u.minerals()));
+						if (my_resources.contains(u.tag())) {
+							self_mined.put(u.tag(), self_mined.getOrDefault(u.tag(), 0) + previous_value.get(u.tag()).right - recent_value.get(u.tag()).right);
 						}
 					}
 				} else {
-					if (Game.get_unit_type_data().get(u.unit().getType()).isHasVespene()) {
-						start_value.put(u.getTag(), 2250);
-						previous_value.put(u.getTag(), new ImmutablePair<>(0, 2250));
-						gas.add(u.getTag());
-					} else if (u.unit().getType().toString().contains("750")) {
-						start_value.put(u.getTag(), 900);
-						previous_value.put(u.getTag(), new ImmutablePair<>(0, 900));
+					if (Game.get_unit_type_data().get(u.type()).isHasVespene()) {
+						start_value.put(u.tag(), 2250);
+						previous_value.put(u.tag(), new ImmutablePair<>(0, 2250));
+						gas.add(u.tag());
+					} else if (u.type().toString().contains("750")) {
+						start_value.put(u.tag(), 900);
+						previous_value.put(u.tag(), new ImmutablePair<>(0, 900));
 					} else {
-						start_value.put(u.getTag(), 1800);
-						previous_value.put(u.getTag(), new ImmutablePair<>(0, 1800));
+						start_value.put(u.tag(), 1800);
+						previous_value.put(u.tag(), new ImmutablePair<>(0, 1800));
 					}
-					recent_value.put(u.getTag(), new ImmutablePair<>((int) Game.get_frame(), u.unit().getVespeneContents().orElse(0) + u.unit().getMineralContents().orElse(0)));
+					recent_value.put(u.tag(), new ImmutablePair<>((int) Game.get_frame(), u.gas() + u.minerals()));
 				}
 			}
 		}

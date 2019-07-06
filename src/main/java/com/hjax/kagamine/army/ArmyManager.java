@@ -1,6 +1,5 @@
 package com.hjax.kagamine.army;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
@@ -9,9 +8,9 @@ import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
-import com.hjax.kagamine.enemymodel.EnemyBaseDefense;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.Worker;
@@ -26,12 +25,12 @@ public class ArmyManager {
 	}
 	
 	public static void on_frame() {
-		outer: for (UnitInPool u: GameInfoCache.get_units(Alliance.SELF)) {
-			if (target.distance(u.unit().getPosition().toPoint2d()) < 4) {
-				for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (e.unit().getType() != Units.PROTOSS_ADEPT_PHASE_SHIFT && !Game.is_changeling(e.unit().getType())) {
-						if (!e.unit().getFlying().orElse(false) || GameInfoCache.count_friendly(Units.ZERG_MUTALISK) > 0) {
-							if (u.unit().getPosition().distance(e.unit().getPosition()) < 4) {
+		outer: for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF)) {
+			if (unit.distance(target) < 4) {
+				for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+					if (enemy.type() != Units.PROTOSS_ADEPT_PHASE_SHIFT && !Game.is_changeling(enemy.type())) {
+						if (!enemy.flying() || GameInfoCache.count_friendly(Units.ZERG_MUTALISK) > 0) {
+							if (unit.distance(enemy) < 4) {
 								break outer;
 							}
 						}
@@ -42,10 +41,10 @@ public class ArmyManager {
 			}
 		}
 		if (!has_target) {
-			for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (e.unit().getType() != Units.PROTOSS_ADEPT_PHASE_SHIFT) {
-					if (!e.unit().getFlying().orElse(false) || GameInfoCache.count_friendly(Units.ZERG_MUTALISK) > 0) {
-						target = e.unit().getPosition().toPoint2d();
+			for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (enemy.type() != Units.PROTOSS_ADEPT_PHASE_SHIFT) {
+					if (!enemy.flying() || GameInfoCache.count_friendly(Units.ZERG_MUTALISK) > 0) {
+						target = enemy.location();
 						has_target = true;
 						break;
 					}
@@ -53,11 +52,11 @@ public class ArmyManager {
 			}
 		}
 		
-		for (UnitInPool e: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_structure(e.unit().getType())) {
-				if (!has_target || target.distance(BaseManager.main_base().location) > e.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location)) {
+		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_structure(enemy.type())) {
+				if (!has_target || target.distance(BaseManager.main_base().location) > enemy.distance(BaseManager.main_base().location)) {
 					has_target = true;
-					target = e.unit().getPosition().toPoint2d();
+					target = enemy.location();
 				}
 			}
 		}
@@ -65,22 +64,23 @@ public class ArmyManager {
 		if (Game.completed_army_supply() * 2 < (ThreatManager.seen.size() + 1) && ThreatManager.seen.size() < 15) {
 			if (!Wisdom.worker_rush()) {
 				if (GameInfoCache.get_opponent_race() == Race.ZERG || (!Wisdom.cannon_rush() && !Wisdom.proxy_detected())) {
-					enemy_loop: for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
+					enemy_loop: for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 						for (Base b : BaseManager.bases) {
-							if (b.has_friendly_command_structure() && u.unit().getPosition().toPoint2d().distance(b.location) < 12) {
+							if (b.has_friendly_command_structure() && enemy.distance(b.location) < 12) {
 								int attackers = 0;
-								for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-									if (!(ally.unit().getOrders().size() == 0) && (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK || ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK_ATTACK)) {
-										if (ally.unit().getOrders().get(0).getTargetedUnitTag().orElse(Tag.of((long) 0)).equals(u.unit().getTag())) {
+								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+									if (ally.ability() == Abilities.ATTACK || ally.ability() == Abilities.ATTACK_ATTACK) {
+										
+										if (ally.orders().get(0).getTargetedUnitTag().orElse(Tag.of((long) 0)).equals(enemy.tag())) {
 											attackers++;
 										}
 									}
 								}
-								if (Game.is_structure(u.unit().getType()) && attackers >= 4) continue enemy_loop;
+								if (Game.is_structure(enemy.type()) && attackers >= 4) continue enemy_loop;
 								else if (attackers >= 2) continue enemy_loop;
-								for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-									if (Worker.can_build(ally) && ally.unit().getHealth().orElse((float) 0) > 15) {
-										Game.unit_command(ally, Abilities.ATTACK, u.unit());
+								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+									if (Worker.can_build(ally) && ally.health() > 15) {
+										ally.attack(enemy);
 										continue enemy_loop;
 									}
 								}
@@ -89,13 +89,13 @@ public class ArmyManager {
 					}
 				}
 			} else {
-				for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (Game.is_worker(enemy.unit().getType())) {
-						if (enemy.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) <= 20) {
-							for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
-								if (ally.unit().getHealth().orElse((float) 0) > 10) {
+				for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+					if (enemy.is_worker()) {
+						if (enemy.distance(BaseManager.main_base().location) <= 20) {
+							for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+								if (ally.health() > 10) {
 									if (Worker.can_build(ally)) {
-										Game.unit_command(ally, Abilities.ATTACK, enemy.unit().getPosition().toPoint2d());
+										ally.attack(enemy.location());
 									}
 								}
 							}
@@ -104,27 +104,25 @@ public class ArmyManager {
 				}
 			}
 		}
-		
-		for (UnitInPool ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+
+		for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 			if (Scouting.is_scout(ally)) continue;
 			double best = 9999;
-			if (!(ally.unit().getOrders().size() == 0)) {
-				if (ally.unit().getOrders().get(0).getAbility() == Abilities.ATTACK) {
-					if (Game.completed_army_supply() >= 2) {
-						EconomyManager.assign_worker(ally);
-						continue;
-					}
- 					for (Base b : BaseManager.bases) {
-						if (b.has_friendly_command_structure()) {
-							if (b.location.distance(ally.unit().getPosition().toPoint2d()) < best) best = b.location.distance(ally.unit().getPosition().toPoint2d());
-						}
-					}
-					if (best > 20) EconomyManager.assign_worker(ally);
-					if (ally.unit().getHealth().orElse((float) 0) <= 10) EconomyManager.assign_worker(ally);
+			if (ally.ability() == Abilities.ATTACK) {
+				if (Game.completed_army_supply() >= 2) {
+					EconomyManager.assign_worker(ally);
+					continue;
 				}
+				for (Base b : BaseManager.bases) {
+					if (b.has_friendly_command_structure()) {
+						if (ally.distance(b.location) < best) best = ally.distance(b.location);
+					}
+				}
+				if (best > 20) EconomyManager.assign_worker(ally);
+				if (ally.health() <= 10) EconomyManager.assign_worker(ally);
 			}
 		}
-		
+
 	}
 	
 	public static Point2d get_target() {

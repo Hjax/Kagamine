@@ -19,23 +19,20 @@ import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.UnitOrder;
-import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.build.Composition;
 
 public class GameInfoCache {
 	
 	public static Map<Ability, Integer> production = new HashMap<>();
-	public static Map<Tag, UnitInPool> all_units = new HashMap<>();
+	public static Map<Tag, HjaxUnit> all_units = new HashMap<>();
 	
-	public static Map<Tag, UnitInPool> visible_friendly = new HashMap<>();
-	public static Map<Tag, UnitInPool> visible_enemy = new HashMap<>();
-	public static Map<Tag, UnitInPool> visible_neutral = new HashMap<>();
+	public static Map<Tag, HjaxUnit> visible_friendly = new HashMap<>();
+	public static Map<Tag, HjaxUnit> visible_enemy = new HashMap<>();
+	public static Map<Tag, HjaxUnit> visible_neutral = new HashMap<>();
 	
-	public static Map<Tag, Integer> last_seen_frame = new HashMap<>();
-	
-	public static Map<UnitType, List<UnitInPool>> visible_friendly_types = new HashMap<>();
-	public static Map<UnitType, List<UnitInPool>> visible_enemy_types = new HashMap<>();
-	public static Map<UnitType, List<UnitInPool>> visible_neutral_types = new HashMap<>();
+	public static Map<UnitType, List<HjaxUnit>> visible_friendly_types = new HashMap<>();
+	public static Map<UnitType, List<HjaxUnit>> visible_enemy_types = new HashMap<>();
+	public static Map<UnitType, List<HjaxUnit>> visible_neutral_types = new HashMap<>();
 	
 	
 	static Set<Tag> claimed_gases = new HashSet<>();
@@ -57,35 +54,36 @@ public class GameInfoCache {
 		
 		claimed_gases.clear(); 
 		
-		for (UnitInPool u: Game.get_units()) {
+		for (UnitInPool unit: Game.get_units()) {
 			
-			last_seen_frame.put(u.getTag(), (int) Game.get_frame());
+			HjaxUnit current = HjaxUnit.getInstance(unit);
 			
-			all_units.put(u.getTag(), u);
+			all_units.put(current.tag(), current);
 	
-			
-			if (u.isAlive()) {
-				if (u.unit().getAlliance() == Alliance.SELF) {
-					visible_friendly.put(u.getTag(), u);
-					if (u.unit().getBuildProgress() < Constants.DONE) {
-						production.put(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 
-						production.getOrDefault(Game.get_unit_type_data().get(u.unit().getType()).getAbility().orElse(Abilities.INVALID), 0) + 1);
-					} if (visible_friendly_types.containsKey(u.unit().getType())) {
-						visible_friendly_types.get(u.unit().getType()).add(u);
+			if (current.alive()) {
+				if (current.alliance() == Alliance.SELF) {
+					visible_friendly.put(current.tag(), current);
+					if (!current.done()) {
+						
+						production.put(Game.production_ability(current.type()), 
+									   production.getOrDefault(Game.production_ability(current.type()), 0) + 1);
+						
+					} if (visible_friendly_types.containsKey(current.type())) {
+						visible_friendly_types.get(current.type()).add(current);
 					} else {
-						visible_friendly_types.put(u.unit().getType(), new ArrayList<>(List.of(u)));
+						visible_friendly_types.put(current.type(), new ArrayList<>(List.of(current)));
 					}
 					
-					for (UnitOrder o: u.unit().getOrders()) {
+					for (UnitOrder o: current.orders()) {
 						production.put(o.getAbility(), production.getOrDefault(o.getAbility(), 0) + 1);
-						if (Game.is_worker(u.unit().getType())) {
+						if (Game.is_worker(current.type())) {
 							if (o.getAbility() == Abilities.BUILD_EXTRACTOR || o.getAbility() == Abilities.BUILD_REFINERY || o.getAbility() == Abilities.BUILD_ASSIMILATOR) {
 								claimed_gases.add(o.getTargetedUnitTag().get());
 							}
 							if (o.getAbility() != Abilities.HARVEST_GATHER && o.getAbility() != Abilities.HARVEST_RETURN) {
 								for (UnitTypeData t: Game.get_unit_type_data().values()) {
 									if (o.getAbility() == t.getAbility().orElse(Abilities.INVALID)) {
-										morphing_drones.add(u.getTag());
+										morphing_drones.add(current.tag());
 										break;
 									}
 								}
@@ -93,19 +91,19 @@ public class GameInfoCache {
 							}
 						}
 					}
-				} else if (u.unit().getAlliance() == Alliance.ENEMY) {
-					visible_enemy.put(u.getTag(), u);
-					if (visible_enemy_types.containsKey(u.unit().getType())) {
-						visible_enemy_types.get(u.unit().getType()).add(u);
+				} else if (current.alliance() == Alliance.ENEMY) {
+					visible_enemy.put(current.tag(), current);
+					if (visible_enemy_types.containsKey(current.type())) {
+						visible_enemy_types.get(current.type()).add(current);
 					} else {
-						visible_enemy_types.put(u.unit().getType(), new ArrayList<>(List.of(u)));
+						visible_enemy_types.put(current.type(), new ArrayList<>(List.of(current)));
 					}
 				} else {
-					visible_neutral.put(u.getTag(), u);
-					if (visible_neutral_types.containsKey(u.unit().getType())) {
-						visible_neutral_types.get(u.unit().getType()).add(u);
+					visible_neutral.put(current.tag(), current);
+					if (visible_neutral_types.containsKey(current.type())) {
+						visible_neutral_types.get(current.type()).add(current);
 					} else {
-						visible_neutral_types.put(u.unit().getType(), new ArrayList<>(List.of(u)));
+						visible_neutral_types.put(current.type(), new ArrayList<>(List.of(current)));
 					}
 				}
 			}
@@ -131,45 +129,60 @@ public class GameInfoCache {
 		return count_friendly(u) + in_progress(u);
 	}
 	
-	public static ArrayList<UnitInPool> get_units(UnitType type) {
-		ArrayList<UnitInPool> units = new ArrayList<>();
-		for (UnitInPool u: Game.get_units()) {
-			if (u.unit().getType() == type) units.add(u);
+	// TODO filter out old units
+	public static ArrayList<HjaxUnit> get_units() {
+		ArrayList<HjaxUnit> units = new ArrayList<>();
+		for (HjaxUnit u: all_units.values()) {
+			units.add(u);
 		}
 		return units;
 	}
 	
-	public static ArrayList<UnitInPool> get_units(Alliance team) {
+	public static ArrayList<HjaxUnit> get_units(UnitType type) {
+		ArrayList<HjaxUnit> units = new ArrayList<>();
+		for (HjaxUnit u: all_units.values()) {
+			if (u.type() == type) {
+				units.add(u);
+			}
+		}
+		return units;
+	}
+	
+	public static HjaxUnit get_unit(Tag t) {
+		return all_units.getOrDefault(t, null);
+	}
+	
+	public static ArrayList<HjaxUnit> get_units(Alliance team) {
 		if (team == Alliance.SELF) return new ArrayList<>(visible_friendly.values());
 		if (team == Alliance.NEUTRAL) return new ArrayList<>(visible_neutral.values());
 		return new ArrayList<>(visible_enemy.values());
 	}
 	
-	public static ArrayList<UnitInPool> get_units(Alliance team, UnitType type) {
+	public static ArrayList<HjaxUnit> get_units(Alliance team, UnitType type) {
 		if (team == Alliance.SELF) {
-			return (ArrayList<UnitInPool>) visible_friendly_types.getOrDefault(type, new ArrayList<>());
+			return (ArrayList<HjaxUnit>) visible_friendly_types.getOrDefault(type, new ArrayList<>());
 		} else if (team == Alliance.ENEMY){
-			return (ArrayList<UnitInPool>) visible_enemy_types.getOrDefault(type, new ArrayList<>());
+			return (ArrayList<HjaxUnit>) visible_enemy_types.getOrDefault(type, new ArrayList<>());
 		} else {
-			return (ArrayList<UnitInPool>) visible_neutral_types.getOrDefault(type, new ArrayList<>());
+			return (ArrayList<HjaxUnit>) visible_neutral_types.getOrDefault(type, new ArrayList<>());
 		}
 	}
 	
-	public static boolean geyser_is_free(UnitInPool u) {
-		for (UnitInPool e : get_units(Alliance.SELF, Units.ZERG_EXTRACTOR)) {
-			if (e.unit().getPosition().toPoint2d().distance(u.unit().getPosition().toPoint2d()) < 1) {
+	public static boolean geyser_is_free(HjaxUnit unit) {
+		for (HjaxUnit e : get_units(Alliance.SELF, Units.ZERG_EXTRACTOR)) {
+			if (e.distance(unit) < 1) {
 				return false;
 			}
 		}
-		return !claimed_gases.contains(u.getTag());
+		return !claimed_gases.contains(unit.tag());
 	}
 	
 	public static int in_progress(UnitType t) {
 		return production.getOrDefault(Game.get_unit_type_data().get(t).getAbility().orElse(Abilities.INVALID), 0);
 	}
 	
-	public static int last_seen(Tag t) {
-		return last_seen_frame.get(t);
+	public static long last_seen(Tag t) {
+		return all_units.get(t).last_seen();
 		
 	}
 	
@@ -210,9 +223,9 @@ public class GameInfoCache {
 		}
 		float result = 0;
 		boolean queens_count = Composition.comp().contains(Units.ZERG_QUEEN);
-		for (UnitInPool u: get_units(Alliance.SELF)) {
-			if (u.unit().getBuildProgress() > 0.99 && Game.is_combat(u.unit().getType()) && !(!queens_count && u.unit().getType() == Units.ZERG_QUEEN)) {
-				result += Game.supply(u.unit().getType());
+		for (HjaxUnit unit: get_units(Alliance.SELF)) {
+			if (unit.done() && Game.is_combat(unit.type()) && !(!queens_count && unit.type() == Units.ZERG_QUEEN)) {
+				result += Game.supply(unit.type());
 			}
 		}
 		aas_frame = Game.get_frame();

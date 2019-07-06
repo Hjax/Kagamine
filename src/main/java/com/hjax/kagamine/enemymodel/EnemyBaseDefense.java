@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
@@ -16,10 +15,11 @@ import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 
 public class EnemyBaseDefense {
 	
-	public static Map<UnitInPool, Base> defenses = new HashMap<>();
+	public static Map<HjaxUnit, Base> defenses = new HashMap<>();
 	public static Map<Base, Double> ground_defense = new HashMap<>();
 	public static Map<Base, Double> air_defense = new HashMap<>();
 	
@@ -63,22 +63,22 @@ public class EnemyBaseDefense {
 	}
 
 	public static void on_frame() {
-		List<UnitInPool> to_remove = new ArrayList<>();
-		for (UnitInPool u: defenses.keySet()) {
-			if (Game.get_frame() - u.getLastSeenGameLoop() > Constants.MEMORY || !u.isAlive()) {
+		List<HjaxUnit> to_remove = new ArrayList<>();
+		for (HjaxUnit u: defenses.keySet()) {
+			if ((Game.get_frame() - u.last_seen()) > Constants.MEMORY || !u.alive()) {
 				to_remove.add(u);
 			}
 		}
-		for (UnitInPool u : to_remove) {
+		for (HjaxUnit u : to_remove) {
 			defenses.remove(u);
 		}
 		
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
+		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
 			Base best = null;
-			for (Base b : BaseManager.bases) {
-				if (b.has_enemy_command_structure()) {
-					if (best == null || best.location.distance(u.unit().getPosition().toPoint2d()) > b.location.distance(u.unit().getPosition().toPoint2d())) {
-						best = b;
+			for (Base base : BaseManager.bases) {
+				if (base.has_enemy_command_structure()) {
+					if (best == null || u.distance(best) > u.distance(base)) {
+						best = base;
 					}
 				}
 			}
@@ -92,10 +92,10 @@ public class EnemyBaseDefense {
 			air_defense.put(b, 0.0);
 		}
 		
-		for (UnitInPool u : defenses.keySet()) {
-			if (threats.containsKey(u.unit().getType())) {
-				ground_defense.put(defenses.get(u), threats.get(u.unit().getType()).getLeft() + ground_defense.get(defenses.get(u)));
-				air_defense.put(defenses.get(u), threats.get(u.unit().getType()).getRight() + air_defense.get(defenses.get(u)));
+		for (HjaxUnit u : defenses.keySet()) {
+			if (threats.containsKey(u.type())) {
+				ground_defense.put(defenses.get(u), threats.get(u.type()).getLeft() + ground_defense.get(defenses.get(u)));
+				air_defense.put(defenses.get(u), threats.get(u.type()).getRight() + air_defense.get(defenses.get(u)));
 			}
 		}
 		

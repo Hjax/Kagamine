@@ -24,6 +24,7 @@ import com.hjax.kagamine.enemymodel.ResourceTracking;
 import com.hjax.kagamine.game.ControlGroups;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.game.MapAnalysis;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
@@ -132,14 +133,14 @@ public class Kagamine extends S2Agent{
 	}
 	
 	@Override
-	public void onUnitCreated(UnitInPool u) {
-		BaseManager.on_unit_created(u);
+	public void onUnitCreated(UnitInPool unit) {
+		BaseManager.on_unit_created(HjaxUnit.getInstance(unit));
 	}
 	
 	@Override
-	public void onUnitDestroyed(UnitInPool u) {
-		if (u.unit().getAlliance() == Alliance.ENEMY) {
-			EnemyModel.removeFromModel(u);
+	public void onUnitDestroyed(UnitInPool unit) {
+		if (unit.unit().getAlliance() == Alliance.ENEMY) {
+			EnemyModel.removeFromModel(HjaxUnit.getInstance(unit));
 		}
 	}
 	

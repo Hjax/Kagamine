@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
@@ -18,6 +17,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class UpgradeManager {
@@ -78,12 +78,12 @@ public class UpgradeManager {
 							return;
 						}
 						if (t == Units.ZERG_SPIRE && GameInfoCache.count(Units.ZERG_GREATER_SPIRE) < 1 && Composition.comp().contains(Units.ZERG_BROODLORD)) continue outer;
-						for (UnitInPool up: GameInfoCache.get_units(Alliance.SELF, t)) {
-							if (up.unit().getOrders().size() == 0 && up.unit().getBuildProgress() > 0.999) {
+						for (HjaxUnit up: GameInfoCache.get_units(Alliance.SELF, t)) {
+							if (up.idle() && up.done()) {
 								for (AvailableAbility aa: Game.availible_abilities(up, true).getAbilities()) {
 									if (aa.getAbility() == Game.get_ability_data().get(Game.get_upgrade_data().get(u).getAbility().get()).getRemapsToAbility().orElse(Game.get_upgrade_data().get(u).getAbility().get())) {
 										if (Game.can_afford(u)) {
-											Game.unit_command(up, Game.get_upgrade_data().get(u).getAbility().get());
+											up.use_ability(Game.get_upgrade_data().get(u).getAbility().get());
 										}
 										Game.purchase(u);
 										continue outer;

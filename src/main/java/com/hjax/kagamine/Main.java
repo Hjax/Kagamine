@@ -10,7 +10,8 @@ import com.github.ocraft.s2client.protocol.game.LocalMap;
 import com.github.ocraft.s2client.protocol.game.Race;
 
 public class Main {
-	    public static void main(String[] args) {
+	    @SuppressWarnings("unused")
+		public static void main(String[] args) {
 			Kagamine bot = new Kagamine();
 			Nothing bot2 = new Nothing();
 			S2Coordinator s2Coordinator;
@@ -40,13 +41,13 @@ public class Main {
 					.loadSettings(args)
 					.setRealtime(false)
 					.setNeedsSupportDir(true)
-					.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
+				//	.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
 					.setParticipants(
 							//S2Coordinator.createParticipant(choice, bot2),
 							S2Coordinator.createParticipant(Race.ZERG, bot),
-							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD, AiBuild.MACRO))
+							S2Coordinator.createComputer(choice, Difficulty.CHEAT_MONEY, AiBuild.MACRO))
 					.launchStarcraft()
-					.startGame(LocalMap.of(Paths.get("KairosJunctionLE.SC2Map")));
+					.startGame(LocalMap.of(Paths.get("YearZeroLE.SC2Map")));
 			while (s2Coordinator.update()) {
 			}
 			s2Coordinator.quit();

@@ -1,6 +1,5 @@
 package com.hjax.kagamine.knowledge;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
@@ -15,6 +14,7 @@ import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 
 public class Wisdom {
 	
@@ -22,9 +22,9 @@ public class Wisdom {
 	
 	public static boolean proxy_detected() {
 		if (Game.army_supply() >= 30) return false;
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_structure(u.unit().getType()) && u.unit().getType() != Units.PROTOSS_PYLON) {
-				if (u.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) < u.unit().getPosition().toPoint2d().distance(Scouting.closest_enemy_spawn())) {
+		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_structure(u.type()) && u.type() != Units.PROTOSS_PYLON) {
+				if (u.distance(BaseManager.main_base().location) < u.distance(Scouting.closest_enemy_spawn())) {
 					return true;
 				}
 			}
@@ -32,8 +32,8 @@ public class Wisdom {
 		return false;
 	}
 	public static boolean air_detected() {
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (u.unit().getType() == Units.ZERG_SPIRE || u.unit().getType() == Units.TERRAN_STARPORT || u.unit().getType() == Units.PROTOSS_STARGATE) {
+		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (u.type() == Units.ZERG_SPIRE || u.type() == Units.TERRAN_STARPORT || u.type() == Units.PROTOSS_STARGATE) {
 				return true;
 			}
 		}
@@ -55,8 +55,8 @@ public class Wisdom {
 
 	public static int enemy_bases() {
 		int result = 0;
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_town_hall(u.unit().getType())) result++;
+		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_town_hall(u.type())) result++;
 		}
 		return result;
 	}
@@ -64,8 +64,8 @@ public class Wisdom {
 		return enemy_bases() <= 1;
 	}
 	public static boolean cannon_rush() {
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
-			if (u.unit().getPosition().toPoint2d().distance(BaseManager.main_base().location) < u.unit().getPosition().toPoint2d().distance(Scouting.closest_enemy_spawn())) {
+		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
+			if (u.distance(BaseManager.main_base().location) < u.distance(Scouting.closest_enemy_spawn())) {
 				return true;
 			}
 		}
@@ -74,8 +74,8 @@ public class Wisdom {
 	
 	public static int enemy_production() {
 		int production = 0;
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Balance.is_production_structure(u.unit().getType())) {
+		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Balance.is_production_structure(u.type())) {
 				production++;
 			}
 		}
@@ -110,11 +110,11 @@ public class Wisdom {
 	
 	public static boolean worker_rush() {
 		int total = 0;
-		outer: for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_worker(enemy.unit().getType())) {
+		outer: for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_worker(enemy.type())) {
 				for (Base b: BaseManager.bases) {
-					if (b.has_friendly_command_structure() && b.command_structure.unit().getBuildProgress() > 0.999) {
-						if (enemy.unit().getPosition().toPoint2d().distance(b.location) < 15) {
+					if (b.has_friendly_command_structure() && b.command_structure.done()) {
+						if (enemy.distance(b.location) < 15) {
 							total++;
 							continue outer;
 						}
@@ -135,13 +135,13 @@ public class Wisdom {
 		}
 		
 		double army_multiplier = 0.9;
-		if (BaseManager.base_count(Alliance.SELF) <= 4) {
+		if (BaseManager.base_count() <= 4) {
 			if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-				if (BaseManager.base_count(Alliance.SELF) > EnemyModel.enemyBaseCount()) {
+				if (BaseManager.base_count() > EnemyModel.enemyBaseCount()) {
 					army_multiplier = 1.5;
 				}
 			} else {
-				if (BaseManager.base_count(Alliance.SELF) > EnemyModel.enemyBaseCount() + 1) {
+				if (BaseManager.base_count() > EnemyModel.enemyBaseCount() + 1) {
 					army_multiplier = 1.5;
 				}
 			}
@@ -190,9 +190,9 @@ public class Wisdom {
 		int queen_target = 0;
 		if (Build.max_queens == -1) {
 			if (GameInfoCache.count(Units.ZERG_HATCHERY) < 3) {
-				queen_target = BaseManager.base_count(Alliance.SELF) - 1;
+				queen_target = BaseManager.base_count() - 1;
 			} else {
-				queen_target = Math.min(BaseManager.base_count(Alliance.SELF) + 4, 12);
+				queen_target = Math.min(BaseManager.base_count() + 4, 12);
 			}
 			if (Game.minerals() > 400) {
 				queen_target += 1;
@@ -200,7 +200,7 @@ public class Wisdom {
 		} else {
 			queen_target = Build.max_queens;
 		}
-		if (Game.supply() > 120) queen_target = Math.min(BaseManager.base_count(Alliance.SELF), 6);
+		if (Game.supply() > 120) queen_target = Math.min(BaseManager.base_count(), 6);
 		if (proxy_detected()) {
 			queen_target = 1;
 			if (Game.minerals() > 200) {
@@ -222,10 +222,10 @@ public class Wisdom {
 		return (GameInfoCache.count(Units.ZERG_DRONE) < Wisdom.worker_cap());
 	}
 	public static boolean should_expand() {
-		if (all_in_detected() && BaseManager.base_count(Alliance.SELF) < 4 && BaseManager.base_count(Alliance.SELF) > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
-		if (GameInfoCache.get_opponent_race() == Race.ZERG && all_in_detected() && BaseManager.base_count(Alliance.SELF) < 4 && BaseManager.base_count(Alliance.SELF) >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
-		if (BaseManager.base_count(Alliance.SELF) < 3 && GameInfoCache.count(Units.ZERG_DRONE) > 23) return true;
-		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count(Alliance.SELF) < Build.ideal_hatches) || (Build.ideal_hatches == -1));
+		if (all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
+		if (BaseManager.base_count() < 3 && GameInfoCache.count(Units.ZERG_DRONE) > 23) return true;
+		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count() < Build.ideal_hatches) || (Build.ideal_hatches == -1));
 	}
 	public static int worker_cap() {
 		int drone_target = 100;

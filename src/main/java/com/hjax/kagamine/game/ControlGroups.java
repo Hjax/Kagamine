@@ -1,6 +1,5 @@
 package com.hjax.kagamine.game;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 
@@ -9,22 +8,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ControlGroups {
-    public static Map<Integer, ArrayList<UnitInPool>> groups = new HashMap<>();
+    public static Map<Integer, ArrayList<HjaxUnit>> groups = new HashMap<>();
     public static Map<Tag, Integer> assignments = new HashMap<>();
 
     public static void on_frame() {
-        for (UnitInPool u : GameInfoCache.get_units(Alliance.SELF)) {
+        for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF)) {
             if (Game.is_combat(u.unit().getType()) && !Game.is_worker(u.unit().getType())) {
-                if (!assignments.containsKey(u.getTag())) {
+                if (!assignments.containsKey(u.tag())) {
                     add(u, 0);
                 }
             }
         }
         ArrayList<Integer> empty = new ArrayList<>();
         for (Integer g : groups.keySet()) {
-        	ArrayList<UnitInPool> new_group = new ArrayList<>();
-            for (UnitInPool u : groups.get(g)) {
-            	if (u.isAlive()) {
+        	ArrayList<HjaxUnit> new_group = new ArrayList<>();
+            for (HjaxUnit u : groups.get(g)) {
+            	if (u.alive()) {
             		new_group.add(u);
             	}
             }
@@ -36,11 +35,11 @@ public class ControlGroups {
         }
     }
 
-    public static void add(UnitInPool u, int group) {
-        if (assignments.containsKey(u.getTag())) {
-            groups.get(assignments.get(u.getTag())).remove(u);
+    public static void add(HjaxUnit u, int group) {
+        if (assignments.containsKey(u.tag())) {
+            groups.get(assignments.get(u.tag())).remove(u);
         }
-        assignments.put(u.getTag(), group);
+        assignments.put(u.tag(), group);
         if (!groups.containsKey(group)) {
         	groups.put(group, new ArrayList<>());
         }
@@ -48,12 +47,12 @@ public class ControlGroups {
     }
 
     public static void disband(int group) {
-        for (UnitInPool u : groups.remove(group)) {
+        for (HjaxUnit u : groups.remove(group)) {
             add(u, 0);
         }
     }
 
-    public static int create(UnitInPool u) {
+    public static int create(HjaxUnit u) {
         int group = 0;
         while (groups.containsKey(group)) group++;
         groups.put(group, new ArrayList<>());
@@ -61,7 +60,7 @@ public class ControlGroups {
         return group;
     }
     
-    public static ArrayList<UnitInPool> get(int i) {
+    public static ArrayList<HjaxUnit> get(int i) {
     	if (groups.containsKey(i)) {
     		return groups.get(i);
     	}

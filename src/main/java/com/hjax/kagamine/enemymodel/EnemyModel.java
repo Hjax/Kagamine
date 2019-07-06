@@ -5,17 +5,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Balance;
 import com.hjax.kagamine.knowledge.Scouting;
 
@@ -25,17 +24,17 @@ public class EnemyModel {
 	public static Map<UnitType, Integer> inferred = new HashMap<>();
 	public static Set<Tag> halluc = new HashSet<>();
 	public static void on_frame() {
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (u.unit().getHallucination().orElse(false)) {
-				halluc.add(u.getTag());
-				if (registered.containsKey(u.getTag())) {
-					removeFromModel(u);
+		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (unit.is_halluc()) {
+				halluc.add(unit.tag());
+				if (registered.containsKey(unit.tag())) {
+					removeFromModel(unit);
 				}
 			}
 			
 			Set<Tag> to_remove = new HashSet<>();
 			for (Tag t: registered.keySet()) {
-				if (Game.get_frame() - GameInfoCache.all_units.get(t).getLastSeenGameLoop() > 120 * Constants.FPS) {
+				if (Game.get_frame() - GameInfoCache.all_units.get(t).last_seen() > 120 * Constants.FPS) {
 					to_remove.add(t);
 				}
 			}
@@ -44,17 +43,17 @@ public class EnemyModel {
 				removeFromModel(GameInfoCache.all_units.get(t));
 			}
 			
-			if (!u.unit().getHallucination().orElse(false) && !halluc.contains(u.getTag())) {
-				if (u.unit().getDisplayType() != DisplayType.SNAPSHOT && !registered.containsKey(u.getTag())) {
-					registered.put(u.getTag(), u.unit().getType());
-					if (counts.getOrDefault(u.unit().getType(), 0) == 0) {
-						if (Game.is_structure(u.unit().getType())) {
-							update(u.unit().getType());
+			if (!unit.is_halluc() && !halluc.contains(unit.tag())) {
+				if (!unit.is_snapshot() && !registered.containsKey(unit.tag())) {
+					registered.put(unit.tag(), unit.type());
+					if (counts.getOrDefault(unit.type(), 0) == 0) {
+						if (Game.is_structure(unit.type())) {
+							update(unit.type());
 						} 
 						else {
-							update(Balance.get_tech_structure(u.unit().getType()));
+							update(Balance.get_tech_structure(unit.type()));
 							UnitType best = Units.INVALID;
-							for (UnitType ut: Balance.get_production_structures(u.unit().getType())) {
+							for (UnitType ut: Balance.get_production_structures(unit.type())) {
 								if (best == Units.INVALID || Game.get_unit_type_data().get(best).getMineralCost().orElse(0) + Game.get_unit_type_data().get(best).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(ut).getMineralCost().orElse(0) + Game.get_unit_type_data().get(ut).getVespeneCost().orElse(0)) {
 									best = ut;
 								}
@@ -63,21 +62,21 @@ public class EnemyModel {
 						}
 					}
 					
-					inferred.put(u.unit().getType(), Math.max(inferred.getOrDefault(u.unit().getType(), 0) - 1, 0));
-					counts.put(u.unit().getType(), counts.getOrDefault(u.unit().getType(), 0) + 1);
+					inferred.put(unit.type(), Math.max(inferred.getOrDefault(unit.type(), 0) - 1, 0));
+					counts.put(unit.type(), counts.getOrDefault(unit.type(), 0) + 1);
 				}
-				if (u.unit().getDisplayType() != DisplayType.SNAPSHOT && u.unit().getType() != registered.get(u.getTag())) {
-					counts.put(registered.get(u.getTag()), counts.getOrDefault(registered.get(u.getTag()), 0) - 1);
-					counts.put(u.unit().getType(), counts.getOrDefault(u.unit().getType(), 0) + 1);
-					registered.put(u.getTag(), u.unit().getType());
+				if (!unit.is_snapshot() && unit.type() != registered.get(unit.tag())) {
+					counts.put(registered.get(unit.tag()), counts.getOrDefault(registered.get(unit.tag()), 0) - 1);
+					counts.put(unit.type(), counts.getOrDefault(unit.type(), 0) + 1);
+					registered.put(unit.tag(), unit.type());
 				}
 			}
 		}
 	}
 	
-	public static void removeFromModel(UnitInPool u) {
-		counts.put(u.unit().getType(), counts.getOrDefault(u.unit().getType(), 1) - 1);
-		registered.remove(u.unit().getTag());
+	public static void removeFromModel(HjaxUnit u) {
+		counts.put(u.type(), counts.getOrDefault(u.type(), 1) - 1);
+		registered.remove(u.tag());
 	}
 	
 	public static void update(UnitType u) {
@@ -144,15 +143,15 @@ public class EnemyModel {
 				result -= 1;
 			}
 		}
-		for (UnitInPool u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_town_hall(u.unit().getType())) result++;
+		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_town_hall(u.type())) result++;
 		}
 		return result;
 	}
 	
 	public static boolean enemy_floated() {
-		for (UnitInPool u : GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_structure(u.unit().getType()) && !u.unit().getFlying().orElse(false)) {
+		for (HjaxUnit u : GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_structure(u.type()) && !u.flying()) {
 				return false;
 			}
 		}

@@ -5,15 +5,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.github.ocraft.s2client.bot.gateway.UnitInPool;
-import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.BaseDefense;
@@ -24,6 +21,7 @@ import com.hjax.kagamine.enemymodel.EnemyBaseDefense;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
+import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.unitcontrollers.GenericUnit;
 
 public class Mutalisk {
@@ -86,7 +84,7 @@ public class Mutalisk {
 	public static Point2d swarm_center = null;
 	public static Point2d swarm_target = null;
 	public static Base target = null;
-	public static List<UnitInPool> swarm = new ArrayList<UnitInPool>();
+	public static List<HjaxUnit> swarm = new ArrayList<HjaxUnit>();
 	public static void on_frame() {
 		
 		if (EnemyModel.enemyBaseCount() == 0) {
@@ -97,12 +95,12 @@ public class Mutalisk {
 		swarm_target = null;
 		target = null;
 		
-		for (UnitInPool muta : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_MUTALISK)) {
+		for (HjaxUnit muta : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_MUTALISK)) {
 			swarm.clear();
-			if (BaseDefense.assignments.containsKey(muta.unit().getTag())) continue;
-			for (UnitInPool muta2 : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_MUTALISK)) {
-				if (BaseDefense.assignments.containsKey(muta2.unit().getTag())) continue;
-				if (muta.unit().getPosition().distance(muta.unit().getPosition()) < 10) {
+			if (BaseDefense.assignments.containsKey(muta.tag())) continue;
+			for (HjaxUnit muta2 : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_MUTALISK)) {
+				if (BaseDefense.assignments.containsKey(muta2.tag())) continue;
+				if (muta.distance(muta) < 10) {
 					swarm.add(muta2);
 				}
 			}
@@ -130,19 +128,19 @@ public class Mutalisk {
 		
 		if (swarm_target != null && swarm_center != null) {
 
-			for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (enemy.isAlive() && enemy.unit().getDisplayType() != DisplayType.SNAPSHOT) {
-					double dist = enemy.unit().getPosition().toPoint2d().distance(swarm_center);
+			for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (enemy.alive() && !enemy.is_snapshot()) {
+					double dist = enemy.distance(swarm_center);
 					if (dist < 15) {
-						if (enemy.unit().getType() == Units.TERRAN_MARINE) {
+						if (enemy.type() == Units.TERRAN_MARINE) {
 							marines++;
 						}
-						else if (enemy.unit().getType() == Units.TERRAN_MEDIVAC) {
+						else if (enemy.type() == Units.TERRAN_MEDIVAC) {
 							medivacs++;
 						}
-						else if (threats.containsKey(enemy.unit().getType())) {
-							if (!Game.is_structure(enemy.unit().getType()) || enemy.unit().getBuildProgress() > 0.999) {
-								threat += threats.get(enemy.unit().getType()) * enemy.unit().getHealth().orElse((float) 0) / enemy.unit().getHealthMax().get();
+						else if (threats.containsKey(enemy.type())) {
+							if (!Game.is_structure(enemy.type()) || enemy.done()) {
+								threat += threats.get(enemy.type()) * enemy.health() / enemy.health_max();
 							}
 						}
 					}
@@ -151,8 +149,8 @@ public class Mutalisk {
 
 			medivacs = Math.min(marines, medivacs);
 			threat += marines + marines * medivacs * 0.1;
-			for (UnitInPool mutaf: GameInfoCache.get_units(Alliance.SELF)) {
-				if (mutaf.unit().getPosition().toPoint2d().distance(swarm_center) < 8) {
+			for (HjaxUnit mutaf: GameInfoCache.get_units(Alliance.SELF)) {
+				if (mutaf.distance(swarm_center) < 8) {
 					mutas++;
 				}
 			}
@@ -161,13 +159,13 @@ public class Mutalisk {
 			else mutas = (float) Math.pow(mutas, 1.1);
 
 			threat -= mutas;
-			UnitInPool best = null;
+			HjaxUnit best = null;
 			if (threat < 0) {
-				for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (enemy.unit().getPosition().toPoint2d().distance(swarm_center) < 10 && enemy.unit().getPosition().toPoint2d().distance(target.location) < 15) {
-						if (best == null || get_score(enemy.unit().getType()) > get_score(best.unit().getType()) || 
-								(enemy.unit().getPosition().toPoint2d().distance(swarm_center) < best.unit().getPosition().toPoint2d().distance(swarm_center) &&
-										get_score(enemy.unit().getType()) == get_score(best.unit().getType()))) {
+				for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+					if (enemy.distance(swarm_center) < 10 && enemy.distance(target.location) < 15) {
+						if (best == null || get_score(enemy.type()) > get_score(best.type()) || 
+								(enemy.distance(swarm_center) < best.distance(swarm_center) &&
+										get_score(enemy.type()) == get_score(best.type()))) {
 							best = enemy;
 						}
 					}
@@ -175,9 +173,13 @@ public class Mutalisk {
 			}
 			
 			if (best != null) {
-				Game.unit_command(swarm, Abilities.ATTACK, best.unit());
+				for (HjaxUnit muta : swarm) {
+					muta.attack(best);
+				}
 			} else {
-				Game.unit_command(swarm, Abilities.MOVE, swarm_target);
+				for (HjaxUnit muta : swarm) {
+					muta.attack(swarm_target);
+				}
 			}
 			
 		}
@@ -200,11 +202,11 @@ public class Mutalisk {
 		
 		positive_pressure.add(Utilities.direction_to(Vector2d.of(swarm), Vector2d.of(target)).scale(20));
 		
-		for (UnitInPool enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (enemy.isAlive()) {
-				if (swarm.distance(enemy.unit().getPosition().toPoint2d()) < 30) {
-					if (Game.hits_air(enemy.unit().getType())) {
-						negative_pressure.add(Utilities.direction_to(Vector2d.of(swarm), Vector2d.of(enemy.unit().getPosition().toPoint2d())).scale((float) (70 / Math.pow((double) swarm.distance(enemy.unit().getPosition().toPoint2d()), 2))));
+		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (enemy.alive()) {
+				if (enemy.distance(swarm) < 30) {
+					if (Game.hits_air(enemy.type())) {
+						negative_pressure.add(Utilities.direction_to(Vector2d.of(swarm), Vector2d.of(enemy.location())).scale((float) (70 / Math.pow((double) swarm.distance(enemy.location()), 2))));
 					} 
 				}
 			}
@@ -228,29 +230,29 @@ public class Mutalisk {
 		return Point2d.of(swarm.getX() + 7 * pressure.x, swarm.getY() + 7 * pressure.y);
 	}
 
-	public static void on_frame(UnitInPool muta) {
+	public static void on_frame(HjaxUnit u) {
 		
 		if (EnemyModel.enemyBaseCount() == 0) {
-			GenericUnit.on_frame(muta, true);
+			GenericUnit.on_frame(u, true);
 			return;
 		}
 		
-		if (BaseDefense.assignments.containsKey(muta.unit().getTag())) {
-			if (BaseDefense.assignments.get(muta.getTag()).distance(muta.unit().getPosition().toPoint2d()) < 10) {
-				Game.unit_command(muta, Abilities.ATTACK, BaseDefense.assignments.get(muta.getTag()));
+		if (BaseDefense.assignments.containsKey(u.tag())) {
+			if (u.distance(BaseDefense.assignments.get(u.tag())) < 10) {
+				u.attack(BaseDefense.assignments.get(u.tag()));
 				return;
 			} else {
-				Game.unit_command(muta, Abilities.MOVE, BaseDefense.assignments.get(muta.getTag()));
+				u.move(BaseDefense.assignments.get(u.tag()));
 				return;
 			}
 		}
 		
-		if (!swarm.contains(muta) && swarm_center != null) {
-			Game.unit_command(muta, Abilities.MOVE, pressure(muta.unit().getPosition().toPoint2d(), swarm_center));
+		if (!swarm.contains(u) && swarm_center != null) {
+			u.move(pressure(u.location(), swarm_center));
 		} 
 		
 		if (swarm_center == null || swarm_target == null) {
-			Game.unit_command(muta, Abilities.MOVE, pressure(muta.unit().getPosition().toPoint2d(), BaseManager.main_base().location));
+			u.move(pressure(u.location(), BaseManager.main_base().location));
 		}
 		
 		
