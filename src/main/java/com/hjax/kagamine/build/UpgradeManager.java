@@ -18,6 +18,8 @@ import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
+import com.hjax.kagamine.game.RaceInterface;
+import com.hjax.kagamine.knowledge.Balance;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class UpgradeManager {
@@ -38,6 +40,9 @@ public class UpgradeManager {
 		upgrades.put(Units.ZERG_MUTALISK, Arrays.asList(Upgrades.ZERG_FLYER_WEAPONS_LEVEL1, Upgrades.ZERG_FLYER_WEAPONS_LEVEL2, Upgrades.ZERG_FLYER_WEAPONS_LEVEL3, Upgrades.ZERG_FLYER_ARMORS_LEVEL1, Upgrades.ZERG_FLYER_ARMORS_LEVEL2, Upgrades.ZERG_FLYER_ARMORS_LEVEL3));
 		upgrades.put(Units.ZERG_CORRUPTOR, Arrays.asList(Upgrades.ZERG_FLYER_WEAPONS_LEVEL1, Upgrades.ZERG_FLYER_WEAPONS_LEVEL2, Upgrades.ZERG_FLYER_WEAPONS_LEVEL3, Upgrades.ZERG_FLYER_ARMORS_LEVEL1, Upgrades.ZERG_FLYER_ARMORS_LEVEL2, Upgrades.ZERG_FLYER_ARMORS_LEVEL3));
 		upgrades.put(Units.ZERG_BROODLORD, Arrays.asList(Upgrades.ZERG_FLYER_WEAPONS_LEVEL1, Upgrades.ZERG_FLYER_WEAPONS_LEVEL2, Upgrades.ZERG_FLYER_WEAPONS_LEVEL3, Upgrades.ZERG_FLYER_ARMORS_LEVEL1, Upgrades.ZERG_FLYER_ARMORS_LEVEL2, Upgrades.ZERG_FLYER_ARMORS_LEVEL3));
+		
+		upgrades.put(Units.PROTOSS_ZEALOT, Arrays.asList(Upgrades.PROTOSS_GROUND_WEAPONS_LEVEL1, Upgrades.PROTOSS_GROUND_WEAPONS_LEVEL2, Upgrades.PROTOSS_GROUND_WEAPONS_LEVEL3, Upgrades.PROTOSS_GROUND_ARMORS_LEVEL1, Upgrades.PROTOSS_GROUND_ARMORS_LEVEL2, Upgrades.PROTOSS_GROUND_ARMORS_LEVEL3, Upgrades.BLINK_TECH, Upgrades.CHARGE));
+		
 		
 	}
 	
@@ -72,6 +77,20 @@ public class UpgradeManager {
 					if (u.toString().toLowerCase().contains("melee") && !Game.has_upgrade(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3) && (Composition.comp().contains(Units.ZERG_ROACH) || Composition.comp().contains(Units.ZERG_HYDRALISK))) continue;
 					for (UnitType t: upgraders.get(u)) {
 						if ((t.equals(Units.ZERG_EVOLUTION_CHAMBER) && GameInfoCache.count(t) < 1 && (GameInfoCache.count(Units.ZERG_DRONE) > 35) && GameInfoCache.get_opponent_race() == Race.ZERG) || (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && GameInfoCache.count(t) < 2 && (GameInfoCache.count(Units.ZERG_DRONE) > 60))) {
+							if (Game.can_afford(t)) {
+								BaseManager.build(t);
+							}
+							Game.purchase(t);
+							return;
+						}
+						if ((t.equals(Units.PROTOSS_FORGE) && GameInfoCache.count(t) < 2) && GameInfoCache.count(RaceInterface.get_race_worker()) > 40) {
+							if (Game.can_afford(t)) {
+								BaseManager.build(t);
+							}
+							Game.purchase(t);
+							return;
+						}
+						if ((t.equals(Units.PROTOSS_TWILIGHT_COUNCIL) && GameInfoCache.count(t) < 1) && GameInfoCache.count(RaceInterface.get_race_worker()) > 40 && !Balance.has_tech_requirement(t)) {
 							if (Game.can_afford(t)) {
 								BaseManager.build(t);
 							}

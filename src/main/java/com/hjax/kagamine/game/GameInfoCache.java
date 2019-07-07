@@ -34,6 +34,7 @@ public class GameInfoCache {
 	public static Map<UnitType, List<HjaxUnit>> visible_enemy_types = new HashMap<>();
 	public static Map<UnitType, List<HjaxUnit>> visible_neutral_types = new HashMap<>();
 	
+	public static Map<UnitType, Integer> double_counts = new HashMap<>();
 	
 	static Set<Tag> claimed_gases = new HashSet<>();
 	static Set<Tag> morphing_drones = new HashSet<>();
@@ -41,6 +42,7 @@ public class GameInfoCache {
 	public static void start_frame() {
 		
 		production.clear();
+		double_counts.clear();
 		
 		morphing_drones.clear();
 		
@@ -67,8 +69,10 @@ public class GameInfoCache {
 						
 						production.put(Game.production_ability(current.type()), 
 									   production.getOrDefault(Game.production_ability(current.type()), 0) + 1);
+						double_counts.put(current.type(), double_counts.getOrDefault(current.type(), 0) + 1);
 						
-					} if (visible_friendly_types.containsKey(current.type())) {
+					} 
+					if (visible_friendly_types.containsKey(current.type())) {
 						visible_friendly_types.get(current.type()).add(current);
 					} else {
 						visible_friendly_types.put(current.type(), new ArrayList<>(List.of(current)));
@@ -116,7 +120,7 @@ public class GameInfoCache {
 	public static int count_friendly(UnitType type) {
 		if (Game.is_worker(type)) return Game.worker_count();
 		if (Game.is_structure(type)) {
-			return visible_friendly_types.getOrDefault(type, new ArrayList<>()).size() - in_progress(type);
+			return visible_friendly_types.getOrDefault(type, new ArrayList<>()).size() - double_counts.getOrDefault(type, 0);
 		}
 		return visible_friendly_types.getOrDefault(type, new ArrayList<>()).size();
 	}
@@ -169,7 +173,7 @@ public class GameInfoCache {
 	}
 	
 	public static boolean geyser_is_free(HjaxUnit unit) {
-		for (HjaxUnit e : get_units(Alliance.SELF, Units.ZERG_EXTRACTOR)) {
+		for (HjaxUnit e : get_units(Alliance.SELF, RaceInterface.get_race_gas())) {
 			if (e.distance(unit) < 1) {
 				return false;
 			}

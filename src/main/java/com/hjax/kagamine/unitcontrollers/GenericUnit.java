@@ -78,12 +78,14 @@ public class GenericUnit {
 		if (Wisdom.cannon_rush()) return;
 		
 		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack()) && moveOut || BaseDefense.has_defense_point()) {
-			if (BaseDefense.has_defense_point()) {
-				u.attack(BaseDefense.defense_point());
-			} else if (u.location().distance(ArmyManager.army_center) > 15) {
-				u.attack(ArmyManager.army_center);
-			} else if (ArmyManager.has_target) {
-				u.attack(ArmyManager.get_target());
+			if (ArmyManager.has_target) {
+				if (BaseDefense.has_defense_point()) {
+					u.attack(BaseDefense.defense_point());
+				} else if (u.location().distance(ArmyManager.army_center) > 15) {
+					u.attack(ArmyManager.army_center);
+				} else {
+					u.attack(ArmyManager.get_target());
+				}
 			} else {
 				if (u.idle()) {
 					u.attack(Game.get_game_info().findRandomLocation());

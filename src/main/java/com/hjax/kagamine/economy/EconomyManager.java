@@ -18,7 +18,7 @@ public class EconomyManager {
 					if (!target.has_friendly_command_structure()) continue;
 					if (target.minerals.size() == 0) continue;
 					if (target.command_structure.assigned_workers() + GameInfoCache.in_progress(RaceInterface.get_race_worker()) < target.command_structure.ideal_workers()) {
-						for (HjaxUnit worker : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+						for (HjaxUnit worker : GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 							if (worker.distance(b.location) < 10) {
 								// TODO remove try catch, fix crashing
 								try {

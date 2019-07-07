@@ -19,6 +19,7 @@ public class Balance {
 	static {
 		overrides = new HashMap<>();
 		overrides.put(Units.ZERG_LAIR, Units.ZERG_SPAWNING_POOL);
+		overrides.put(Units.PROTOSS_ZEALOT, Units.PROTOSS_GATEWAY);
 		overrides.put(Units.ZERG_HIVE, Units.ZERG_INFESTATION_PIT);
 		overrides.put(Units.ZERG_GREATER_SPIRE, Units.ZERG_HIVE);
 	}

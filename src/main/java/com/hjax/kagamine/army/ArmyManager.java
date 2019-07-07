@@ -14,6 +14,7 @@ import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.RaceInterface;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
@@ -94,7 +95,7 @@ public class ArmyManager {
 						for (Base b : BaseManager.bases) {
 							if (b.has_friendly_command_structure() && enemy.distance(b.location) < 12) {
 								int attackers = 0;
-								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 									if (ally.ability() == Abilities.ATTACK || ally.ability() == Abilities.ATTACK_ATTACK) {
 										
 										if (ally.orders().get(0).getTargetedUnitTag().orElse(Tag.of((long) 0)).equals(enemy.tag())) {
@@ -104,7 +105,7 @@ public class ArmyManager {
 								}
 								if (Game.is_structure(enemy.type()) && attackers >= 4) continue enemy_loop;
 								else if (attackers >= 2) continue enemy_loop;
-								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 									if (Worker.can_build(ally) && ally.health() > 15) {
 										ally.attack(enemy);
 										continue enemy_loop;
@@ -118,7 +119,7 @@ public class ArmyManager {
 				for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 					if (enemy.is_worker()) {
 						if (enemy.distance(BaseManager.main_base().location) <= 20) {
-							for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+							for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 								if (ally.health() > 10) {
 									if (Worker.can_build(ally)) {
 										ally.attack(enemy.location());
@@ -131,7 +132,7 @@ public class ArmyManager {
 			}
 		}
 
-		for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+		for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 			if (Scouting.is_scout(ally)) continue;
 			double best = 9999;
 			if (ally.ability() == Abilities.ATTACK) {

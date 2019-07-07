@@ -196,7 +196,7 @@ public class BaseManager {
 			float rx = (float) Math.random() * 2 - 1;
 			float ry = (float) Math.random() * 2 - 1;
 			result = Point2d.of(base.getX() + rx * max_dist, base.getY() + ry * max_dist);
-			if (++limit == 500) break;
+			if (++limit == 100) break;
 		}
 		return result;	
 	}
@@ -214,7 +214,7 @@ public class BaseManager {
 					return;
 				}
 			}
-		} else if (structure == Units.ZERG_EXTRACTOR) {
+		} else if (Game.is_gas_structure(structure)) {
 			// try to build at safe bases first
 			for (Base b: BaseManager.bases) {
 				if (ThreatManager.is_safe(b.location)) {
@@ -223,7 +223,7 @@ public class BaseManager {
 							if (GameInfoCache.geyser_is_free(gas)) {
 								HjaxUnit worker = get_free_worker(get_next_base().location);
 								if (worker != null) {
-									worker.use_ability(Abilities.BUILD_EXTRACTOR, gas);
+									worker.use_ability(Game.production_ability(RaceInterface.get_race_gas()), gas);
 									return;
 								}
 							}

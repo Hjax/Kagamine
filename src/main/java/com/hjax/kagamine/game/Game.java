@@ -558,4 +558,8 @@ public class Game {
 		}
 		return Race.NO_RACE;
 	}
+	
+	public static boolean is_gas_structure(UnitType u) {
+		return u == Units.PROTOSS_ASSIMILATOR || u == Units.TERRAN_REFINERY || u == Units.ZERG_EXTRACTOR;
+	}
 }

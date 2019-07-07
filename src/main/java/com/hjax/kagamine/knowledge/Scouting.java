@@ -17,6 +17,7 @@ import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
+import com.hjax.kagamine.game.RaceInterface;
 import com.hjax.kagamine.unitcontrollers.Worker;
 
 public class Scouting {
@@ -58,10 +59,10 @@ public class Scouting {
 				}
 			}
 		}
-		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 16 && Build.scout) {
+		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 16 && Build.scout) {
 			assign_scout();
 		}
-		if (scout == null && GameInfoCache.count_friendly(Units.ZERG_DRONE) > 12 && spawns.size() >= 3 && Build.scout) {
+		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 12 && spawns.size() >= 3 && Build.scout) {
 			assign_scout();
 		}
 		if (Wisdom.confused() && Game.army_supply() < 20 && patrol_base < 7) {
@@ -191,7 +192,7 @@ public class Scouting {
 	}
 	
 	public static void assign_scout() {
-		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 			if (Worker.can_build(unit)) {
 				scout = unit;
 				return;
@@ -200,7 +201,7 @@ public class Scouting {
 	}
 	
 	public static void assign_patrol_scout() {
-		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 			if (Worker.can_build(unit)) {
 				patrol_scout = unit;
 				return;
