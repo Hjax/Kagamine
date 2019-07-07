@@ -27,6 +27,10 @@ public class UnitManager {
 				Overlord.on_frame(u);
 			} else if (u.type() == Units.ZERG_MUTALISK) {
 				Mutalisk.on_frame(u);
+			} else if (u.type() == Units.ZERG_INFESTOR) {
+				Infestor.on_frame(u);
+			} else if (u.type() == Units.ZERG_VIPER) {
+				Viper.on_frame(u);
 			} else if (u.type() == Units.ZERG_RAVAGER) {
 				Ravager.on_frame(u);
 			} else if (u.type() == Units.ZERG_EGG) {

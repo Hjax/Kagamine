@@ -78,10 +78,18 @@ public class GenericUnit {
 				
 		if (Wisdom.cannon_rush()) return;
 		
-		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack()) && moveOut) {
-			if (ArmyManager.has_target) {
-				Game.draw_line(u.location(), ArmyManager.get_target(), Color.PURPLE);
-				u.attack(ArmyManager.get_target());
+		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack()) && moveOut || BaseDefense.has_defense_point()) {
+			if (ArmyManager.regroup) {
+				u.move(ArmyManager.army_center);
+			} else if (BaseDefense.has_defense_point()) {
+				u.attack(BaseDefense.defense_point());
+			} else if (ArmyManager.has_target) {
+				if (u.flying() && u.location().distance(ArmyManager.whole_army_center) > 15) {
+					u.attack(ArmyManager.whole_army_center);
+				} else {
+					u.attack(ArmyManager.get_target());
+				}
+				
 				return;
 			} else {
 				if (u.idle()) {

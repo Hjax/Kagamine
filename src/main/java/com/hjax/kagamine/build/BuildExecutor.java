@@ -320,6 +320,8 @@ public class BuildExecutor {
 			if (u == Units.ZERG_BROODLORD) continue;
 			if (u == Units.ZERG_LURKER_MP) continue;
 			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) >= 15) continue;
+			if (u == Units.ZERG_INFESTOR && GameInfoCache.count(Units.ZERG_INFESTOR) >= 10) continue;
+			if (u == Units.ZERG_VIPER && GameInfoCache.count(Units.ZERG_VIPER) >= 4) continue;
 			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) >= 2 && Composition.comp().contains(Units.ZERG_BROODLORD)) continue;
 			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) < 5 && Game.army_supply() > 30 && BaseManager.active_extractors() >= 4 && GameInfoCache.count_friendly(Units.ZERG_SPIRE) > 0) return Units.ZERG_CORRUPTOR;
 			if (u == Units.ZERG_MUTALISK && GameInfoCache.count(Units.ZERG_MUTALISK) >= 15 && GameInfoCache.get_opponent_race() == Race.TERRAN) continue;

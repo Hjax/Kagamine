@@ -14,7 +14,6 @@ import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
-import com.hjax.kagamine.game.ControlGroups;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.HjaxUnit;
 
@@ -22,8 +21,11 @@ public class BaseDefense {
 	public static Set<Tag> used = new HashSet<>();
 	public static Map<Tag, Point2d> assignments = new HashMap<>();
 	public static Map<Tag, Point2d> surroundCenter = new HashMap<>();
+	
+	public static Point2d defense_point = null;
+	
 	public static void on_frame() {
-		
+		defense_point = null;
 		used.clear();
 		assignments.clear();
 		surroundCenter.clear();
@@ -41,6 +43,10 @@ public class BaseDefense {
 						}
 					}
 					ArrayList<HjaxUnit> assigned = new ArrayList<>();
+					if (ground_supply > 30 || flyer_supply > 30) {
+						defense_point = average;
+						break;
+					}
 					float assigned_supply = 0;
 					while (assigned_supply < ground_supply * 1.5 || ground_supply > 30) {
 						HjaxUnit current = closest_free(average, false);
@@ -68,13 +74,17 @@ public class BaseDefense {
 					break;
 				}
 			}
-			
+		}
+		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
+			if (used.contains(ally.tag())) {
+				UnitRoleManager.add(ally, UnitRoleManager.UnitRole.DEFENDER);
+			}
 		}
 	}
 	
 	public static HjaxUnit closest_free(Point2d p, boolean aa) {
 		HjaxUnit best = null;
-		for (HjaxUnit ally : ControlGroups.get(0)) {
+		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (aa != Game.hits_air(ally.type())) continue;
 			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
 				if (!used.contains(ally.tag())) {
@@ -90,6 +100,14 @@ public class BaseDefense {
 			used.add(best.tag());
 		}
 		return best;
+	}
+	
+	public static boolean has_defense_point() {
+		return defense_point != null;
+	}
+	
+	public static Point2d defense_point() {
+		return defense_point;
 	}
 	
 	public static Point2d average_point_zergling(List<HjaxUnit> l, Point2d target_center) {

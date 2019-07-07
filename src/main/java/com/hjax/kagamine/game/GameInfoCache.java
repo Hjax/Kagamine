@@ -59,7 +59,7 @@ public class GameInfoCache {
 			HjaxUnit current = HjaxUnit.getInstance(unit);
 			
 			all_units.put(current.tag(), current);
-	
+
 			if (current.alive()) {
 				if (current.alliance() == Alliance.SELF) {
 					visible_friendly.put(current.tag(), current);

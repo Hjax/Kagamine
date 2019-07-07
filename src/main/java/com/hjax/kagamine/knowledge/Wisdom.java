@@ -98,6 +98,7 @@ public class Wisdom {
 		if (shouldAttackFrame != Game.get_frame()) {
 			shouldAttackFrame = Game.get_frame();
 			if (EnemyModel.enemyArmy() < 5) return true;
+			if (Game.supply() >= Build.push_supply) return true;
 			if (all_in_detected() && GameInfoCache.attacking_army_supply() > (2.2 * EnemyModel.enemyArmy())) return false;
 			else if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
 				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.2 * EnemyModel.enemyArmy())) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(Units.ZERG_DRONE) < (EnemyModel.enemyWorkers() - 6)));
@@ -134,21 +135,23 @@ public class Wisdom {
 			return true;
 		}
 		
-		double army_multiplier = 0.9;
+		double army_multiplier = 0.6;
 		if (BaseManager.base_count() <= 4) {
 			if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 				if (BaseManager.base_count() > EnemyModel.enemyBaseCount()) {
-					army_multiplier = 1.5;
+					army_multiplier = 1.3;
 				}
 			} else {
 				if (BaseManager.base_count() > EnemyModel.enemyBaseCount() + 1) {
-					army_multiplier = 1.5;
+					army_multiplier = 1.3;
 				}
 			}
 			if (all_in_detected()) {
 				army_multiplier = 1.1;
 			}
 		}
+		if (EnemyModel.enemyWorkers() + 8 < Game.worker_count()) army_multiplier += 0.4;
+		if (ThreatManager.under_attack()) army_multiplier += 0.4;
 		int target = (int) Math.max(2 + 2 * GameInfoCache.count(Units.ZERG_QUEEN), EnemyModel.enemyArmy() * army_multiplier + GameInfoCache.count(Units.ZERG_QUEEN) * 2);
 		//if (GameInfoCache.get_opponent_race() == Race.ZERG) target = 15;
 		if (target < 10) {

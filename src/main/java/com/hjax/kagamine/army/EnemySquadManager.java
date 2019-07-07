@@ -19,7 +19,7 @@ public class EnemySquadManager {
 		Set<Tag> parsed = new HashSet<>();
 		enemy_squads.clear();
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_structure(enemy.type()) && !Game.is_combat(enemy.type())) continue;
+			if (Game.is_structure(enemy.type()) || !Game.is_combat(enemy.type())) continue;
 			if (!parsed.contains(enemy.tag())) {
 				List<HjaxUnit> open = new ArrayList<>();
 				Set<HjaxUnit> squad = new HashSet<>();
@@ -44,6 +44,8 @@ public class EnemySquadManager {
 	}
 	
 	public static Point2d average_point(List<HjaxUnit> l) {
+		if (l.size() == 0) return Point2d.of(0, 0);
+		
 		float x = 0;
 		float y = 0;
 		int n = 0;

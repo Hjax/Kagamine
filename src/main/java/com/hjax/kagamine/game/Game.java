@@ -492,6 +492,7 @@ public class Game {
 	
 	public static boolean is_combat(UnitType u) {
 		if (u == Units.ZERG_LURKER_MP || u == Units.ZERG_LURKER_MP_BURROWED) return true;
+		if (u == Units.ZERG_INFESTOR || u == Units.ZERG_VIPER) return true;
 		return (get_unit_type_data().get(u).getWeapons().size() > 0 && !is_worker(u)) || u == Units.ZERG_BANELING;
 	}
 	

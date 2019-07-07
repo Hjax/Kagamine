@@ -9,6 +9,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.army.BanelingAvoidance;
 import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.army.UnitRoleManager;
 import com.hjax.kagamine.army.EnemySquadManager;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.army.UnitManager;
@@ -21,7 +22,6 @@ import com.hjax.kagamine.economy.MiningOptimizer;
 import com.hjax.kagamine.enemymodel.EnemyBaseDefense;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.enemymodel.ResourceTracking;
-import com.hjax.kagamine.game.ControlGroups;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
@@ -68,9 +68,11 @@ public class Kagamine extends S2Agent{
 		
 		if (Game.get_frame() % Constants.FRAME_SKIP == 0) {
 			GameInfoCache.start_frame();
+			UnitRoleManager.on_frame();
 			ResourceTracking.on_frame();
 			EnemyModel.on_frame();
-			ControlGroups.on_frame();
+			EnemySquadManager.on_frame();
+			BaseDefense.on_frame();
 			MiningOptimizer.on_frame();
 			BanelingAvoidance.on_frame();
 			EnemyBaseDefense.on_frame();
@@ -83,8 +85,6 @@ public class Kagamine extends S2Agent{
 			EconomyManager.on_frame();
 			Creep.start_frame();
 			BuildPlanner.on_frame();
-			EnemySquadManager.on_frame();
-			BaseDefense.on_frame();
 			BuildExecutor.on_frame();
 			UnitManager.on_frame();
 			MapAnalysis.on_frame();

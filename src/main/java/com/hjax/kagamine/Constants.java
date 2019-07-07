@@ -12,5 +12,8 @@ public class Constants {
 	public static int RESOURCE_UPDATE_TIMER = 224;
 	public static int THREAT_DISTANCE = 20;
 	public static double MEMORY = 60 * FPS;
+	public static int REGROUP_RADIUS = 16;
+	public static double REGROUP_RATIO_START = 0.4;
+	public static double REGROUP_RATIO_END = 0.6;
 	
 }

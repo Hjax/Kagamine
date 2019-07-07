@@ -24,7 +24,7 @@ public class Ravager {
 		}
 		if (best == null) {
 			for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (Game.is_structure(u.type()) && u.distance(u2.location()) < 9) {
+				if (u.distance(u2.location()) < 9) {
 					best = u;
 					break;
 				}
