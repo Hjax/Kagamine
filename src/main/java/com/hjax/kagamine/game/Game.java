@@ -25,6 +25,7 @@ import com.github.ocraft.s2client.protocol.data.UpgradeData;
 import com.github.ocraft.s2client.protocol.data.Weapon;
 import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.debug.Color;
+import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.observation.raw.EffectLocations;
 import com.github.ocraft.s2client.protocol.observation.raw.Visibility;
@@ -534,5 +535,23 @@ public class Game {
 	
 	public static Ability production_ability(UnitType u) {
 		return Game.get_unit_type_data().get(u).getAbility().orElse(Abilities.INVALID);
+	}
+	
+	public static UnitType unit_with_ability(Ability a) {
+		for (UnitType u : get_unit_type_data().keySet()) {
+			if (u.getAbilities().contains(a)) {
+				return u;
+			}
+		}
+		return Units.INVALID;
+	}
+	 
+	public static Race race() {
+		for (PlayerInfo p : get_game_info().getPlayersInfo()) {
+			if (p.getPlayerId() == get_player_id()) {
+				return p.getRequestedRace();
+			}
+		}
+		return Race.NO_RACE;
 	}
 }

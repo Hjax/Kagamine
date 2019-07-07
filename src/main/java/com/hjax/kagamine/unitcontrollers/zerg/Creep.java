@@ -26,7 +26,7 @@ public class Creep {
 	public static Map<ImmutablePair<Integer, Integer>, Integer> reserved = new HashMap<>();
 	static int[][] terrain = new int[1000][1000];	
 	static int[][] bases = new int[1000][1000];
-	static Set<Tag> used = new HashSet<>();
+	static Map<Tag, Integer> used = new HashMap<>();
 	static List<Point2d> creep_points = new ArrayList<>();
 	static {
 		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
@@ -105,7 +105,7 @@ public class Creep {
 	}
 
 	public static void on_frame(HjaxUnit u) {
-		if (!used.contains(u.tag())) {
+		if (used.getOrDefault(u.tag(), 0) < 10) {
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
 				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
 					Point2d closest = u.location();
@@ -147,7 +147,7 @@ public class Creep {
 				}
 				if (!skip) {
 					u.use_ability(Abilities.BUILD_CREEP_TUMOR, point);
-					used.add(u.tag());
+					used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
 					return;
 				}
 			}

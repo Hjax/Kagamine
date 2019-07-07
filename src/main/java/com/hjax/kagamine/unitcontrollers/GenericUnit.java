@@ -7,7 +7,6 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.data.Weapon;
 import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
-import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
@@ -79,18 +78,12 @@ public class GenericUnit {
 		if (Wisdom.cannon_rush()) return;
 		
 		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack()) && moveOut || BaseDefense.has_defense_point()) {
-			if (ArmyManager.regroup) {
-				u.move(ArmyManager.army_center);
-			} else if (BaseDefense.has_defense_point()) {
+			if (BaseDefense.has_defense_point()) {
 				u.attack(BaseDefense.defense_point());
+			} else if (u.location().distance(ArmyManager.army_center) > 15) {
+				u.attack(ArmyManager.army_center);
 			} else if (ArmyManager.has_target) {
-				if (u.flying() && u.location().distance(ArmyManager.whole_army_center) > 15) {
-					u.attack(ArmyManager.whole_army_center);
-				} else {
-					u.attack(ArmyManager.get_target());
-				}
-				
-				return;
+				u.attack(ArmyManager.get_target());
 			} else {
 				if (u.idle()) {
 					u.attack(Game.get_game_info().findRandomLocation());

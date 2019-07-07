@@ -23,11 +23,9 @@ import com.github.ocraft.s2client.protocol.game.Race;
 
 public class ArmyManager {
 	private static Point2d target;
-	public static boolean regroup = false;
 	
 	public static Point2d army_center = Point2d.of(0, 0);
-	public static Point2d whole_army_center = Point2d.of(0, 0);
-	
+	public static List<HjaxUnit> main_army = new ArrayList<>();
 	public static boolean has_target = false;
 	static {
 		target = Scouting.closest_enemy_spawn();
@@ -36,24 +34,22 @@ public class ArmyManager {
 	
 	public static void on_frame() {
 		
-		army_center = EnemySquadManager.average_point(UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY));
+		main_army.clear();
 		
-		List<HjaxUnit> main_army = new ArrayList<>();
-		int count = 0;
 		for (HjaxUnit u : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
-			Game.draw_line(u.location(), army_center, Color.PURPLE);
-			if (u.distance(army_center) < Constants.REGROUP_RADIUS) {
-				count++;
-				if (!u.flying()) main_army.add(u);
+			 List<HjaxUnit> main_army_candidate = new ArrayList<>();
+			for (HjaxUnit second : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
+				if (u.distance(second) < Constants.REGROUP_RADIUS) {
+					main_army_candidate.add(second);
+				}
+			}
+			if (main_army_candidate.size() > main_army.size()) {
+				main_army.clear();
+				main_army.addAll(main_army_candidate);
 			}
 		}
 		
-		whole_army_center = EnemySquadManager.average_point(main_army);
-		if (regroup) {
-			regroup = count < (UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY).size() * Constants.REGROUP_RATIO_END);
-		} else {
-			regroup = count < (UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY).size() * Constants.REGROUP_RATIO_START);
-		}
+		army_center = EnemySquadManager.average_point(main_army);
 		
 		outer: for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF)) {
 			if (unit.distance(target) < 4) {

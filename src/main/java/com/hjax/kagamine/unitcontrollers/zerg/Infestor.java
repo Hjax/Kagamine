@@ -71,7 +71,7 @@ public class Infestor {
 						count++;
 					}
 				}
-				if (count > 8) {
+				if (count > 6) {
 					for (Point2d p : fungal_frames.keySet()) { 
 						if (enemy.distance(p) < 2) {
 							continue fungal_target;
@@ -109,9 +109,9 @@ public class Infestor {
 			}
 		}
 		
-		if (ArmyManager.whole_army_center.distance(Point2d.of(0, 0)) > 1) {
-			if (u.distance(ArmyManager.whole_army_center) > 5) {
-				u.move(ArmyManager.whole_army_center);
+		if (ArmyManager.army_center.distance(Point2d.of(0, 0)) > 1) {
+			if (u.distance(ArmyManager.army_center) > 5) {
+				u.move(ArmyManager.army_center);
 			}
 		} else {
 			if (u.distance(ArmyManager.army_center) > 5) {

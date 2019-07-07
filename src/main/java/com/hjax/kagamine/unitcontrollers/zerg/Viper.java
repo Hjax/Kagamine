@@ -53,9 +53,9 @@ public class Viper {
 			}
 		}
 		
-		if (ArmyManager.whole_army_center.distance(Point2d.of(0, 0)) > 1) {
-			if (u.distance(ArmyManager.whole_army_center) > 5) {
-				u.move(ArmyManager.whole_army_center);
+		if (ArmyManager.army_center.distance(Point2d.of(0, 0)) > 1) {
+			if (u.distance(ArmyManager.army_center) > 5) {
+				u.move(ArmyManager.army_center);
 			}
 		} else {
 			if (u.distance(ArmyManager.army_center) > 5) {

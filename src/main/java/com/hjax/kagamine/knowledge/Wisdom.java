@@ -135,7 +135,7 @@ public class Wisdom {
 			return true;
 		}
 		
-		double army_multiplier = 0.6;
+		double army_multiplier = 0.7;
 		if (BaseManager.base_count() <= 4) {
 			if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 				if (BaseManager.base_count() > EnemyModel.enemyBaseCount()) {
