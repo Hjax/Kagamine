@@ -5,6 +5,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
+import com.hjax.kagamine.game.RaceInterface;
 
 public class EconomyManager {
 
@@ -16,7 +17,7 @@ public class EconomyManager {
 				for (Base target: BaseManager.bases) {
 					if (!target.has_friendly_command_structure()) continue;
 					if (target.minerals.size() == 0) continue;
-					if (target.command_structure.assigned_workers() + GameInfoCache.in_progress(Units.ZERG_DRONE) < target.command_structure.ideal_workers()) {
+					if (target.command_structure.assigned_workers() + GameInfoCache.in_progress(RaceInterface.get_race_worker()) < target.command_structure.ideal_workers()) {
 						for (HjaxUnit worker : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 							if (worker.distance(b.location) < 10) {
 								// TODO remove try catch, fix crashing

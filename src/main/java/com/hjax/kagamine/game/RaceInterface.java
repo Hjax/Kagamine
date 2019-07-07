@@ -14,18 +14,21 @@ public class RaceInterface {
 
 	public static void make(UnitType type) {
 		Ability creation_ability = Game.production_ability(type);
-		UnitType creation_unit = Game.unit_with_ability(creation_ability);
-		List<HjaxUnit> available_creators = GameInfoCache.get_units(Alliance.SELF, creation_unit);
+		List<UnitType> creation_units = Game.unit_with_ability(creation_ability);
 		
-		for (HjaxUnit u : available_creators) {
-			if (u.is_worker()) {
-				if (Worker.can_build(u)) {
-					BaseManager.build(type);
+		for (UnitType creation_unit : creation_units) {
+			List<HjaxUnit> available_creators = GameInfoCache.get_units(Alliance.SELF, creation_unit);
+			
+			for (HjaxUnit u : available_creators) {
+				if (u.is_worker()) {
+					if (Worker.can_build(u)) {
+						BaseManager.build(type);
+						return;
+					}
+				} else if (u.idle()){
+					u.use_ability(creation_ability);
 					return;
 				}
-			} else {
-				u.use_ability(creation_ability);
-				return;
 			}
 		}
 	}

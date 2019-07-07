@@ -13,6 +13,11 @@ import com.hjax.kagamine.knowledge.Wisdom;
 
 public class Composition {
 	public static List<UnitType> comp() {
+		
+		if (Game.race() == Race.PROTOSS) {
+			return Arrays.asList(Units.PROTOSS_ZEALOT, Units.PROTOSS_STALKER);
+		}
+		
 		if (GameInfoCache.get_opponent_race() == Race.TERRAN) {
 			if (GameInfoCache.count_friendly(Units.ZERG_DRONE) > 50 && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) > 0) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_INFESTOR, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);

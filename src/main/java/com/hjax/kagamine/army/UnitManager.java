@@ -13,7 +13,7 @@ public class UnitManager {
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.SELF)) {
 			if (u.type() == Units.ZERG_QUEEN) {
 				Queen.on_frame(u);
-			} else if (u.type() == Units.ZERG_DRONE) {
+			} else if (u.is_worker()) {
 				Worker.on_frame(u);
 			} else if (u.type() == Units.ZERG_ZERGLING) {
 				Zergling.on_frame(u);
@@ -21,7 +21,7 @@ public class UnitManager {
 				Larva.on_frame(u);
 			} else if (u.type() == Units.ZERG_LURKER_MP || u.type() == Units.ZERG_LURKER_MP_BURROWED) {
 				Lurker.on_frame(u);
-			} else if (u.type() == Units.ZERG_EXTRACTOR) {
+			} else if (u.is_gas()) {
 				Extractor.on_frame(u);
 			} else if (u.type() == Units.ZERG_OVERLORD) {
 				Overlord.on_frame(u);

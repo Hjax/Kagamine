@@ -8,6 +8,7 @@ import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Ability;
 import com.github.ocraft.s2client.protocol.data.UnitType;
+import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.CloakState;
@@ -183,6 +184,10 @@ public class HjaxUnit {
 	
 	protected Unit unit() {
 		return contained.unit();
+	}
+	
+	public boolean is_gas() {
+		return type() == Units.PROTOSS_ASSIMILATOR || type() == Units.TERRAN_REFINERY || type() == Units.ZERG_EXTRACTOR;
 	}
 	
 	public double cooldown() {

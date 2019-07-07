@@ -23,6 +23,7 @@ import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
+import com.hjax.kagamine.game.RaceInterface;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.unitcontrollers.Worker;
 
@@ -41,7 +42,7 @@ public class BaseManager {
 			bases.add(new Base(p));
 		}
 		
-		HjaxUnit main = GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY).get(0);
+		HjaxUnit main = GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_command_structure()).get(0);
 		// Fix the placement for our main base
 		for (Base base : bases) {
 			if (main.distance(base) < 10) {
@@ -203,13 +204,13 @@ public class BaseManager {
 	public static void build(UnitType structure) {
 		if (Game.is_town_hall(structure)) {
 			if (get_next_base().has_walking_drone()) {
-				if (get_next_base().walking_drone.ability() != Abilities.BUILD_HATCHERY) {
+				if (get_next_base().walking_drone.ability() != Game.production_ability(RaceInterface.get_race_command_structure())) {
 					get_next_base().walking_drone.use_ability(Game.production_ability(structure), get_next_base().location);
 				}
 			} else {
 				HjaxUnit worker = get_free_worker(get_next_base().location);
 				if (worker != null) {
-					worker.use_ability(Abilities.BUILD_HATCHERY, get_next_base().location);
+					worker.use_ability(Game.production_ability(RaceInterface.get_race_command_structure()), get_next_base().location);
 					return;
 				}
 			}
@@ -262,7 +263,7 @@ public class BaseManager {
 	
 	public static HjaxUnit get_free_worker(Point2d location) {
 		HjaxUnit best = null;
-		unitloop: for (HjaxUnit unit : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
+		unitloop: for (HjaxUnit unit : GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 			for (Base b: bases) {
 				if (b.walking_drone == unit) continue unitloop;
 			}
@@ -275,9 +276,9 @@ public class BaseManager {
 		return best;
 	}
 	
-	public static int active_extractors() {
+	public static int active_gases() {
 		int total = 0;
-		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_EXTRACTOR)) {
+		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_gas())) {
 			if (unit.gas() > 0) {
 				total++;
 			}

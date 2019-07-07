@@ -537,13 +537,17 @@ public class Game {
 		return Game.get_unit_type_data().get(u).getAbility().orElse(Abilities.INVALID);
 	}
 	
-	public static UnitType unit_with_ability(Ability a) {
+	private static Map<Ability, List<UnitType>> uwa_cache = new HashMap<>();
+	public static List<UnitType> unit_with_ability(Ability a) {
+		if (uwa_cache.containsKey(a)) return uwa_cache.get(a);
+		List<UnitType> result = new ArrayList<>();
 		for (UnitType u : get_unit_type_data().keySet()) {
 			if (u.getAbilities().contains(a)) {
-				return u;
+				result.add(u);
 			}
 		}
-		return Units.INVALID;
+		uwa_cache.put(a, result);
+		return result;
 	}
 	 
 	public static Race race() {
