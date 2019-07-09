@@ -125,7 +125,7 @@ public class ZergWisdom {
 		if (Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (BaseManager.base_count() < 3 && GameInfoCache.count(RaceInterface.get_race_worker()) > 23) return true;
-		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count() < Build.ideal_hatches) || (Build.ideal_hatches == -1));
+		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count() < Build.ideal_bases) || (Build.ideal_bases == -1));
 	}
 
 }

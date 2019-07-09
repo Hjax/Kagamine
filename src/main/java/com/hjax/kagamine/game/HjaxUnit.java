@@ -7,6 +7,7 @@ import java.util.Map;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Ability;
+import com.github.ocraft.s2client.protocol.data.Buffs;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
@@ -200,6 +201,14 @@ public class HjaxUnit {
 	
 	public double energy() {
 		return contained.unit().getEnergy().orElse(0.0f);
+	}
+	
+	public double shields() {
+		return contained.unit().getShield().orElse(0.0f);
+	}
+	
+	public boolean is_chronoed() {
+		return contained.unit().getBuffs().contains(Buffs.CHRONOBOOST_ENERGY_COST);
 	}
 }
 

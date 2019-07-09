@@ -263,7 +263,7 @@ public class ZergBuildExecutor {
 				}
 			}
 
-			if ((GameInfoCache.count(Units.ZERG_DRONE) >= Wisdom.worker_cap() || GameInfoCache.count(Units.ZERG_HATCHERY) >= Build.ideal_hatches && Build.ideal_hatches > 0) && !Wisdom.should_build_workers() && BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) >= Wisdom.worker_cap() || GameInfoCache.count(Units.ZERG_HATCHERY) >= Build.ideal_bases && Build.ideal_bases > 0) && !Wisdom.should_build_workers() && BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
 				if ((Game.gas() < 400 && GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) == 0) || Game.gas() < 150) {
 					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
 						BaseManager.build(Units.ZERG_EXTRACTOR);

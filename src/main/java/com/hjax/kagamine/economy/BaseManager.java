@@ -14,6 +14,7 @@ import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
+import com.github.ocraft.s2client.protocol.spatial.Point;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
@@ -36,14 +37,14 @@ public class BaseManager {
 	public static void start_game() {
 		bases.clear();
 		
-		calculate_expansions();
-		
-		for (Point2d p : expos) {
-			bases.add(new Base(p));
+		for (Point p : Game.expansions()) {
+			bases.add(new Base(p.toPoint2d()));
 		}
 		
 		HjaxUnit main = GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_command_structure()).get(0);
-		// Fix the placement for our main base
+		
+		bases.add(new Base(main.location()));
+
 		for (Base base : bases) {
 			if (main.distance(base) < 10) {
 				base.location = main.location();
@@ -67,7 +68,6 @@ public class BaseManager {
 				distances.put(new ImmutablePair<>(j, i), dist);
 			}
 		}
-		on_unit_created(main);
 		
 		main.use_ability(Abilities.RALLY_HATCHERY_WORKERS, main);
 	}
@@ -102,13 +102,16 @@ public class BaseManager {
 		for (HjaxUnit unit: GameInfoCache.get_units()) {
 			if (unit.is_command()) {
 				for (Base base: bases) {
-					if (unit.distance(base) < 5) base.set_command_structure(unit);
+					if (unit.distance(base) < 5) {
+						base.set_command_structure(unit);
+						base.set_walking_drone(null);
+					}
 				}
 			}
 		}
 		for (Base b: bases) {
 			b.update();
-			if (b.has_walking_drone() && b.walking_drone.distance(b.location) > 4 && (b.walking_drone.ability() != Abilities.BUILD_HATCHERY)) {
+			if (b.has_walking_drone() && b.walking_drone.distance(b.location) > 4 && (b.walking_drone.ability() != Game.production_ability(RaceInterface.get_race_command_structure()))) {
 				b.walking_drone.move(b.location);
 			}
 			if (b.has_walking_drone() && !b.walking_drone.alive()) b.walking_drone = null;

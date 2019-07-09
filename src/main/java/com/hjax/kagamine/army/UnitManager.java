@@ -6,6 +6,8 @@ import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.unitcontrollers.*;
+import com.hjax.kagamine.unitcontrollers.protoss.Nexus;
+import com.hjax.kagamine.unitcontrollers.protoss.Stalker;
 import com.hjax.kagamine.unitcontrollers.zerg.*;
 
 public class UnitManager {
@@ -39,6 +41,11 @@ public class UnitManager {
 			} else if (u.type() == Units.ZERG_BROODLING) {
 			} else if (u.type() == Units.ZERG_CREEP_TUMOR_BURROWED) {
 				Creep.on_frame(u);
+				
+			} else if (u.type() == Units.PROTOSS_STALKER) {
+				Stalker.on_frame(u);
+			} else if (u.type() == Units.PROTOSS_NEXUS) {
+				Nexus.on_frame(u);
 			} else if (!Game.is_structure(u.type())) {
 				GenericUnit.on_frame(u, true);
 			}

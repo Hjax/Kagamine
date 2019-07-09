@@ -12,7 +12,7 @@ public class LadderMain {
             System.out.println("Starting ladder game");
             s2Coordinator = S2Coordinator.setup()
                     .loadLadderSettings(args)
-                    .setParticipants(S2Coordinator.createParticipant(Race.ZERG, bot))
+                    .setParticipants(S2Coordinator.createParticipant(Race.PROTOSS, bot))
                     .connectToLadder()
                     .joinGame();
         while (s2Coordinator.update()) {

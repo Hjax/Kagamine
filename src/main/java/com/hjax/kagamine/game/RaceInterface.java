@@ -25,7 +25,7 @@ public class RaceInterface {
 						BaseManager.build(type);
 						return;
 					}
-				} else if (u.idle()){
+				} else if (u.idle() && u.done()){
 					u.use_ability(creation_ability);
 					return;
 				}

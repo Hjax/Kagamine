@@ -83,14 +83,14 @@ public class UpgradeManager {
 							Game.purchase(t);
 							return;
 						}
-						if ((t.equals(Units.PROTOSS_FORGE) && GameInfoCache.count(t) < 2) && GameInfoCache.count(RaceInterface.get_race_worker()) > 40) {
+						if ((t.equals(Units.PROTOSS_FORGE) && GameInfoCache.count(t) < 2) && GameInfoCache.count(RaceInterface.get_race_worker()) > 50) {
 							if (Game.can_afford(t)) {
 								BaseManager.build(t);
 							}
 							Game.purchase(t);
 							return;
 						}
-						if ((t.equals(Units.PROTOSS_TWILIGHT_COUNCIL) && GameInfoCache.count(t) < 1) && GameInfoCache.count(RaceInterface.get_race_worker()) > 40 && !Balance.has_tech_requirement(t)) {
+						if ((t.equals(Units.PROTOSS_TWILIGHT_COUNCIL) && GameInfoCache.count(t) < 1) && GameInfoCache.count(RaceInterface.get_race_worker()) > 30 && !Balance.has_tech_requirement(t)) {
 							if (Game.can_afford(t)) {
 								BaseManager.build(t);
 							}

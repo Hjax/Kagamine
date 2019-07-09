@@ -27,7 +27,7 @@ public class BuildPlanner {
 			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
 					new ImmutablePair<Integer, UnitType>(14, Units.ZERG_SPAWNING_POOL)));
 			Build.ideal_gases = 0;
-			Build.ideal_hatches = 1;
+			Build.ideal_bases = 1;
 			Build.scout = false;
 			Build.push_supply = 30;
 			Build.ideal_workers = 14;
@@ -67,7 +67,7 @@ public class BuildPlanner {
 		is_all_in = true;
 		Build.build = new ArrayList<>();
 				Build.ideal_gases = 2;
-				Build.ideal_hatches = 1;
+				Build.ideal_bases = 1;
 				Build.max_queens = 1;
 				Build.tech_drones = 16;
 				Build.scout = true;
@@ -79,13 +79,14 @@ public class BuildPlanner {
 	// TODO replace hunter killer
 	
 	public static void decide_build() {
-		switch (GameInfoCache.get_opponent_race()) {
+		if (Game.race() == Race.ZERG) {
+			switch (GameInfoCache.get_opponent_race()) {
 			case PROTOSS:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
 															new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
 															new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_hatches = -1;
+				Build.ideal_bases = -1;
 				Build.push_supply = 195;
 				Build.ideal_workers = 80;
 				Build.ideal_gases = 9;
@@ -98,7 +99,7 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_hatches = -1;
+				Build.ideal_bases = -1;
 				Build.scout = true;
 				Build.push_supply = 150;
 				Build.ideal_gases = 6;
@@ -112,7 +113,7 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_hatches = -1;
+				Build.ideal_bases = -1;
 				Build.scout = true;
 				Build.ideal_gases = 9;
 				Build.push_supply = 195;
@@ -126,12 +127,27 @@ public class BuildPlanner {
 						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_hatches = -1;
+				Build.ideal_bases = -1;
 				Build.scout = true;
 				Build.ideal_gases = 8;
 				Build.push_supply = 190;
 				Build.ideal_workers = 70;
 				Build.pull_off_gas = true;	
+			}
+		} else {
+			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(14, Units.PROTOSS_PYLON),
+					new ImmutablePair<Integer, UnitType>(16, Units.PROTOSS_GATEWAY),
+					new ImmutablePair<Integer, UnitType>(16, Units.PROTOSS_ASSIMILATOR),
+					new ImmutablePair<Integer, UnitType>(20, Units.PROTOSS_NEXUS),
+					new ImmutablePair<Integer, UnitType>(20, Units.PROTOSS_CYBERNETICS_CORE),
+					new ImmutablePair<Integer, UnitType>(21, Units.PROTOSS_ASSIMILATOR),
+					new ImmutablePair<Integer, UnitType>(22, Units.PROTOSS_PYLON)));
+			Build.ideal_bases = -1;
+			Build.scout = true;
+			Build.ideal_gases = 2;
+			Build.push_supply = 150;
+			Build.ideal_workers = 65;
+			Build.pull_off_gas = true;	
 		}
 	}
 }

@@ -8,7 +8,7 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 
 public class Build {
 	public static int build_index = 0;
-	public static int ideal_hatches = 0;
+	public static int ideal_bases = 0;
 	public static int ideal_workers = 20;
 	public static int ideal_gases = 6;
 	public static int push_supply = 20;
