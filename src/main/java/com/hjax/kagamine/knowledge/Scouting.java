@@ -94,7 +94,7 @@ public class Scouting {
 		}
 
 		if (!has_pulled_back && !Game.has_upgrade(Upgrades.OVERLORD_SPEED)) {
-			if (Wisdom.proxy_detected() || Wisdom.all_in_detected() || Wisdom.air_detected()) {
+			if (Wisdom.proxy_detected() || Wisdom.all_in_detected()) {
 				has_pulled_back = true;
 				for (HjaxUnit overlord: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
 					overlord.move(BaseManager.main_base().location);

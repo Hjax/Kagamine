@@ -13,7 +13,6 @@ import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.army.BaseDefense;
-import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.build.Build;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
@@ -25,8 +24,8 @@ import com.hjax.kagamine.knowledge.Wisdom;
 public class GenericUnit {
 	public static void on_frame(HjaxUnit u, boolean moveOut) {
 		if (Game.hits_air(u.type())) {
-			for (HjaxUnit medi: GameInfoCache.get_units(Alliance.ENEMY, Units.TERRAN_MEDIVAC)) {
-				if (medi.distance(u) < 6) {
+			for (HjaxUnit medi: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (medi.flying() && medi.distance(u) < 6) {
 					u.attack(medi);
 					return;
 				}
@@ -77,7 +76,7 @@ public class GenericUnit {
 				
 		if (Wisdom.cannon_rush()) return;
 		
-		if ((Game.supply() >= Build.push_supply || Wisdom.shouldAttack()) && moveOut || BaseDefense.has_defense_point()) {
+		if ((Wisdom.shouldAttack() && moveOut) || BaseDefense.has_defense_point()) {
 			if (ArmyManager.has_target) {
 				if (BaseDefense.has_defense_point()) {
 					u.attack(BaseDefense.defense_point());
@@ -92,9 +91,10 @@ public class GenericUnit {
 					return;
 				}
 			}
+			return;
 
 		}
-		if (moveOut && !ThreatManager.under_attack() && !(Wisdom.shouldAttack() || Game.supply() >= Build.push_supply)) {
+		if (moveOut && !(Wisdom.shouldAttack() || Game.supply() >= Build.push_supply)) {
 			Base front = BaseManager.get_forward_base();
 			if (u.location().distance(front.location) > 12) {
 				if (!BaseManager.closest_base(u.location()).has_enemy_command_structure()) {

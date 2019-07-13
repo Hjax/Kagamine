@@ -1,9 +1,14 @@
 package com.hjax.kagamine.unitcontrollers;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.data.Upgrades;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
+import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
+import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
@@ -14,6 +19,31 @@ public class Worker {
 		if (u.idle() && can_build(u)) {
 			EconomyManager.assign_worker(u);
 		}
+		int threat = 0;
+		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (enemy.is_combat()) {
+				if (enemy.distance(u.location()) < 10) {
+					threat += 1;
+				}
+			}
+		}
+		if (threat > 5 && !u.is_burrowed()) {
+			if (Game.has_upgrade(Upgrades.BURROW) && u.type() == Units.ZERG_DRONE) {
+				u.use_ability(Abilities.BURROW_DOWN);
+				return;
+			}
+			for (Base b : BaseManager.bases) {
+				if (b.has_friendly_command_structure() && ThreatManager.is_safe(b.location) && b.minerals.size() > 0) {
+					u.use_ability(Abilities.HARVEST_GATHER, b.minerals.get(0));
+				}
+			}
+		}
+		
+		if (threat == 0 && u.is_burrowed()) {
+			u.use_ability(Abilities.BURROW_UP);
+			return;
+		}
+		
 	}
 	
 	public static boolean can_build(HjaxUnit u) {	

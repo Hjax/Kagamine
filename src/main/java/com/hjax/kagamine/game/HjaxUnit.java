@@ -210,5 +210,9 @@ public class HjaxUnit {
 	public boolean is_chronoed() {
 		return contained.unit().getBuffs().contains(Buffs.CHRONOBOOST_ENERGY_COST);
 	}
+	
+	public boolean is_burrowed() {
+		return contained.unit().getBurrowed().orElse(false);
+	}
 }
 

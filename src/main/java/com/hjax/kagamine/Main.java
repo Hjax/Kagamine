@@ -39,13 +39,13 @@ public class Main {
 			input.close();
 			s2Coordinator = S2Coordinator.setup()
 					.loadSettings(args)
-					.setRealtime(false)
+					.setRealtime(true)
 					.setNeedsSupportDir(true)
 					//.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
 					.setParticipants(
-							//S2Coordinator.createParticipant(choice, bot2),
-							S2Coordinator.createParticipant(Race.PROTOSS, bot),
-							S2Coordinator.createComputer(choice, Difficulty.CHEAT_VISION, AiBuild.MACRO))
+							S2Coordinator.createParticipant(choice, bot2),
+							S2Coordinator.createParticipant(Race.ZERG, bot))
+							//S2Coordinator.createComputer(choice, Difficulty.CHEAT_VISION, AiBuild.MACRO))
 					.launchStarcraft()
 					.startGame(LocalMap.of(Paths.get("BlueShiftLE.SC2Map")));
 			while (s2Coordinator.update()) {

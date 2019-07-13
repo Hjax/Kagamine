@@ -417,7 +417,8 @@ public class Game {
 	public static boolean is_worker(UnitType u) {
 		return u.equals(Units.ZERG_DRONE) ||
 				u.equals(Units.TERRAN_SCV) ||
-				u.equals(Units.PROTOSS_PROBE);
+				u.equals(Units.PROTOSS_PROBE) ||
+				u.equals(Units.ZERG_DRONE_BURROWED);
 	}
 	
 	
@@ -561,5 +562,9 @@ public class Game {
 	
 	public static boolean is_gas_structure(UnitType u) {
 		return u == Units.PROTOSS_ASSIMILATOR || u == Units.TERRAN_REFINERY || u == Units.ZERG_EXTRACTOR;
+	}
+	
+	public static boolean is_spellcaster(UnitType u) {
+		return u == Units.ZERG_INFESTOR || u == Units.ZERG_INFESTOR_BURROWED || u == Units.ZERG_VIPER || u == Units.ZERG_VIPER;
 	}
 }

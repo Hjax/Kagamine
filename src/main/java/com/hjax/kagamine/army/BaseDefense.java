@@ -86,6 +86,7 @@ public class BaseDefense {
 		HjaxUnit best = null;
 		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (aa != Game.hits_air(ally.type())) continue;
+			if (Game.is_spellcaster(ally.type())) continue;
 			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
 				if (!used.contains(ally.tag())) {
 					if (best == null || 

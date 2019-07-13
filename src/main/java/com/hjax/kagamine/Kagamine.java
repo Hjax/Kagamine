@@ -114,6 +114,7 @@ public class Kagamine extends S2Agent{
 			Game.write_text("My army: " + GameInfoCache.attacking_army_supply());
 			Game.write_text("Ahead: " + Wisdom.ahead());
 			Game.write_text("Should Attack: " + Wisdom.shouldAttack());
+			Game.write_text("Next Army Unit: " + ZergBuildExecutor.next_army_unit());
 		}
 
 		

@@ -104,8 +104,10 @@ public class Creep {
 
 	public static void on_frame(HjaxUnit u) {
 		if (used.getOrDefault(u.tag(), 0) < 10) {
+			boolean found = false;
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
 				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
+					found = true;
 					Point2d closest = u.location();
 					for (Point2d p: creep_points) {
 						if (p.distance(u.location()) <= 12 && closest.distance(Scouting.closest_enemy_spawn()) > p.distance(Scouting.closest_enemy_spawn())) {
@@ -123,6 +125,9 @@ public class Creep {
 					spread_towards(u, closest);
 					break;
 				}
+			}
+			if (!found && used.getOrDefault(u.tag(), 0) > 1) {
+				used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
 			}
 			for (int i = creep_points.size() - 1; i > 0; i--) {
 				if (u.distance(creep_points.get(i)) <= Constants.CREEP_RESOLUTION) {

@@ -3,6 +3,7 @@ package com.hjax.kagamine.unitcontrollers;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.hjax.kagamine.army.ThreatManager;
+import com.hjax.kagamine.build.ZergBuildExecutor;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.HjaxUnit;
@@ -13,9 +14,11 @@ public class Extractor {
 		if (unit.done()) {
 			if (is_near_base(unit.location())) {
 				if (unit.assigned_workers() < unit.ideal_workers()) {
-					HjaxUnit best = BaseManager.get_free_worker(unit.location());
-					if (best != null) {
-						best.use_ability(Abilities.SMART, unit);
+					if (!ZergBuildExecutor.pulled_off_gas) {
+						HjaxUnit best = BaseManager.get_free_worker(unit.location());
+						if (best != null) {
+							best.use_ability(Abilities.SMART, unit);
+						}
 					}
 				}
 			}
