@@ -67,13 +67,13 @@ public class Infestor {
 			if (enemy.distance(u) < 15) {
 				int count = 0;
 				for (HjaxUnit enemy2 : GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (enemy.distance(enemy2) < 2) {
+					if (enemy.distance(enemy2) < 2.25) {
 						count++;
 					}
 				}
-				if (count > 6) {
+				if (count > 5) {
 					for (Point2d p : fungal_frames.keySet()) { 
-						if (enemy.distance(p) < 2) {
+						if (enemy.distance(p) < 2.25) {
 							continue fungal_target;
 						}
 					}

@@ -31,7 +31,6 @@ public class UnitRoleManager {
     	}
     	
         for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF)) {
-        	if (u.type() == Units.ZERG_QUEEN && !Composition.comp().contains(Units.ZERG_QUEEN)) continue;
         	if (u.type() == Units.ZERG_MUTALISK) {
         		add(u, UnitRole.HARASS);
         	} else if (!Game.is_structure(u.type()) && Game.is_combat(u.type()) && !Game.is_worker(u.type())) {

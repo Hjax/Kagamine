@@ -56,6 +56,10 @@ public class Game {
 	static Map<Ability, Set<Tag>> normal_abilities = new HashMap<>();
 	static Map<Ability, Map<Point2d, Set<Tag>>> point_target_abilities = new HashMap<>();
 	static Map<Ability, Map<Unit, Set<Tag>>> unit_target_abilities = new HashMap<>();
+	
+	static boolean[][] visibility = new boolean[1000][1000];
+	static boolean[][] pathable = null;
+	static long last_visibility_update = -9999;
 
 	static int lines = 0;
 	
@@ -67,6 +71,7 @@ public class Game {
 	static int[] spending = new int[2];
 	
 	public static void start_frame(ObservationInterface o, ActionInterface a, QueryInterface q, DebugInterface d) {
+		
 		observation = o;
 		action = a;
 		query = q;
@@ -75,6 +80,25 @@ public class Game {
 		normal_abilities.clear();
 		point_target_abilities.clear();
 		unit_target_abilities.clear();
+		
+		if (pathable == null) {
+			pathable = new boolean[1000][1000];
+			
+			Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
+			Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
+			
+			for (int x = (int) min.getX(); x < max.getX(); x += 1) {
+				for (int y = (int) min.getY(); y < max.getY(); y += 1) {
+					 pathable[x][y] = observation.isPathable(Point2d.of(x, y));
+				}
+			}
+			
+		}
+		
+		if (get_frame() - last_visibility_update > 5 * Constants.FPS) {
+			last_visibility_update = get_frame();
+			calculate_visibility();
+		}
 
 		spending = new int[2];
 		
@@ -83,6 +107,52 @@ public class Game {
 	
 	public static void on_frame() {
 
+	}
+	
+	private static void calculate_visibility() {
+		
+		visibility = new boolean[1000][1000];
+		
+		for (UnitInPool u : get_units()) {
+			if (u.unit().getAlliance() == Alliance.SELF) {
+				int vision_radius = (int) Math.round(get_unit_type_data().get(u.unit().getType()).getSightRange().orElse((float) 0.0));
+				for (int x = (int) u.unit().getPosition().getX() - vision_radius; x < (int) u.unit().getPosition().getX() + vision_radius; x += 1) {
+					for (int y = (int) u.unit().getPosition().getY() - vision_radius; y < (int) u.unit().getPosition().getY() + vision_radius; y += 1) {
+						if (x > 0 && y > 0) {
+							visibility[x][y] = true;
+						}
+					}
+				}
+			}
+		}
+		
+		
+	}
+	
+	public static Point2d closest_invisible(Point2d p) {
+		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
+		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
+		Point2d best = null;
+		
+		for (int offset = 1; offset < 500; offset += 1) {
+			for (int x = (int) p.getX() - offset; x < p.getX() + offset; x += offset * 2) {
+				if (x < min.getX()) continue;
+				if (x > max.getX()) continue;
+				for (int y = (int) p.getY() - offset; y < p.getY() + offset; y += offset * 2) {
+					if (y < min.getY()) continue;
+					if (y > max.getY()) continue;
+					if (!visibility[x][y] && (best == null || p.distance(Point2d.of(x, y)) < best.distance(p))) {
+						best = Point2d.of(x, y);
+					}
+				}
+			}
+			if (best != null) {
+				draw_line(p, best, Color.YELLOW);
+				return best;
+			}
+		}
+		
+		return best;
 	}
 	
 	public static void end_frame() {
@@ -363,11 +433,7 @@ public class Game {
 	}
 	
 	public static boolean pathable(Point2d p) {
-		return observation.isPathable(p);
-	}
-	
-	public static boolean buildable(Point2d p) {
-		return observation.isPathable(p);
+		return pathable[(int) Math.round(p.getX())][(int) Math.round(p.getY())];
 	}
 	
 	public static float height(Point2d p) {
@@ -565,6 +631,6 @@ public class Game {
 	}
 	
 	public static boolean is_spellcaster(UnitType u) {
-		return u == Units.ZERG_INFESTOR || u == Units.ZERG_INFESTOR_BURROWED || u == Units.ZERG_VIPER || u == Units.ZERG_VIPER;
+		return u == Units.ZERG_INFESTOR || u == Units.ZERG_INFESTOR_BURROWED || u == Units.ZERG_VIPER;
 	}
 }

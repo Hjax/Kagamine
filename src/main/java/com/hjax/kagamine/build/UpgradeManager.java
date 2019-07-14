@@ -61,6 +61,7 @@ public class UpgradeManager {
 			}
 		}
 		upgraders.put(Upgrades.DIGGING_CLAWS, new ArrayList<>(List.of(Units.ZERG_LURKER_DEN_MP)));
+		upgraders.put(Upgrades.ANABOLIC_SYNTHESIS, new ArrayList<>(List.of(Units.ZERG_ULTRALISK_CAVERN)));
 	}
 	
 	

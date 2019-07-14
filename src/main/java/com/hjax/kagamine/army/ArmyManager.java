@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -38,7 +37,8 @@ public class ArmyManager {
 		main_army.clear();
 		
 		for (HjaxUnit u : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
-			 List<HjaxUnit> main_army_candidate = new ArrayList<>();
+			if (u.type() == Units.ZERG_QUEEN) continue;
+			List<HjaxUnit> main_army_candidate = new ArrayList<>();
 			for (HjaxUnit second : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 				if (u.distance(second) < Constants.REGROUP_RADIUS) {
 					main_army_candidate.add(second);

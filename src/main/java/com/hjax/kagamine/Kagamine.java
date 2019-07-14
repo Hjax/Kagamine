@@ -65,9 +65,9 @@ public class Kagamine extends S2Agent{
 	@Override
 	public void onStep() {
 		long startTime = System.nanoTime();
-		Game.start_frame(observation(), actions(), query(), debug());
 		
 		if (Game.get_frame() % Constants.FRAME_SKIP == 0) {
+			Game.start_frame(observation(), actions(), query(), debug());
 			GameInfoCache.start_frame();
 			UnitRoleManager.on_frame();
 			ResourceTracking.on_frame();

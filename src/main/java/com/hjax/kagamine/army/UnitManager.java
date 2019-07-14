@@ -35,6 +35,8 @@ public class UnitManager {
 				Viper.on_frame(u);
 			} else if (u.type() == Units.ZERG_RAVAGER) {
 				Ravager.on_frame(u);
+			} else if (u.type() == Units.ZERG_OVERSEER) {
+				Overseer.on_frame(u);
 			} else if (u.type() == Units.ZERG_EGG) {
 			} else if (u.type() == Units.ZERG_CREEP_TUMOR) {
 			} else if (u.type() == Units.ZERG_CREEP_TUMOR_QUEEN) {

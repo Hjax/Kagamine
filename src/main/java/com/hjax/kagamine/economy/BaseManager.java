@@ -407,11 +407,11 @@ public class BaseManager {
 				return null;
 			}
 		}
-		x = b.location.getX() - x;
-		y = b.location.getY() - y;
-		Vector2d offset = Utilities.normalize(new Vector2d(x, y));
+		float new_x = b.location.getX() - x;
+		float new_y = b.location.getY() - y;
+		Vector2d offset = Utilities.normalize(new Vector2d(new_x, new_y));
 		for (int i = 0; i < 20; i++) {
-			Point2d p = Point2d.of((float) (b.location.getX() - (2.5 + 0.1 * i) * offset.x), (float) (b.location.getY() - (2.5 * 0.1 * i) * offset.y));
+			Point2d p = Point2d.of((float) (x - (2.5 + 0.1 * i) * offset.x), (float) (y - (2.5 * 0.1 * i) * offset.y));
 			if (Game.can_place(Abilities.MORPH_SPORE_CRAWLER_ROOT, p)) {
 				return p;
 			}

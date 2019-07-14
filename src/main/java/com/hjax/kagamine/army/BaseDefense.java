@@ -34,14 +34,16 @@ public class BaseDefense {
 			float flyer_supply = 0;
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
-				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && b.location.distance(average) < Constants.THREAT_DISTANCE) {
-					for (HjaxUnit enemy : enemy_squad) {
-						if (enemy.flying()) {
-							flyer_supply += Game.supply(enemy.type());
-						} else {
-							ground_supply += Game.supply(enemy.type());
-						}
+				for (HjaxUnit enemy : enemy_squad) {
+					if (enemy.flying()) {
+						flyer_supply += Game.supply(enemy.type());
+					} else {
+						ground_supply += Game.supply(enemy.type());
 					}
+				}
+				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 
+						((Game.closest_invisible(average).distance(average) > 12 && (flyer_supply + ground_supply) * 1.3 < Game.army_supply()) 
+					   || b.location.distance(average) < Constants.THREAT_DISTANCE)) {
 					ArrayList<HjaxUnit> assigned = new ArrayList<>();
 					if (ground_supply > 30 || flyer_supply > 30) {
 						defense_point = average;

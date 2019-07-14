@@ -53,7 +53,7 @@ public class Queen {
 				}
 			}
 		} 
-		if (u.idle()) {
+		if (u.idle() || u.ability() == Abilities.ATTACK || u.ability() == Abilities.ATTACK_ATTACK) {
 			GenericUnit.on_frame(u, false);
 		}
 	}

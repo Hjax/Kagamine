@@ -96,7 +96,7 @@ public class GenericUnit {
 		}
 		if (moveOut && !(Wisdom.shouldAttack() || Game.supply() >= Build.push_supply)) {
 			Base front = BaseManager.get_forward_base();
-			if (u.location().distance(front.location) > 12) {
+			if (u.location().distance(front.location) > 8) {
 				if (!BaseManager.closest_base(u.location()).has_enemy_command_structure()) {
 					u.attack(front.location);
 				} else {
