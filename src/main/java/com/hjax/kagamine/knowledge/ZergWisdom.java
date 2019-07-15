@@ -3,12 +3,10 @@ package com.hjax.kagamine.knowledge;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.build.Build;
 import com.hjax.kagamine.build.ZergBuildExecutor;
 import com.hjax.kagamine.build.Composition;
-import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
 import com.hjax.kagamine.enemymodel.EnemyModel;
@@ -25,35 +23,14 @@ public class ZergWisdom {
 			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
 		if (Wisdom.ahead()) return true;
-		
-		if (GameInfoCache.get_opponent_race() == Race.ZERG && EnemyModel.enemyBaseCount() == 1 && Game.worker_count() >= 16) {
-			return true;
-		}
-		
-		double army_multiplier = 0.7;
-		if (BaseManager.base_count() <= 4) {
-			if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-				if (BaseManager.base_count() > EnemyModel.enemyBaseCount()) {
-					army_multiplier = 1.3;
-				}
-			} else {
-				if (BaseManager.base_count() > EnemyModel.enemyBaseCount() + 1) {
-					army_multiplier = 1.3;
-				}
-			}
-			if (Wisdom.all_in_detected()) {
-				army_multiplier = 1.1;
-			}
-		}
-		if (EnemyModel.enemyWorkers() + 8 < Game.worker_count()) army_multiplier += 0.4;
-		if (ThreatManager.under_attack()) army_multiplier += 0.4;
-		int target = (int) Math.max(2 + 2 * GameInfoCache.count(Units.ZERG_QUEEN), EnemyModel.enemyArmy() * army_multiplier + GameInfoCache.count(Units.ZERG_QUEEN) * 2);
+
+		int target = (int) (EnemyModel.enemyArmy() - EconomyManager.larva_rate() * 2);
 		//if (GameInfoCache.get_opponent_race() == Race.ZERG) target = 15;
 		if (target < 10) {
 			if (Wisdom.all_in_detected()) target = 10;
 			if (Wisdom.proxy_detected()) target = 30;
 		}
-		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < EnemyModel.enemyArmy() * 2)) {
+		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < EnemyModel.enemyArmy() * 1.5)) {
 			if (ZergBuildExecutor.next_army_unit() != Units.INVALID) {
 				return true;
 			}
@@ -113,20 +90,25 @@ public class ZergWisdom {
 	}
 	
 	public static boolean should_build_workers() {
-		
-		if (EconomyManager.free_minerals() == 0) return false;
+		int minerals = EconomyManager.total_minerals();
+		for (HjaxUnit in_progress : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
+			if (!in_progress.done() && in_progress.progress() > 0.6) {
+				minerals += 16;
+			}
+		}
 		if (Wisdom.all_in_detected() && EnemyModel.enemyWorkers() + 12 < GameInfoCache.count(RaceInterface.get_race_worker())) {
 			return false;
 		}
-
-		return (GameInfoCache.count(RaceInterface.get_race_worker()) < Wisdom.worker_cap());
+		minerals += GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) * 3 + BaseManager.active_gases() * 3;
+		minerals -= GameInfoCache.in_progress(RaceInterface.get_race_worker());
+		return (GameInfoCache.count(RaceInterface.get_race_worker()) < Wisdom.worker_cap() && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < minerals);
 	}
 	public static boolean should_expand() {
 		if (Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (BaseManager.base_count() < 3 && GameInfoCache.count(RaceInterface.get_race_worker()) > 23) return true;
 		//if (EconomyManager.total_minerals() + GameInfoCache.in_progress(Units.ZERG_HATCHERY) * 16 + BaseManager.active_gases() * 3 + 16 < GameInfoCache.count(Units.ZERG_DRONE)) return true;
-		return EconomyManager.free_minerals() <= 4 && ((BaseManager.base_count() < Build.ideal_bases) || (Build.ideal_bases == -1));
+		return EconomyManager.free_minerals() <= 6 && ((BaseManager.base_count() < Build.ideal_bases) || (Build.ideal_bases == -1));
 	}
 
 }

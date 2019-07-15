@@ -76,6 +76,10 @@ public class HjaxUnit {
 		return contained.unit().getBuildProgress() > Constants.DONE;
 	}
 	
+	public double progress() {
+		return contained.unit().getBuildProgress();
+	}
+	
 	public List<UnitOrder> orders() {
 		return contained.unit().getOrders();
 	}

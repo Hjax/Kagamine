@@ -114,8 +114,8 @@ public class Mutalisk {
 		if (swarm_center != null) {
 			target = EnemyBaseDefense.best_air_target(swarm.size() * 3);
 			if (target != null) {
-				Game.draw_line(swarm_target, swarm_center, Color.GREEN);
 				swarm_target = pressure(swarm_center, target.location);
+				Game.draw_line(swarm_target, swarm_center, Color.GREEN);
 			}
 		}
 		

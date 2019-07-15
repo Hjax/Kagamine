@@ -110,11 +110,11 @@ public class Infestor {
 		}
 		
 		if (ArmyManager.army_center.distance(Point2d.of(0, 0)) > 1) {
-			if (u.distance(ArmyManager.army_center) > 5) {
+			if (u.distance(ArmyManager.army_center) > 4) {
 				u.move(ArmyManager.army_center);
 			}
 		} else {
-			if (u.distance(ArmyManager.army_center) > 5) {
+			if (u.distance(ArmyManager.army_center) > 4) {
 				u.move(ArmyManager.army_center);
 			}
 		}

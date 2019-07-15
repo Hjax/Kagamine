@@ -1,5 +1,6 @@
 package com.hjax.kagamine;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
@@ -37,20 +38,26 @@ public class Main {
 				}
 			}
 			input.close();
-			s2Coordinator = S2Coordinator.setup()
-					.loadSettings(args)
-					.setRealtime(false)
-					.setNeedsSupportDir(true)
-					//.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
-					.setParticipants(
-							//S2Coordinator.createParticipant(choice, bot2),
-							S2Coordinator.createParticipant(Race.ZERG, bot),
-							S2Coordinator.createComputer(choice, Difficulty.CHEAT_VISION, AiBuild.MACRO))
-					.launchStarcraft()
-					.startGame(LocalMap.of(Paths.get("DarknessSanctuaryLE.SC2Map")));
-			while (s2Coordinator.update()) {
+			try {
+				s2Coordinator = S2Coordinator.setup()
+						.loadSettings(args)
+						.setRealtime(true)
+						.setNeedsSupportDir(true)
+						//.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
+						.setParticipants(
+								S2Coordinator.createParticipant(choice, bot2),
+								S2Coordinator.createParticipant(Race.ZERG, bot))
+								//S2Coordinator.createComputer(choice, Difficulty.CHEAT_VISION, AiBuild.MACRO))
+						.launchStarcraft()
+						.saveReplayList(Paths.get("replay.sc2replay"))
+						.startGame(LocalMap.of(Paths.get("BlueShiftLE.SC2Map")));
+				while (s2Coordinator.update()) {
+				}
+				s2Coordinator.quit();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			s2Coordinator.quit();
 		}
 
 }

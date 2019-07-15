@@ -29,6 +29,7 @@ import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.game.MapAnalysis;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
+import com.hjax.kagamine.knowledge.ZergWisdom;
 import com.hjax.kagamine.unitcontrollers.zerg.Creep;
 import com.hjax.kagamine.unitcontrollers.zerg.Larva;
 import com.hjax.kagamine.unitcontrollers.zerg.Mutalisk;
@@ -115,6 +116,7 @@ public class Kagamine extends S2Agent{
 			Game.write_text("Ahead: " + Wisdom.ahead());
 			Game.write_text("Should Attack: " + Wisdom.shouldAttack());
 			Game.write_text("Next Army Unit: " + ZergBuildExecutor.next_army_unit());
+			Game.write_text("Should make units: " + ZergWisdom.should_build_army());
 		}
 
 		

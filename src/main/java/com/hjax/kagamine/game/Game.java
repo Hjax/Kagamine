@@ -95,7 +95,7 @@ public class Game {
 			
 		}
 		
-		if (get_frame() - last_visibility_update > 5 * Constants.FPS) {
+		if (get_frame() - last_visibility_update > 1 * Constants.FPS) {
 			last_visibility_update = get_frame();
 			calculate_visibility();
 		}
