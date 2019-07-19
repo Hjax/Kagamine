@@ -63,6 +63,7 @@ public class Infestor {
 			}
 		}
 
+		HjaxUnit best_target = null;
 		fungal_target: for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (enemy.distance(u) < 15) {
 				int count = 0;
@@ -77,10 +78,14 @@ public class Infestor {
 							continue fungal_target;
 						}
 					}
-					u.use_ability(Abilities.EFFECT_FUNGAL_GROWTH, enemy.location());
-					fungal_frames.put(enemy.location(), Game.get_frame());
+					if (best_target == null || enemy.distance(u) < best_target.distance(u)) {
+						best_target = enemy;
+					}
 				}
 			}
+		}
+		if (best_target != null) {
+			u.use_ability(Abilities.EFFECT_FUNGAL_GROWTH, best_target.location());
 		}
 		
 

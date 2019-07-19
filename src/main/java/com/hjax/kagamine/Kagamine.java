@@ -91,7 +91,7 @@ public class Kagamine extends S2Agent{
 			UnitManager.on_frame();
 			MapAnalysis.on_frame();
 			GameInfoCache.end_frame();
-			
+			Game.end_frame();
 			
 			if (Wisdom.cannon_rush()) {
 				Game.write_text("Enemy Strategy: Cannon Rush");
@@ -133,7 +133,6 @@ public class Kagamine extends S2Agent{
 			System.out.println("----------------------------------");
 		}
 		
-		Game.end_frame();
 	}
 	
 	@Override

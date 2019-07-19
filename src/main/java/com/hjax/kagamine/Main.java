@@ -12,7 +12,7 @@ import com.github.ocraft.s2client.protocol.game.Race;
 
 public class Main {
 	    @SuppressWarnings("unused")
-		public static void main(String[] args) {
+		public static void main(String[] args) throws IOException {
 			Kagamine bot = new Kagamine();
 			Nothing bot2 = new Nothing();
 			S2Coordinator s2Coordinator;
@@ -38,26 +38,20 @@ public class Main {
 				}
 			}
 			input.close();
-			try {
-				s2Coordinator = S2Coordinator.setup()
-						.loadSettings(args)
-						.setRealtime(true)
-						.setNeedsSupportDir(true)
-						//.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
-						.setParticipants(
-								S2Coordinator.createParticipant(choice, bot2),
-								S2Coordinator.createParticipant(Race.ZERG, bot))
-								//S2Coordinator.createComputer(choice, Difficulty.CHEAT_VISION, AiBuild.MACRO))
-						.launchStarcraft()
-						.saveReplayList(Paths.get("replay.sc2replay"))
-						.startGame(LocalMap.of(Paths.get("BlueShiftLE.SC2Map")));
-				while (s2Coordinator.update()) {
-				}
-				s2Coordinator.quit();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			s2Coordinator = S2Coordinator.setup()
+					.loadSettings(args)
+					.setRealtime(false)
+					.setNeedsSupportDir(true)
+					//.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
+					.setParticipants(
+							//S2Coordinator.createParticipant(choice, bot2),
+							S2Coordinator.createParticipant(Race.ZERG, bot),
+							S2Coordinator.createComputer(choice, Difficulty.CHEAT_VISION, AiBuild.MACRO))
+					.launchStarcraft()
+					.startGame(LocalMap.of(Paths.get("BlueShiftLE.SC2Map")));
+			while (s2Coordinator.update()) {
 			}
+			s2Coordinator.quit();
 		}
 
 }

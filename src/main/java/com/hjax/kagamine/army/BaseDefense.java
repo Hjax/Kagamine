@@ -41,39 +41,43 @@ public class BaseDefense {
 						ground_supply += Game.supply(enemy.type());
 					}
 				}
-				if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 
-						((Game.closest_invisible(average).distance(average) > 12 && (flyer_supply + ground_supply) * 1.3 < Game.army_supply()) 
-					   || b.location.distance(average) < Constants.THREAT_DISTANCE)) {
-					ArrayList<HjaxUnit> assigned = new ArrayList<>();
-					if (ground_supply > 30 || flyer_supply > 30) {
-						defense_point = average;
+				try {
+					if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 
+							((Game.closest_invisible(average).distance(average) > 12 && (flyer_supply + ground_supply) * 1.3 < Game.army_supply()) 
+						   || b.location.distance(average) < Constants.THREAT_DISTANCE)) {
+						ArrayList<HjaxUnit> assigned = new ArrayList<>();
+						if (ground_supply > 70 || flyer_supply > 70) {
+							defense_point = average;
+							continue;
+						}
+						float assigned_supply = 0;
+						while (assigned_supply < ground_supply * 1.5) {
+							HjaxUnit current = closest_free(average, false);
+							if (current == null) current = closest_free(average, true);
+							if (current == null) break;
+							assigned_supply += Game.supply(current.type());
+							assigned.add(current);
+						}
+						assigned_supply = 0;
+						while (assigned_supply < flyer_supply * 1) {
+							HjaxUnit current = closest_free(average, true);
+							if (current == null) break;
+							assigned_supply += Game.supply(current.type());
+							assigned.add(current);
+						}
+						Point2d center = average_point_zergling(assigned, average);
+						for (HjaxUnit u: assigned) {
+							assignments.put(u.tag(), average);
+							if (center.distance(Point2d.of(0, 0)) > 1 && enemy_squad.size() * 2 <= assigned.size()) {
+								surroundCenter.put(u.tag(), center);
+							}
+							Game.draw_line(average, u.location(), Color.GREEN);
+							Game.draw_line(center, u.location(), Color.RED);
+						}
 						break;
 					}
-					float assigned_supply = 0;
-					while (assigned_supply < ground_supply * 1.5 || ground_supply > 30) {
-						HjaxUnit current = closest_free(average, false);
-						if (current == null) current = closest_free(average, true);
-						if (current == null) break;
-						assigned_supply += Game.supply(current.type());
-						assigned.add(current);
-					}
-					assigned_supply = 0;
-					while (assigned_supply < flyer_supply * 1 || flyer_supply > 30) {
-						HjaxUnit current = closest_free(average, true);
-						if (current == null) break;
-						assigned_supply += Game.supply(current.type());
-						assigned.add(current);
-					}
-					Point2d center = average_point_zergling(assigned, average);
-					for (HjaxUnit u: assigned) {
-						assignments.put(u.tag(), average);
-						if (center.distance(Point2d.of(0, 0)) > 1 && enemy_squad.size() * 2 <= assigned.size()) {
-							surroundCenter.put(u.tag(), center);
-						}
-						Game.draw_line(average, u.location(), Color.GREEN);
-						Game.draw_line(center, u.location(), Color.RED);
-					}
-					break;
+				} catch (Exception e) {
+					
 				}
 			}
 		}

@@ -102,7 +102,7 @@ public class BaseManager {
 		for (HjaxUnit unit: GameInfoCache.get_units()) {
 			if (unit.is_command()) {
 				for (Base base: bases) {
-					if (unit.distance(base) < 5) {
+					if (unit.distance(base) < 7) {
 						base.set_command_structure(unit);
 						base.set_walking_drone(null);
 					}

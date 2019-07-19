@@ -20,7 +20,7 @@ public class Composition {
 		
 		if (GameInfoCache.get_opponent_race() == Race.TERRAN) {
 			if (GameInfoCache.count_friendly(Units.ZERG_DRONE) > 50 && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) > 0) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_INFESTOR, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_INFESTOR, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
 			}
 			if (EnemyModel.enemy_floated()) {
 				return Arrays.asList(Units.ZERG_MUTALISK);
@@ -41,9 +41,9 @@ public class Composition {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR);
 			}
 			if (Game.army_supply() < 80) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_HYDRALISK);
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			}
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_HYDRALISK,  Units.ZERG_INFESTOR, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
+			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK,  Units.ZERG_INFESTOR, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
 		}
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 			if (Wisdom.cannon_rush() || Wisdom.proxy_detected()) {

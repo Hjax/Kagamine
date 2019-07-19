@@ -103,7 +103,7 @@ public class Creep {
 	}
 
 	public static void on_frame(HjaxUnit u) {
-		if (used.getOrDefault(u.tag(), 0) < 10) {
+		if (used.getOrDefault(u.tag(), 0) < 10 && u.done()) {
 			boolean found = false;
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
 				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
@@ -126,7 +126,7 @@ public class Creep {
 					break;
 				}
 			}
-			if (!found && used.getOrDefault(u.tag(), 0) > 1) {
+			if (!found && used.getOrDefault(u.tag(), 0) > 0) {
 				used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
 			}
 			for (int i = creep_points.size() - 1; i > 0; i--) {

@@ -323,7 +323,7 @@ public class ZergBuildExecutor {
 			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) < 15 && Composition.comp().contains(Units.ZERG_BROODLORD)) return u;
 			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) >= 15) continue;
 			if (u == Units.ZERG_CORRUPTOR && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) == 0) continue;
-			if (u == Units.ZERG_INFESTOR && GameInfoCache.count(Units.ZERG_INFESTOR) >= 5) continue;
+			if (u == Units.ZERG_INFESTOR && GameInfoCache.count(Units.ZERG_INFESTOR) >= 15) continue;
 			if (u == Units.ZERG_VIPER && GameInfoCache.count(Units.ZERG_VIPER) >= 4) continue;
 			if (u == Units.ZERG_BANELING && GameInfoCache.count(Units.ZERG_BANELING) < 30 && GameInfoCache.get_opponent_race() != Race.ZERG) return Units.ZERG_ZERGLING;
 			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) >= 15 && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < 15) continue;

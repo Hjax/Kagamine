@@ -117,7 +117,7 @@ public class BuildPlanner {
 				Build.scout = true;
 				Build.ideal_gases = 9;
 				Build.push_supply = 195;
-				Build.ideal_workers = 80;
+				Build.ideal_workers = 85;
 				Build.max_queens = -1;
 				Build.pull_off_gas = true;
 				Build.tech_drones = 25;
