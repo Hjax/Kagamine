@@ -85,6 +85,7 @@ public class Infestor {
 			}
 		}
 		if (best_target != null) {
+			fungal_frames.put(best_target.location(), Game.get_frame());
 			u.use_ability(Abilities.EFFECT_FUNGAL_GROWTH, best_target.location());
 		}
 		
