@@ -634,4 +634,8 @@ public class Game {
 	public static boolean is_spellcaster(UnitType u) {
 		return u == Units.ZERG_INFESTOR || u == Units.ZERG_INFESTOR_BURROWED || u == Units.ZERG_VIPER;
 	}
+	
+	public static boolean is_free_unit(UnitType u) {
+		return u == Units.PROTOSS_INTERCEPTOR || u == Units.TERRAN_AUTO_TURRET || u == Units.ZERG_BROODLING || u == Units.ZERG_LOCUS_TMP;
+	}
 }

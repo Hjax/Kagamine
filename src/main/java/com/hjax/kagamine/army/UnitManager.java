@@ -13,6 +13,7 @@ import com.hjax.kagamine.unitcontrollers.zerg.*;
 public class UnitManager {
 	public static void on_frame() {
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.SELF)) {
+			if (Game.is_free_unit(u.type())) continue;
 			if (u.type() == Units.ZERG_QUEEN) {
 				Queen.on_frame(u);
 			} else if (u.is_worker()) {
