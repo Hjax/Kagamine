@@ -38,7 +38,7 @@ public class ThreatManager {
 		}
 	}
 	public static boolean under_attack() {
-		return seen.size() >= 10;
+		return seen.size() >= 3;
 	}
 	
 	public static boolean is_safe(Point2d p) {

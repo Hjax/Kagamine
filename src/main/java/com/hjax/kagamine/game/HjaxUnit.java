@@ -10,6 +10,7 @@ import com.github.ocraft.s2client.protocol.data.Ability;
 import com.github.ocraft.s2client.protocol.data.Buffs;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.data.Weapon;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.CloakState;
@@ -37,7 +38,7 @@ public class HjaxUnit {
 	}
 	
 	public Point2d location() {
-		return contained.unit().getPosition().toPoint2d();
+		return get_unit().getPosition().toPoint2d();
 	}
 	
 	public double distance(HjaxUnit other) {
@@ -56,8 +57,14 @@ public class HjaxUnit {
 		return contained.getTag();
 	}
 	
+	long type_frame = -1;
+	UnitType type = Units.INVALID;
 	public UnitType type() {
-		return contained.unit().getType();
+		if (type_frame != Game.get_frame()) {
+			type_frame = Game.get_frame();
+			type = get_unit().getType();
+		}
+		return type;
 	}
 	
 	public boolean alive() {
@@ -65,23 +72,33 @@ public class HjaxUnit {
 	}
 	
 	public Alliance alliance() {
-		return contained.unit().getAlliance();
+		return get_unit().getAlliance();
 	}
 	
 	public boolean friendly() {
-		return contained.unit().getAlliance() == Alliance.SELF;
+		return get_unit().getAlliance() == Alliance.SELF;
 	}
 	
 	public boolean done() {
-		return contained.unit().getBuildProgress() > Constants.DONE;
+		return get_unit().getBuildProgress() > Constants.DONE;
 	}
 	
 	public double progress() {
-		return contained.unit().getBuildProgress();
+		return get_unit().getBuildProgress();
+	}
+	
+	private long unit_frame = -1;
+	private Unit unit = null;
+	public Unit get_unit() {
+		if (unit_frame != Game.get_frame()) {
+			unit_frame = Game.get_frame();
+			unit = contained.unit();
+		}
+		return unit;
 	}
 	
 	public List<UnitOrder> orders() {
-		return contained.unit().getOrders();
+		return get_unit().getOrders();
 	}
 	
 	public long last_seen() {
@@ -89,11 +106,11 @@ public class HjaxUnit {
 	}
 	
 	public boolean flying() {
-		return contained.unit().getFlying().orElse(false);
+		return get_unit().getFlying().orElse(false);
 	}
 	
 	public boolean cloaked() {
-		return contained.unit().getCloakState().orElse(CloakState.NOT_CLOAKED) != CloakState.NOT_CLOAKED;
+		return get_unit().getCloakState().orElse(CloakState.NOT_CLOAKED) != CloakState.NOT_CLOAKED;
 	}
 	
 	public boolean idle() {
@@ -101,35 +118,35 @@ public class HjaxUnit {
 	}
 	
 	public double health() {
-		return contained.unit().getHealth().orElse((float) 0.0);
+		return get_unit().getHealth().orElse((float) 0.0);
 	}
 	
 	public double health_max() {
-		return contained.unit().getHealthMax().orElse((float) 0.0);
+		return get_unit().getHealthMax().orElse((float) 0.0);
 	}
 	
 	public void attack(Point2d point) {
-		Game.unit_command(contained.unit(), Abilities.ATTACK, point);
+		Game.unit_command(get_unit(), Abilities.ATTACK, point);
 	}
 	
 	public void attack(HjaxUnit unit) {
-		Game.unit_command(contained.unit(), Abilities.ATTACK, unit.unit());
+		Game.unit_command(get_unit(), Abilities.ATTACK, unit.unit());
 	}
 	
 	public void move(Point2d point) {
-		Game.unit_command(contained.unit(), Abilities.MOVE, point);
+		Game.unit_command(get_unit(), Abilities.MOVE, point);
 	}
 	
 	public void use_ability(Ability ability) {
-		Game.unit_command(contained.unit(), ability);
+		Game.unit_command(get_unit(), ability);
 	}
 	
 	public void use_ability(Ability ability, Point2d point) {
-		Game.unit_command(contained.unit(), ability, point);
+		Game.unit_command(get_unit(), ability, point);
 	}
 	
 	public void use_ability(Ability ability, HjaxUnit unit) {
-		Game.unit_command(contained.unit(), ability, unit.unit());
+		Game.unit_command(get_unit(), ability, unit.unit());
 	}
 	
 	public boolean is_worker() {
@@ -149,11 +166,11 @@ public class HjaxUnit {
 	}
 	
 	public boolean is_halluc() {
-		return contained.unit().getHallucination().orElse(false);
+		return get_unit().getHallucination().orElse(false);
 	}
 	
 	public boolean is_snapshot() {
-		return contained.unit().getDisplayType() == DisplayType.SNAPSHOT;
+		return get_unit().getDisplayType() == DisplayType.SNAPSHOT;
 	}
 	
 	public void stop() {
@@ -172,23 +189,23 @@ public class HjaxUnit {
 	}
 	
 	public int minerals() {
-		return contained.unit().getMineralContents().orElse(0);
+		return get_unit().getMineralContents().orElse(0);
 	}
 	
 	public int gas() {
-		return contained.unit().getVespeneContents().orElse(0);
+		return get_unit().getVespeneContents().orElse(0);
 	}
 	
 	public int assigned_workers() {
-		return contained.unit().getAssignedHarvesters().orElse(0);
+		return get_unit().getAssignedHarvesters().orElse(0);
 	}
 	
 	public int ideal_workers() {
-		return contained.unit().getIdealHarvesters().orElse(0);
+		return get_unit().getIdealHarvesters().orElse(0);
 	}
 	
 	protected Unit unit() {
-		return contained.unit();
+		return get_unit();
 	}
 	
 	public boolean is_gas() {
@@ -196,27 +213,36 @@ public class HjaxUnit {
 	}
 	
 	public double cooldown() {
-		return contained.unit().getWeaponCooldown().orElse(0.0f);
+		return get_unit().getWeaponCooldown().orElse(0.0f);
 	}
 	
 	public boolean burrowed() {
-		return contained.unit().getBurrowed().orElse(false);
+		return get_unit().getBurrowed().orElse(false);
 	}
 	
 	public double energy() {
-		return contained.unit().getEnergy().orElse(0.0f);
+		return get_unit().getEnergy().orElse(0.0f);
 	}
 	
 	public double shields() {
-		return contained.unit().getShield().orElse(0.0f);
+		return get_unit().getShield().orElse(0.0f);
 	}
 	
 	public boolean is_chronoed() {
-		return contained.unit().getBuffs().contains(Buffs.CHRONOBOOST_ENERGY_COST);
+		return get_unit().getBuffs().contains(Buffs.CHRONOBOOST_ENERGY_COST);
 	}
 	
 	public boolean is_burrowed() {
-		return contained.unit().getBurrowed().orElse(false);
+		return get_unit().getBurrowed().orElse(false);
+	}
+	
+	public boolean is_melee() {
+		for (Weapon w : Game.get_unit_type_data().get(get_unit().getType()).getWeapons()) {
+			if (w.getRange() > 4) {
+				return false;
+			}
+		}
+		return true;
 	}
 }
 

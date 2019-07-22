@@ -41,6 +41,15 @@ public class Base {
 				}
 			}
 		}
+		
+		if (has_friendly_command_structure()) {
+			Game.write_text("Friendly", location);
+		} else if (has_enemy_command_structure()) {
+			Game.write_text("Enemy", location);
+		} else {
+			Game.write_text("Neutral", location);
+		}
+		
 		if (Game.isVisible(location)) last_seen_frame = Game.get_frame();
 	}
 	

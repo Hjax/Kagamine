@@ -32,7 +32,7 @@ public class GenericUnit {
 			}
 		}
 		
-		if (u.ability() == Abilities.ATTACK && u.orders().get(0).getTargetedUnitTag().isPresent()) {
+		if (!u.is_melee() && u.ability() == Abilities.ATTACK && u.orders().get(0).getTargetedUnitTag().isPresent() && Game.army_supply() < 100) {
 			HjaxUnit target = GameInfoCache.get_unit(u.orders().get(0).getTargetedUnitTag().get());
 			if (target != null && (Game.is_town_hall(target.type()) || target.type() == Units.TERRAN_BUNKER)) {
 				for (HjaxUnit scv: GameInfoCache.get_units(Alliance.ENEMY, Units.TERRAN_SCV)) {

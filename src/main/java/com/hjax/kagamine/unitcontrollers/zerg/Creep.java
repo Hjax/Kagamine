@@ -103,7 +103,7 @@ public class Creep {
 	}
 
 	public static void on_frame(HjaxUnit u) {
-		if (used.getOrDefault(u.tag(), 0) < 10 && u.done()) {
+		if (used.getOrDefault(u.tag(), 0) < 25 && u.done()) {
 			boolean found = false;
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
 				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
@@ -141,7 +141,7 @@ public class Creep {
 		Vector2d direction = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(p));
 		for (int i = 10; i > 0; i -= 0.5) {
 			Point2d point = Point2d.of(u.location().getX() + i * direction.x, u.location().getY() + i * direction.y);
-			if (Game.is_placeable(point) && Game.on_creep(point)) {
+			if (Game.on_creep(point)) {
 				boolean skip = false;
 				for (Base b : BaseManager.bases) {
 					if (b.location.distance(point) < 6) {

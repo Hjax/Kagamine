@@ -11,7 +11,7 @@ public class Constants {
 	public static int ENEMY_SQUAD_DISTANCE = 6;
 	public static int RESOURCE_UPDATE_TIMER = 224;
 	public static int THREAT_DISTANCE = 20;
-	public static double MEMORY = 60 * FPS;
+	public static double MEMORY = 180 * FPS;
 	public static int REGROUP_RADIUS = 16;
 	
 }

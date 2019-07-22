@@ -60,6 +60,8 @@ public class Game {
 	static boolean[][] visibility = new boolean[1000][1000];
 	static boolean[][] pathable = null;
 	static long last_visibility_update = -9999;
+	
+	private static long frame = -1;
 
 	static int lines = 0;
 	
@@ -76,6 +78,8 @@ public class Game {
 		action = a;
 		query = q;
 		debug = d;
+		
+		frame = observation.getGameLoop();
 		
 		normal_abilities.clear();
 		point_target_abilities.clear();
@@ -335,6 +339,10 @@ public class Game {
 	}
 	
 	public static long get_frame() {
+		return frame;
+	}
+	
+	public static long get_true_frame() {
 		return observation.getGameLoop();
 	}
 	
@@ -558,11 +566,15 @@ public class Game {
 		return false;
 	}
 	
-	public static boolean is_combat(UnitType u) {
-		if (u == Units.ZERG_LURKER_MP || u == Units.ZERG_LURKER_MP_BURROWED) return true;
-		if (u == Units.ZERG_INFESTOR || u == Units.ZERG_VIPER) return true;
-		if (u == Units.TERRAN_MEDIVAC || u == Units.PROTOSS_WARP_PRISM || u == Units.PROTOSS_WARP_PRISM_PHASING) return true;
-		return (get_unit_type_data().get(u).getWeapons().size() > 0 && !is_worker(u)) || u == Units.ZERG_BANELING;
+	private static Map<UnitType, Boolean> is_combat_cache = new HashMap<>();
+	public static boolean is_combat(UnitType ut) {
+		return is_combat_cache.computeIfAbsent(ut, u -> {
+			if (u == Units.ZERG_LURKER_MP || u == Units.ZERG_LURKER_MP_BURROWED) return true;
+			if (u == Units.ZERG_INFESTOR || u == Units.ZERG_VIPER) return true;
+			if (u == Units.TERRAN_MEDIVAC || u == Units.PROTOSS_WARP_PRISM || u == Units.PROTOSS_WARP_PRISM_PHASING) return true;
+			if (u == Units.TERRAN_WIDOWMINE || u == Units.TERRAN_WIDOWMINE_BURROWED) return true;
+			return (get_unit_type_data().get(u).getWeapons().size() > 0 && !is_worker(u)) || u == Units.ZERG_BANELING;
+		});
 	}
 	
 	public static boolean is_changeling(UnitType u) {
@@ -636,6 +648,6 @@ public class Game {
 	}
 	
 	public static boolean is_free_unit(UnitType u) {
-		return u == Units.PROTOSS_INTERCEPTOR || u == Units.TERRAN_AUTO_TURRET || u == Units.ZERG_BROODLING || u == Units.ZERG_LOCUS_TMP;
+		return u == Units.PROTOSS_INTERCEPTOR || u == Units.TERRAN_AUTO_TURRET || u == Units.ZERG_BROODLING || u == Units.ZERG_LOCUS_TMP || u == Units.ZERG_INFESTOR_TERRAN;
 	}
 }

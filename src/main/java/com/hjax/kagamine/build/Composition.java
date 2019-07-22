@@ -25,14 +25,11 @@ public class Composition {
 			if (EnemyModel.enemy_floated()) {
 				return Arrays.asList(Units.ZERG_MUTALISK);
 			}
-			if (BuildPlanner.is_all_in && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
+			if (BuildPlanner.is_all_in && EnemyModel.enemyBaseCount() == 1 && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 			}
 			if (Game.army_supply() < 10 || GameInfoCache.count_friendly(Units.ZERG_DRONE) < 35) {
 				return Arrays.asList(Units.ZERG_ZERGLING);
-			}
-			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) > 2) {
-				return Arrays.asList(Units.ZERG_QUEEN, Units.ZERG_MUTALISK);
 			}
 			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) >= 2 && GameInfoCache.count_friendly(Units.ZERG_SPIRE) > 0) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_CORRUPTOR);
@@ -41,7 +38,7 @@ public class Composition {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR);
 			}
 			if (Game.army_supply() < 80) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_HYDRALISK);
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK,  Units.ZERG_INFESTOR, Units.ZERG_ULTRALISK);
 		}

@@ -99,9 +99,6 @@ public class EnemyBaseDefense {
 			}
 		}
 		
-		for (Base b : BaseManager.bases) {
-			Game.write_text(ground_defense.getOrDefault(b, 0.0) + " " + air_defense.getOrDefault(b, 0.0), b.location);
-		}
 	}
 	
 	public static Base best_air_target(int limit) {

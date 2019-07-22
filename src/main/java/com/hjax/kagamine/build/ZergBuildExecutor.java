@@ -30,7 +30,13 @@ public class ZergBuildExecutor {
 			if (Game.supply_cap() < 200) {
 				float larva = EconomyManager.larva_rate();
 				if (ZergWisdom.should_build_queens()) larva += 2;
-				if (Game.supply_cap() + (GameInfoCache.in_progress(Units.ZERG_OVERLORD) * 8) - Game.supply() <= larva * 2) {
+				int hatches = 0;
+				for (HjaxUnit building_hatch : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
+					if (building_hatch.progress() > 0.5 && !building_hatch.done()) {
+						hatches++;
+					}
+				}
+				if (Game.supply_cap() + (GameInfoCache.in_progress(Units.ZERG_OVERLORD) * 8) + hatches * 4 - Game.supply() <= larva * 2) {
 					if (Larva.has_larva()) {
 						if (Game.can_afford(Units.ZERG_OVERLORD)) {
 							Larva.produce_unit(Units.ZERG_OVERLORD);
@@ -323,7 +329,7 @@ public class ZergBuildExecutor {
 			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) < 15 && Composition.comp().contains(Units.ZERG_BROODLORD)) return u;
 			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) >= 15) continue;
 			if (u == Units.ZERG_CORRUPTOR && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) == 0) continue;
-			if (u == Units.ZERG_INFESTOR && GameInfoCache.count(Units.ZERG_INFESTOR) >= 15) continue;
+			if (u == Units.ZERG_INFESTOR && GameInfoCache.count(Units.ZERG_INFESTOR) >= 10) continue;
 			if (u == Units.ZERG_VIPER && GameInfoCache.count(Units.ZERG_VIPER) >= 4) continue;
 			if (u == Units.ZERG_BANELING && GameInfoCache.count(Units.ZERG_BANELING) < 30 && GameInfoCache.get_opponent_race() != Race.ZERG) return Units.ZERG_ZERGLING;
 			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) >= 15 && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < 15) continue;

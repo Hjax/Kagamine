@@ -134,11 +134,9 @@ public class BaseManager {
 		return false;
 	}
 	
-	public static long main_base_frame = -1;
 	public static Base main_base = null;
 	public static Base main_base() {
-		if (main_base_frame != Game.get_frame()) {
-			main_base_frame = Game.get_frame();
+		if (main_base == null || !main_base.has_friendly_command_structure()) {
 			Base best = null;
 			for (Base b: bases) {
 				if (b.has_friendly_command_structure() && b.command_structure.done()) {
@@ -150,6 +148,7 @@ public class BaseManager {
 			if (best == null) best = bases.get(0);
 			main_base = best;
 		}
+		
 		return main_base;
 	}
 	
@@ -164,7 +163,8 @@ public class BaseManager {
 			Base best = null;
 			double best_dist = 9999;
 			for (Base b: bases) {
-				if (b.has_friendly_command_structure()) continue;
+				if (b.has_command_structure()) continue;
+				if (!ThreatManager.is_safe(b.location)) continue;
 				if (best == null || (get_distance(main_base(), b) - get_distance(closest_base(Scouting.closest_enemy_spawn()), b)) < best_dist) {
 					best = b;
 					best_dist = (get_distance(main_base(), b) - get_distance(closest_base(Scouting.closest_enemy_spawn()), b));
