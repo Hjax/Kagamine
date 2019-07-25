@@ -21,8 +21,9 @@ import com.hjax.kagamine.game.RaceInterface;
 public class ZergWisdom {
 	
 	public static int army_target() {
-		int target = Math.max((int) (EnemyModel.enemyArmy() - Math.min(EconomyManager.larva_rate() * 2, 15)), 3);
-
+		int target = Math.max((int) (EnemyModel.enemyArmy() * 1.4 - Math.min(EconomyManager.larva_rate(), 6)), 3);
+		// queens dont count
+		target += GameInfoCache.count(Units.ZERG_QUEEN) * 2;
 		if (target < 10) {
 			if (Wisdom.all_in_detected()) target = 10;
 			if (Wisdom.proxy_detected()) target = 30;
