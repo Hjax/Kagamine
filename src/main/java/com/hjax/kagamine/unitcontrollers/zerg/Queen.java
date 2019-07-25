@@ -33,7 +33,7 @@ public class Queen {
 			GenericUnit.on_frame(u, true);
 			return;
 		}
-		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) != 2 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) != 2 || Wisdom.all_in_detected() || Wisdom.proxy_detected() || Build.ideal_workers < 30) {
+		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) > 3 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) < 2 || Wisdom.all_in_detected() || Wisdom.proxy_detected() || Build.ideal_workers < 30) {
 			for (Base b : BaseManager.bases) {
 				if (GameInfoCache.count_friendly(Units.ZERG_LARVA) < BaseManager.base_count() * 3) {
 					if (b.has_queen() && b.queen == u && b.has_friendly_command_structure() && b.command_structure.done()) {

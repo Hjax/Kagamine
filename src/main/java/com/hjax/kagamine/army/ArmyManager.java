@@ -88,7 +88,7 @@ public class ArmyManager {
 			}
 		}
 
-		if (Game.completed_army_supply() * 2 < (ThreatManager.seen.size() + 1) && ThreatManager.seen.size() < 15) {
+		if (Game.completed_army_supply() * 2 < (ThreatManager.seen.size()) && ThreatManager.seen.size() < 15) {
 			if (!Wisdom.worker_rush()) {
 				if (GameInfoCache.get_opponent_race() == Race.ZERG || (!Wisdom.cannon_rush() && !Wisdom.proxy_detected())) {
 					enemy_loop: for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {

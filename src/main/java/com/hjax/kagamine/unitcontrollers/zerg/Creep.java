@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -92,6 +93,7 @@ public class Creep {
 									alt.add(Point2d.of(x, y));
 								} else {
 									creep_points.add(Point2d.of(x, y));
+									Game.draw_box(Point2d.of(x, y), Color.PURPLE);
 								}
 							}
 						}
@@ -103,7 +105,7 @@ public class Creep {
 	}
 
 	public static void on_frame(HjaxUnit u) {
-		if (used.getOrDefault(u.tag(), 0) < 25 && u.done()) {
+		if (used.getOrDefault(u.tag(), 0) < 30 && u.done()) {
 			boolean found = false;
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
 				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
@@ -139,9 +141,10 @@ public class Creep {
 	
 	public static void spread_towards(HjaxUnit u, Point2d p) {
 		Vector2d direction = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(p));
-		for (int i = 10; i > 0; i -= 0.5) {
+		for (int i = 9; i > 0; i -= 0.5) {
 			Point2d point = Point2d.of(u.location().getX() + i * direction.x, u.location().getY() + i * direction.y);
-			if (Game.on_creep(point)) {
+			Game.draw_box(point, Color.RED);
+			if (Game.can_place(Abilities.BUILD_SPORE_CRAWLER, point)) {
 				boolean skip = false;
 				for (Base b : BaseManager.bases) {
 					if (b.location.distance(point) < 6) {
@@ -155,6 +158,7 @@ public class Creep {
 				}
 			}
 		}
+		used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
 	}
 	
 	public static double score(Point2d p) {
