@@ -27,13 +27,13 @@ public class ZergWisdom {
 		}
 		if (Wisdom.ahead()) return true;
 
-		int target = Math.max((int) (EnemyModel.enemyArmy() - Math.max(EconomyManager.larva_rate() * 2, 15)), 3);
+		int target = Math.max((int) (EnemyModel.enemyArmy() - Math.min(EconomyManager.larva_rate() * 2, 15)), 3);
 		//if (GameInfoCache.get_opponent_race() == Race.ZERG) target = 15;
 		if (target < 10) {
 			if (Wisdom.all_in_detected()) target = 10;
 			if (Wisdom.proxy_detected()) target = 30;
 		}
-		if (Game.army_supply() < target || (ThreatManager.under_attack() && Game.army_supply() < ThreatManager.seen.size() * 3)) {
+		if (Game.army_supply() - GameInfoCache.count(Units.ZERG_QUEEN) < target || (ThreatManager.under_attack() && Game.army_supply() < ThreatManager.seen.size() * 3)) {
 			if (ZergBuildExecutor.next_army_unit() != Units.INVALID) {
 				return true;
 			}
