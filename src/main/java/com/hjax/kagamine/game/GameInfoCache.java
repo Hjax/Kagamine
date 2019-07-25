@@ -14,11 +14,13 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.UnitTypeData;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrade;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.UnitOrder;
+import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.build.Composition;
 
 public class GameInfoCache {
@@ -46,7 +48,15 @@ public class GameInfoCache {
 		
 		morphing_drones.clear();
 		
-		visible_enemy.clear();
+		Set<Tag> to_remove = new HashSet<>();
+		for (Tag t : visible_enemy.keySet()) {
+			Game.draw_box(visible_enemy.get(t).location(), Color.RED);
+			if (Game.get_frame() - visible_enemy.get(t).last_seen() > Constants.MEMORY || !visible_enemy.get(t).alive() || (Game.isVisible(visible_enemy.get(t).location()) && visible_enemy.get(t).last_seen() != Game.get_frame())) {
+				to_remove.add(t);
+			}
+		}
+		for (Tag t : to_remove) visible_enemy.remove(t);
+		
 		visible_friendly.clear();
 		visible_neutral.clear();
 		

@@ -331,7 +331,7 @@ public class Game {
 	}
 	
 	public static boolean isVisible(Point2d p) {
-		return observation.getVisibility(p) == Visibility.VISIBLE;
+		return visibility[(int) p.getX()][(int) p.getY()];
 	}
 	
 	public static double get_game_time() {
@@ -532,8 +532,8 @@ public class Game {
 	
 	public static void draw_box(Point2d current, Color c) {
 		if (Constants.DEBUG) {
-			//debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Math.max(Game.height(current) + .5, 0))), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Math.max(Game.height(current) + .5, 0))), c);
-			debug.debugBoxOut(Point.of(current.getX(), current.getY(), 15), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) 15), c);
+			debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Math.max(Game.height(current) + .5, 0))), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Math.max(Game.height(current) + .5, 0))), c);
+			//debug.debugBoxOut(Point.of(current.getX(), current.getY(), 15), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) 15), c);
 		}
 	}
 	

@@ -129,7 +129,7 @@ public class Mutalisk {
 		if (swarm_target != null && swarm_center != null) {
 
 			for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (enemy.alive() && !enemy.is_snapshot()) {
+				if (enemy.alive()) {
 					double dist = enemy.distance(swarm_center);
 					if (dist < 15) {
 						if (enemy.type() == Units.TERRAN_MARINE) {

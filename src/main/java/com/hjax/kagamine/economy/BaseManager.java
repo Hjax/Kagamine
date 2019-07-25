@@ -224,7 +224,7 @@ public class BaseManager {
 					if (b.has_friendly_command_structure() && b.command_structure.done()) {
 						for (HjaxUnit gas: b.gases) {
 							if (GameInfoCache.geyser_is_free(gas)) {
-								HjaxUnit worker = get_free_worker(get_next_base().location);
+								HjaxUnit worker = get_free_worker(gas.location());
 								if (worker != null) {
 									worker.use_ability(Game.production_ability(RaceInterface.get_race_gas()), gas);
 									return;

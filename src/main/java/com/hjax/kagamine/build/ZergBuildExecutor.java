@@ -96,7 +96,7 @@ public class ZergBuildExecutor {
 				}
 			}
 
-			if (ThreatManager.is_safe(BaseManager.get_next_base().location) ) {
+			if (BaseManager.get_next_base() != null && ThreatManager.is_safe(BaseManager.get_next_base().location) ) {
 				if (((!Wisdom.all_in_detected() && !Wisdom.proxy_detected()) || Game.army_supply() > 60 || Game.minerals() > 700) && GameInfoCache.in_progress(Units.ZERG_HATCHERY) == 0 && Wisdom.should_expand()) {
 					if (!Game.can_afford(Units.ZERG_HATCHERY)) {
 						if (!BaseManager.get_next_base().has_walking_drone() && Game.minerals() > 100) {
