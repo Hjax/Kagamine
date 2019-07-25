@@ -41,10 +41,9 @@ public class UnitManager {
 			} else if (u.type() == Units.ZERG_EGG) {
 			} else if (u.type() == Units.ZERG_CREEP_TUMOR) {
 			} else if (u.type() == Units.ZERG_CREEP_TUMOR_QUEEN) {
-			} else if (u.type() == Units.ZERG_BROODLING) {
 			} else if (u.type() == Units.ZERG_CREEP_TUMOR_BURROWED) {
 				Creep.on_frame(u);
-				
+			} else if (u.type() == Units.ZERG_BROODLING) {
 			} else if (u.type() == Units.PROTOSS_STALKER) {
 				Stalker.on_frame(u);
 			} else if (u.type() == Units.PROTOSS_NEXUS) {

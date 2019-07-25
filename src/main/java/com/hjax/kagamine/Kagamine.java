@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import com.github.ocraft.s2client.bot.S2Agent;
 import com.github.ocraft.s2client.bot.gateway.UnitInPool;
+import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.army.BanelingAvoidance;
@@ -116,7 +117,10 @@ public class Kagamine extends S2Agent{
 			Game.write_text("Ahead: " + Wisdom.ahead());
 			Game.write_text("Should Attack: " + Wisdom.shouldAttack());
 			Game.write_text("Next Army Unit: " + ZergBuildExecutor.next_army_unit());
+			Game.write_text("Army target: " + ZergWisdom.army_target());
 			Game.write_text("Should make units: " + ZergWisdom.should_build_army());
+			Game.write_text("Queens " + GameInfoCache.count(Units.ZERG_QUEEN) + "/" + ZergWisdom.queen_target());
+			
 		}
 
 		

@@ -20,6 +20,15 @@ import com.hjax.kagamine.game.RaceInterface;
 
 public class ZergWisdom {
 	
+	public static int army_target() {
+		int target = Math.max((int) (EnemyModel.enemyArmy() - Math.min(EconomyManager.larva_rate() * 2, 15)), 3);
+
+		if (target < 10) {
+			if (Wisdom.all_in_detected()) target = 10;
+			if (Wisdom.proxy_detected()) target = 30;
+		}
+		return target;
+	}
 
 	public static boolean should_build_army() {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
@@ -27,13 +36,8 @@ public class ZergWisdom {
 		}
 		if (Wisdom.ahead()) return true;
 
-		int target = Math.max((int) (EnemyModel.enemyArmy() - Math.min(EconomyManager.larva_rate() * 2, 15)), 3);
-		//if (GameInfoCache.get_opponent_race() == Race.ZERG) target = 15;
-		if (target < 10) {
-			if (Wisdom.all_in_detected()) target = 10;
-			if (Wisdom.proxy_detected()) target = 30;
-		}
-		if (Game.army_supply() - GameInfoCache.count(Units.ZERG_QUEEN) < target || (ThreatManager.under_attack() && Game.army_supply() < ThreatManager.seen.size() * 3)) {
+		
+		if (Game.army_supply() < army_target() || (ThreatManager.under_attack() && Game.army_supply() < ThreatManager.seen.size() * 3)) {
 			if (ZergBuildExecutor.next_army_unit() != Units.INVALID) {
 				return true;
 			}
@@ -48,16 +52,40 @@ public class ZergWisdom {
 		return GameInfoCache.count(RaceInterface.get_race_worker()) >= Wisdom.worker_cap();
 	}
 	
+	public static int queen_target() {
+		int target = 0;
+		if (Build.max_queens == -1) {
+			if (BaseManager.base_count() < 3) {
+				target = BaseManager.base_count() - 1;
+			} else {
+				target = Math.min(BaseManager.base_count() + 5, 10);
+			}
+			if (Game.minerals() > 400) {
+				target += 1;
+			}
+		} else {
+			target = Build.max_queens;
+		}
+		if (Game.supply() > 120) target = Math.min(BaseManager.base_count(), 6);
+		if (Wisdom.proxy_detected()) {
+			target = 1;
+			if (Game.minerals() > 200) {
+				target += 1;
+			}
+		}
+		return target;
+	}
+	
 	private static Map<Long, Boolean> should_build_queens_map = new HashMap<>();
 	public static boolean should_build_queens() {
 		return should_build_queens_map.computeIfAbsent(Game.get_frame(), frame -> {
-			if (Wisdom.worker_rush()) return false;
+			if (Wisdom.worker_rush() && GameInfoCache.count(Units.ZERG_LARVA) > 0) return false;
 			if (Game.race() != Race.ZERG) return false;
 			if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) return false;
 
 			if (Composition.comp().contains(Units.ZERG_QUEEN) && GameInfoCache.count(Units.ZERG_QUEEN) < 25) return true;
 			
-			if (should_build_army() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 40) {
+			if (should_build_army() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 30) {
 				return false;
 			}
 			
@@ -67,28 +95,8 @@ public class ZergWisdom {
 			
 			if (ThreatManager.under_attack() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 40) return false; 
 			if (GameInfoCache.count(RaceInterface.get_race_worker()) < 35 && GameInfoCache.count(Units.ZERG_LARVA) > 0 && GameInfoCache.count(Units.ZERG_QUEEN) < 2 && GameInfoCache.count(RaceInterface.get_race_worker()) > 15) return false; 
-			
-			int queen_target = 0;
-			if (Build.max_queens == -1) {
-				if (GameInfoCache.count(Units.ZERG_HATCHERY) < 3) {
-					queen_target = BaseManager.base_count() - 1;
-				} else {
-					queen_target = Math.min(BaseManager.base_count() + 4, 12);
-				}
-				if (Game.minerals() > 400) {
-					queen_target += 1;
-				}
-			} else {
-				queen_target = Build.max_queens;
-			}
-			if (Game.supply() > 120) queen_target = Math.min(BaseManager.base_count(), 6);
-			if (Wisdom.proxy_detected()) {
-				queen_target = 1;
-				if (Game.minerals() > 200) {
-					queen_target += 1;
-				}
-			}
-			if (GameInfoCache.count(Units.ZERG_QUEEN) < queen_target && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
+
+			if (GameInfoCache.count(Units.ZERG_QUEEN) < queen_target() && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
 				return true;
 			}
 			return false;

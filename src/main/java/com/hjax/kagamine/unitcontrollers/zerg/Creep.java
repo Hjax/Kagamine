@@ -8,15 +8,18 @@ import java.util.Map;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.Constants;
@@ -45,7 +48,10 @@ public class Creep {
 		calculate();
 	}
 	
+	private static long last_update = -9999;
 	static void calculate() {
+		if (Game.get_frame() - last_update < Constants.FPS * 0.5) return;
+		last_update = Game.get_frame();
 		ArrayList<ImmutablePair<Integer, Integer>> to_erase = new ArrayList<>();
 		for (ImmutablePair<Integer, Integer> item : reserved.keySet()) {
 			if (reserved.get(item) < Game.get_frame() - Constants.FPS * 10) {
@@ -61,8 +67,8 @@ public class Creep {
 		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
 		for (int x = (int) min.getX(); x <= max.getX(); x += Constants.CREEP_RESOLUTION) {
 			for (int y = (int) min.getY(); y <= max.getY(); y += Constants.CREEP_RESOLUTION) {
-				if (Game.pathable(Point2d.of(x, y))) {
-					if (bases[x][y] == 0 && Game.on_creep(Point2d.of(x, y))) {
+				if (Game.pathable(Point2d.of(x, y)) && bases[x][y] == 0) {
+					if (Game.on_creep(Point2d.of(x, y))) {
 						terrain[x][y] = 1;
 					}
 				} else {
@@ -93,7 +99,6 @@ public class Creep {
 									alt.add(Point2d.of(x, y));
 								} else {
 									creep_points.add(Point2d.of(x, y));
-									Game.draw_box(Point2d.of(x, y), Color.PURPLE);
 								}
 							}
 						}
@@ -102,6 +107,31 @@ public class Creep {
 			}
 		}
 		if (creep_points.size() == 0) creep_points.addAll(alt);
+		
+		for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR_BURROWED)) {
+			for (int i = creep_points.size() - 1; i > 0; i--) {
+				if (u.distance(creep_points.get(i)) <= 8) {
+					creep_points.remove(i);
+				}
+			}
+		}
+		
+		for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR_QUEEN)) {
+			for (int i = creep_points.size() - 1; i > 0; i--) {
+				if (u.distance(creep_points.get(i)) <= 8) {
+					creep_points.remove(i);
+				}
+			}
+		}
+		
+		for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR)) {
+			for (int i = creep_points.size() - 1; i > 0; i--) {
+				if (u.distance(creep_points.get(i)) <= 8) {
+					creep_points.remove(i);
+				}
+			}
+		}
+		
 	}
 
 	public static void on_frame(HjaxUnit u) {
@@ -131,11 +161,6 @@ public class Creep {
 			if (!found && used.getOrDefault(u.tag(), 0) > 0) {
 				used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
 			}
-			for (int i = creep_points.size() - 1; i > 0; i--) {
-				if (u.distance(creep_points.get(i)) <= Constants.CREEP_RESOLUTION) {
-					creep_points.remove(i);
-				}
-			}
 		}
 	}
 	
@@ -144,7 +169,7 @@ public class Creep {
 		for (int i = 9; i > 0; i -= 0.5) {
 			Point2d point = Point2d.of(u.location().getX() + i * direction.x, u.location().getY() + i * direction.y);
 			Game.draw_box(point, Color.RED);
-			if (Game.can_place(Abilities.BUILD_SPORE_CRAWLER, point)) {
+			if (Game.on_creep(point) && Game.is_placeable(point) && Game.can_place(Abilities.BUILD_CREEP_TUMOR_TUMOR, point)) {
 				boolean skip = false;
 				for (Base b : BaseManager.bases) {
 					if (b.location.distance(point) < 6) {

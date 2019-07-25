@@ -326,7 +326,7 @@ public class ZergBuildExecutor {
 			if (u == Units.ZERG_RAVAGER) continue;
 			if (u == Units.ZERG_BROODLORD) continue;
 			if (u == Units.ZERG_LURKER_MP) continue;
-			if (Composition.comp().contains(Units.ZERG_BANELING) && u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) >= 20) continue;
+			if (Composition.comp().contains(Units.ZERG_BANELING) && u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) >= 15) continue;
 			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) < 15 && Composition.comp().contains(Units.ZERG_BROODLORD)) return u;
 			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) >= 15) continue;
 			if (u == Units.ZERG_CORRUPTOR && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) == 0) continue;
