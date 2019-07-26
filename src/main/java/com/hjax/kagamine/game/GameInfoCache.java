@@ -18,6 +18,7 @@ import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.PlayerInfo;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
+import com.github.ocraft.s2client.protocol.unit.DisplayType;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.UnitOrder;
 import com.hjax.kagamine.Constants;
@@ -51,7 +52,7 @@ public class GameInfoCache {
 		Set<Tag> to_remove = new HashSet<>();
 		for (Tag t : visible_enemy.keySet()) {
 			Game.draw_box(visible_enemy.get(t).location(), Color.RED);
-			if (Game.get_frame() - visible_enemy.get(t).last_seen() > Constants.MEMORY || !visible_enemy.get(t).alive() || (Game.isVisible(visible_enemy.get(t).location()) && visible_enemy.get(t).last_seen() != Game.get_frame())) {
+			if (Game.get_frame() - visible_enemy.get(t).last_seen() > Constants.MEMORY || !visible_enemy.get(t).alive() || (Game.is_visible(visible_enemy.get(t).location()) && visible_enemy.get(t).last_seen() != Game.get_frame())) {
 				to_remove.add(t);
 			}
 		}
@@ -67,6 +68,8 @@ public class GameInfoCache {
 		claimed_gases.clear(); 
 		
 		for (UnitInPool unit: Game.get_units()) {
+			
+			if (unit.unit().getDisplayType() != DisplayType.VISIBLE) continue;
 			
 			HjaxUnit current = HjaxUnit.getInstance(unit);
 			

@@ -1,7 +1,10 @@
 package com.hjax.kagamine.build;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
@@ -12,7 +15,30 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class Composition {
+	
+	private static boolean initialized = false;
+	private static List<UnitType> units = new ArrayList<>();
+	private static Map<UnitType, Integer> scaling = new HashMap<>();
+	private static Map<UnitType, Map<UnitType, Integer>> scores = new HashMap<>();
+	static {
+		units = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_QUEEN, Units.ZERG_ROACH, Units.ZERG_RAVAGER, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP, Units.ZERG_SWARM_HOST_MP, Units.ZERG_INFESTOR, Units.ZERG_ULTRALISK, Units.ZERG_MUTALISK, Units.ZERG_VIPER, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD,
+				Units.TERRAN_BANSHEE, Units.TERRAN_BATTLECRUISER, Units.TERRAN_GHOST, Units.TERRAN_MARINE, Units.TERRAN_MARAUDER, Units.TERRAN_REAPER, Units.TERRAN_HELLION, Units.TERRAN_HELLION_TANK, Units.TERRAN_SIEGE_TANK, Units.TERRAN_WIDOWMINE, Units.TERRAN_THOR, Units.TERRAN_LIBERATOR, Units.TERRAN_VIKING_FIGHTER, Units.TERRAN_RAVEN, Units.TERRAN_CYCLONE,
+				Units.PROTOSS_ZEALOT, Units.PROTOSS_ADEPT, Units.PROTOSS_STALKER, Units.PROTOSS_HIGH_TEMPLAR, Units.PROTOSS_DARK_TEMPLAR, Units.PROTOSS_ARCHON, Units.PROTOSS_SENTRY, Units.PROTOSS_IMMORTAL, Units.PROTOSS_COLOSSUS, Units.PROTOSS_PHOENIX, Units.PROTOSS_VOIDRAY, Units.PROTOSS_CARRIER, Units.PROTOSS_TEMPEST, Units.PROTOSS_MOTHERSHIP);
+	}
+	
+	
+	
 	public static List<UnitType> comp() {
+		
+		if (!initialized) {
+			initialized = true;
+			
+			for (UnitType attacker : units) {
+				for (UnitType defender : units) {
+					
+				}
+			}
+		}
 		
 		if (Game.race() == Race.PROTOSS) {
 			return Arrays.asList(Units.PROTOSS_ZEALOT, Units.PROTOSS_STALKER);
@@ -55,7 +81,10 @@ public class Composition {
 			if (EnemyModel.counts.getOrDefault(Units.ZERG_MUTALISK, 0) > 0) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			}
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
+			if (Game.army_supply() < 80) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
+			}
+			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);
 		}
 		if (GameInfoCache.get_opponent_race() == Race.PROTOSS) {
 			if (GameInfoCache.count_friendly(Units.ZERG_DRONE) > 50 && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) > 0) {

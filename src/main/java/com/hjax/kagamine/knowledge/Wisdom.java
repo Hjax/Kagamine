@@ -20,6 +20,7 @@ public class Wisdom {
 	
 	public static boolean proxy_detected() {
 		if (Game.army_supply() >= 30) return false;
+		if (EnemyModel.enemyBaseCount() > 1) return false;
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.is_structure(u.type()) && u.type() != Units.PROTOSS_PYLON) {
 				if (u.distance(BaseManager.main_base().location) < u.distance(Scouting.closest_enemy_spawn())) {
@@ -31,6 +32,7 @@ public class Wisdom {
 	}
 
 	public static boolean all_in_detected() {
+		if (EnemyModel.enemyBaseCount() > 2) return false;
 		if (EnemyModel.counts.getOrDefault(Units.ZERG_ZERGLING, 0) > 0 && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) {
 			early_cheese = true;
 		}
@@ -40,20 +42,10 @@ public class Wisdom {
 			}
 		}
 		if (Game.army_supply() >= 60) return false;
-		if (enemy_bases() > 3) return false;
-		return enemy_production() >= 3 * Math.max(enemy_bases(), 1);
+		if (EnemyModel.enemyBaseCount() > 3) return false;
+		return enemy_production() >= 3 * Math.max(EnemyModel.enemyBaseCount(), 1);
 	}
 
-	public static int enemy_bases() {
-		int result = 0;
-		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_town_hall(u.type())) result++;
-		}
-		return result;
-	}
-	public static boolean play_safe() {
-		return enemy_bases() <= 1;
-	}
 	public static boolean cannon_rush() {
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
 			if (u.distance(BaseManager.main_base().location) < u.distance(Scouting.closest_enemy_spawn())) {
@@ -75,7 +67,7 @@ public class Wisdom {
 	
 	public static boolean confused() {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) return false;
-		return enemy_production() == 0 && enemy_bases() >= 1;
+		return enemy_production() == 0 && EnemyModel.enemyBaseCount() >= 1;
 	}
 	
 	public static boolean ahead() {

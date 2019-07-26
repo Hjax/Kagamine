@@ -50,7 +50,7 @@ public class Base {
 			Game.write_text("Neutral", location);
 		}
 		
-		if (Game.isVisible(location)) last_seen_frame = Game.get_frame();
+		if (Game.is_visible(location)) last_seen_frame = Game.get_frame();
 	}
 	
 	public void set_walking_drone(HjaxUnit drone) {

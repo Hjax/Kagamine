@@ -330,8 +330,12 @@ public class Game {
 		}
 	}
 	
-	public static boolean isVisible(Point2d p) {
+	public static boolean is_near_ally(Point2d p) {
 		return visibility[(int) p.getX()][(int) p.getY()];
+	}
+	
+	public static boolean is_visible(Point2d p) {
+		return observation.getVisibility(p) == Visibility.VISIBLE;
 	}
 	
 	public static double get_game_time() {

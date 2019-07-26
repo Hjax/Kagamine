@@ -10,11 +10,13 @@ import java.util.Set;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
+import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
 public class BaseDefense {
@@ -23,15 +25,18 @@ public class BaseDefense {
 	public static Map<Tag, Point2d> surroundCenter = new HashMap<>();
 	
 	public static Point2d defense_point = null;
+	public static int detection_points = 0;
 	
 	public static void on_frame() {
 		defense_point = null;
 		used.clear();
 		assignments.clear();
 		surroundCenter.clear();
+		detection_points = 0;
 		for (Set<HjaxUnit> enemy_squad : EnemySquadManager.enemy_squads) {
 			float ground_supply = 0;
 			float flyer_supply = 0;
+			boolean needs_detection = false;
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
 				for (HjaxUnit enemy : enemy_squad) {
@@ -40,7 +45,9 @@ public class BaseDefense {
 					} else {
 						ground_supply += Game.supply(enemy.type());
 					}
+					needs_detection = needs_detection || enemy.cloaked();
 				}
+				if (needs_detection) detection_points++;
 				try {
 					if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 
 							((Game.closest_invisible(average).distance(average) > 12 && (flyer_supply + ground_supply) * 1.3 < Game.army_supply()) 
@@ -59,10 +66,15 @@ public class BaseDefense {
 							assigned.add(current);
 						}
 						assigned_supply = 0;
-						while (assigned_supply < flyer_supply * 1) {
+						while (assigned_supply < flyer_supply) {
 							HjaxUnit current = closest_free(average, true);
 							if (current == null) break;
 							assigned_supply += Game.supply(current.type());
+							assigned.add(current);
+						}
+						if (needs_detection) {
+							HjaxUnit current = closest_free_detection(average);
+							if (current == null) continue;
 							assigned.add(current);
 						}
 						Point2d center = average_point_zergling(assigned, average);
@@ -86,6 +98,18 @@ public class BaseDefense {
 				UnitRoleManager.add(ally, UnitRoleManager.UnitRole.DEFENDER);
 			}
 		}
+	}
+	
+	public static HjaxUnit closest_free_detection(Point2d p) {
+		HjaxUnit best = null;
+		for (HjaxUnit ally : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERSEER)) {
+			if (!assignments.containsKey(ally.tag())) {
+				if (best == null || best.distance(p) > ally.distance(p)) {
+					best = ally;
+				}
+			}
+		}
+		return best;
 	}
 	
 	public static HjaxUnit closest_free(Point2d p, boolean aa) {
