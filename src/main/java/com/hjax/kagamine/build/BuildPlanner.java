@@ -24,8 +24,8 @@ public class BuildPlanner {
 		if (Wisdom.worker_rush() && !worker_rush) {
 			worker_rush = true;
 			Chat.sendMessage("Sorry im not tycklish");
-			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-					new ImmutablePair<Integer, UnitType>(14, Units.ZERG_SPAWNING_POOL)));
+			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
+					new ImmutablePair<>(14, Units.ZERG_SPAWNING_POOL)));
 			Build.ideal_gases = 0;
 			Build.ideal_bases = 1;
 			Build.scout = false;
@@ -82,10 +82,10 @@ public class BuildPlanner {
 		if (Game.race() == Race.ZERG) {
 			switch (GameInfoCache.get_opponent_race()) {
 			case PROTOSS:
-				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-															new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
-															new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
-															new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
+				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
+						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
+						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
+						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_bases = -1;
 				Build.push_supply = 195;
 				Build.ideal_workers = 80;
@@ -95,10 +95,10 @@ public class BuildPlanner {
 				Build.max_queens = -1;			
 				break;
 			case ZERG:
-				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
-						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
+				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
+						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
+						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
+						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_bases = -1;
 				Build.scout = true;
 				Build.push_supply = 150;
@@ -109,10 +109,10 @@ public class BuildPlanner {
 				Build.max_queens = 4;		
 				break;			
 			case TERRAN:
-				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
-						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
+				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
+						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
+						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
+						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_bases = -1;
 				Build.scout = true;
 				Build.ideal_gases = 9;
@@ -123,10 +123,10 @@ public class BuildPlanner {
 				Build.tech_drones = 25;
 				break;
 			default:
-				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(13, Units.ZERG_OVERLORD),
-						new ImmutablePair<Integer, UnitType>(16, Units.ZERG_HATCHERY),
-						new ImmutablePair<Integer, UnitType>(18, Units.ZERG_EXTRACTOR),
-						new ImmutablePair<Integer, UnitType>(17, Units.ZERG_SPAWNING_POOL)));
+				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
+						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
+						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
+						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
 				Build.ideal_bases = -1;
 				Build.scout = true;
 				Build.ideal_gases = 8;
@@ -135,13 +135,13 @@ public class BuildPlanner {
 				Build.pull_off_gas = true;	
 			}
 		} else {
-			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<Integer, UnitType>(14, Units.PROTOSS_PYLON),
-					new ImmutablePair<Integer, UnitType>(16, Units.PROTOSS_GATEWAY),
-					new ImmutablePair<Integer, UnitType>(16, Units.PROTOSS_ASSIMILATOR),
-					new ImmutablePair<Integer, UnitType>(20, Units.PROTOSS_NEXUS),
-					new ImmutablePair<Integer, UnitType>(20, Units.PROTOSS_CYBERNETICS_CORE),
-					new ImmutablePair<Integer, UnitType>(21, Units.PROTOSS_ASSIMILATOR),
-					new ImmutablePair<Integer, UnitType>(22, Units.PROTOSS_PYLON)));
+			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(14, Units.PROTOSS_PYLON),
+					new ImmutablePair<>(16, Units.PROTOSS_GATEWAY),
+					new ImmutablePair<>(16, Units.PROTOSS_ASSIMILATOR),
+					new ImmutablePair<>(20, Units.PROTOSS_NEXUS),
+					new ImmutablePair<>(20, Units.PROTOSS_CYBERNETICS_CORE),
+					new ImmutablePair<>(21, Units.PROTOSS_ASSIMILATOR),
+					new ImmutablePair<>(22, Units.PROTOSS_PYLON)));
 			Build.ideal_bases = -1;
 			Build.scout = true;
 			Build.ideal_gases = 2;

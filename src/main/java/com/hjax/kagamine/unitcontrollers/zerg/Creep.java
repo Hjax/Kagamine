@@ -25,11 +25,11 @@ import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.Constants;
 
 public class Creep {
-	public static Map<ImmutablePair<Integer, Integer>, Integer> reserved = new HashMap<>();
-	static int[][] terrain = new int[1000][1000];	
-	static int[][] bases = new int[1000][1000];
-	static Map<Tag, Integer> used = new HashMap<>();
-	static List<Point2d> creep_points = new ArrayList<>();
+	private static final Map<ImmutablePair<Integer, Integer>, Integer> reserved = new HashMap<>();
+	private static int[][] terrain = new int[1000][1000];
+	private static final int[][] bases = new int[1000][1000];
+	private static final Map<Tag, Integer> used = new HashMap<>();
+	private static List<Point2d> creep_points = new ArrayList<>();
 	static {
 		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
 		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
@@ -49,7 +49,7 @@ public class Creep {
 	}
 	
 	private static long last_update = -9999;
-	static void calculate() {
+	private static void calculate() {
 		if (Game.get_frame() - last_update < Constants.FPS * 0.5) return;
 		last_update = Game.get_frame();
 		ArrayList<ImmutablePair<Integer, Integer>> to_erase = new ArrayList<>();
@@ -164,7 +164,7 @@ public class Creep {
 		}
 	}
 	
-	public static void spread_towards(HjaxUnit u, Point2d p) {
+	private static void spread_towards(HjaxUnit u, Point2d p) {
 		Vector2d direction = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(p));
 		for (int i = 9; i > 0; i -= 0.5) {
 			Point2d point = Point2d.of(u.location().getX() + i * direction.x, u.location().getY() + i * direction.y);
@@ -186,26 +186,26 @@ public class Creep {
 		used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
 	}
 	
-	public static double score(Point2d p) {
+	private static double score(Point2d p) {
 		return p.distance(BaseManager.main_base().location);
 	}
 	
 	public static Point2d get_creep_point() {
 		Point2d best = null;
 		for (Point2d p : creep_points) {
-			if (!reserved.containsKey(new ImmutablePair<Integer, Integer>((int) p.getX(), (int) p.getY()))) {
+			if (!reserved.containsKey(new ImmutablePair<>((int) p.getX(), (int) p.getY()))) {
 				if (best == null || score(best) > score(p)) {
 					best = p;
 				}
 			}
 		}
 		if (best != null) {
-			reserved.put(new ImmutablePair<Integer, Integer>((int) best.getX(), (int) best.getY()), (int) Game.get_frame());
+			reserved.put(new ImmutablePair<>((int) best.getX(), (int) best.getY()), (int) Game.get_frame());
 		}
 		return best;
 	}
 	
-	public static Point2d[] around(Point2d p) {
+	private static Point2d[] around(Point2d p) {
 		Point2d[] result = new Point2d[4];
 		result[0] = Point2d.of(p.getX() + Constants.CREEP_RESOLUTION, p.getY());
 		result[1] = Point2d.of(p.getX() - Constants.CREEP_RESOLUTION, p.getY());

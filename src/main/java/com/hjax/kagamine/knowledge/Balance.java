@@ -15,7 +15,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 
 public class Balance {
 	
-	public static Map<UnitType, UnitType> overrides;
+	private static final Map<UnitType, UnitType> overrides;
 	static {
 		overrides = new HashMap<>();
 		overrides.put(Units.ZERG_LAIR, Units.ZERG_SPAWNING_POOL);

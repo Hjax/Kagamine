@@ -19,10 +19,10 @@ import com.hjax.kagamine.knowledge.Balance;
 import com.hjax.kagamine.knowledge.Scouting;
 
 public class EnemyModel {
-	public static Map<Tag, UnitType> registered = new HashMap<>();
-	public static Map<UnitType, Integer> counts = new HashMap<>();
-	public static Map<UnitType, Integer> inferred = new HashMap<>();
-	public static Set<Tag> halluc = new HashSet<>();
+	private static final Map<Tag, UnitType> registered = new HashMap<>();
+	public static final Map<UnitType, Integer> counts = new HashMap<>();
+	private static final Map<UnitType, Integer> inferred = new HashMap<>();
+	private static final Set<Tag> halluc = new HashSet<>();
 	public static void on_frame() {
 		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (unit.is_halluc()) {
@@ -44,7 +44,7 @@ public class EnemyModel {
 			}
 			
 			if (!unit.is_halluc() && !halluc.contains(unit.tag())) {
-				if (!unit.is_snapshot() && !registered.containsKey(unit.tag())) {
+				if (unit.is_not_snapshot() && !registered.containsKey(unit.tag())) {
 					registered.put(unit.tag(), unit.type());
 					if (counts.getOrDefault(unit.type(), 0) == 0) {
 						if (Game.is_structure(unit.type())) {
@@ -65,7 +65,7 @@ public class EnemyModel {
 					inferred.put(unit.type(), Math.max(inferred.getOrDefault(unit.type(), 0) - 1, 0));
 					counts.put(unit.type(), counts.getOrDefault(unit.type(), 0) + 1);
 				}
-				if (!unit.is_snapshot() && unit.type() != registered.get(unit.tag())) {
+				if (unit.is_not_snapshot() && unit.type() != registered.get(unit.tag())) {
 					counts.put(registered.get(unit.tag()), counts.getOrDefault(registered.get(unit.tag()), 0) - 1);
 					counts.put(unit.type(), counts.getOrDefault(unit.type(), 0) + 1);
 					registered.put(unit.tag(), unit.type());
@@ -79,7 +79,7 @@ public class EnemyModel {
 		registered.remove(u.tag());
 	}
 	
-	public static void update(UnitType u) {
+	private static void update(UnitType u) {
 		if (u == Units.INVALID) return;
 		if (counts.getOrDefault(u, 0) == 0 && inferred.getOrDefault(u, 0) == 0) {
 			inferred.put(u, inferred.getOrDefault(u, 0) + 1);
@@ -91,7 +91,7 @@ public class EnemyModel {
 		}
 	}
 	
-	public static int[] resourcesSpent() {
+	private static int[] resourcesSpent() {
 		int[] res = new int[2];
 		for (UnitType u : counts.keySet()) {
 			res[0] += Game.get_unit_type_data().get(u).getMineralCost().orElse(0) * counts.get(u);

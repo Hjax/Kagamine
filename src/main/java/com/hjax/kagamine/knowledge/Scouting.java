@@ -23,18 +23,15 @@ import com.hjax.kagamine.unitcontrollers.Worker;
 public class Scouting {
 	public static HjaxUnit scout = null;
 	public static HjaxUnit patrol_scout = null;
-	public static ArrayList<Point2d> spawns = new ArrayList<>();
-	public static int patrol_base = 2;
+	private static ArrayList<Point2d> spawns = new ArrayList<>();
+	private static int patrol_base = 2;
 	public static int overlord_count = 0;
 	
 	public static boolean scared = false;
-	public static boolean has_pulled_back = false;
+	private static boolean has_pulled_back = false;
 	
-	public static Map<Tag, Base> overlords = new HashMap<>();
-	
-	public static void start_frame() {
-		
-	}
+	public static final Map<Tag, Base> overlords = new HashMap<>();
+
 	public static void on_frame() {
 		if (spawns.size() == 0) {
 			Game.get_game_info().getStartRaw().ifPresent(StartRaw -> spawns = new ArrayList<>(StartRaw.getStartLocations()));
@@ -164,10 +161,7 @@ public class Scouting {
 		}
 		
 	}
-	public static void end_frame() {
-		
-	}
-	
+
 	public static Point2d closest_enemy_spawn(Point2d s) {
 		Point2d best = null;
 		for (Point2d p: spawns) {
@@ -191,7 +185,7 @@ public class Scouting {
 		return  mclosest_enemy_spawn;
 	}
 	
-	public static void assign_scout() {
+	private static void assign_scout() {
 		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 			if (Worker.can_build(unit)) {
 				scout = unit;
@@ -200,7 +194,7 @@ public class Scouting {
 		}
 	}
 	
-	public static void assign_patrol_scout() {
+	private static void assign_patrol_scout() {
 		for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 			if (Worker.can_build(unit)) {
 				patrol_scout = unit;

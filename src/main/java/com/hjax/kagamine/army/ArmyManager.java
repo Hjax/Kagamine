@@ -25,7 +25,7 @@ public class ArmyManager {
 	private static Point2d target;
 	
 	public static Point2d army_center = Point2d.of(0, 0);
-	public static List<HjaxUnit> main_army = new ArrayList<>();
+	private static final List<HjaxUnit> main_army = new ArrayList<>();
 	public static boolean has_target = false;
 	static {
 		target = Scouting.closest_enemy_spawn();

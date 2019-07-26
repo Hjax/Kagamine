@@ -15,7 +15,7 @@ import com.hjax.kagamine.game.HjaxUnit;
 
 public class MiningOptimizer {
 	// mappings of drones to mineral patches
-	private static Map<Tag, Tag> assignments = new HashMap<>();
+	private static final Map<Tag, Tag> assignments = new HashMap<>();
 	
 	
 	public static void on_frame() {

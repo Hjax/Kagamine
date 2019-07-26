@@ -16,7 +16,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
 public class ThreatManager {
-	public static Map<Tag, Integer> seen = new HashMap<>();
+	public static final Map<Tag, Integer> seen = new HashMap<>();
 	public static void on_frame() {
 		Set<Tag> to_remove = new HashSet<>();
 		for (Tag t: seen.keySet()) {

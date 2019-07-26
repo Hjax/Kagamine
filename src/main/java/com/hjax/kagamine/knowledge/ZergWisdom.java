@@ -23,7 +23,9 @@ public class ZergWisdom {
 	public static int army_target() {
 		int target = Math.max((int) (EnemyModel.enemyArmy() * 1.4 - Math.min(EconomyManager.larva_rate(), 6)), 3);
 		// queens dont count
-		target += GameInfoCache.count(Units.ZERG_QUEEN) * 2;
+		//target += GameInfoCache.count(Units.ZERG_QUEEN) * 2;
+		target -= 7 * (EnemyModel.enemyBaseCount() - 1);
+		target = Math.max(target, 4);
 		if (target < 10) {
 			if (Wisdom.all_in_detected()) target = 10;
 			if (Wisdom.proxy_detected()) target = 30;
@@ -67,7 +69,7 @@ public class ZergWisdom {
 		} else {
 			target = Build.max_queens;
 		}
-		if (Game.supply() > 120) target = Math.min(BaseManager.base_count(), 6);
+		if (Game.supply() > 120) target = Math.min(BaseManager.base_count() + 2, 7);
 		if (Wisdom.proxy_detected()) {
 			target = 1;
 			if (Game.minerals() > 200) {
@@ -77,7 +79,7 @@ public class ZergWisdom {
 		return target;
 	}
 	
-	private static Map<Long, Boolean> should_build_queens_map = new HashMap<>();
+	private static final Map<Long, Boolean> should_build_queens_map = new HashMap<>();
 	public static boolean should_build_queens() {
 		return should_build_queens_map.computeIfAbsent(Game.get_frame(), frame -> {
 			if (Wisdom.worker_rush() && GameInfoCache.count(Units.ZERG_LARVA) > 0) return false;
@@ -95,12 +97,9 @@ public class ZergWisdom {
 			}
 			
 			if (ThreatManager.under_attack() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 40) return false; 
-			if (GameInfoCache.count(RaceInterface.get_race_worker()) < 35 && GameInfoCache.count(Units.ZERG_LARVA) > 0 && GameInfoCache.count(Units.ZERG_QUEEN) < 2 && GameInfoCache.count(RaceInterface.get_race_worker()) > 15) return false; 
+			if (GameInfoCache.count(RaceInterface.get_race_worker()) < 35 && GameInfoCache.count(Units.ZERG_LARVA) > 0 && GameInfoCache.count(Units.ZERG_QUEEN) < 2 && GameInfoCache.count(RaceInterface.get_race_worker()) > 15) return false;
 
-			if (GameInfoCache.count(Units.ZERG_QUEEN) < queen_target() && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
-				return true;
-			}
-			return false;
+			return GameInfoCache.count(Units.ZERG_QUEEN) < queen_target() && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0;
 		});
 	}
 	

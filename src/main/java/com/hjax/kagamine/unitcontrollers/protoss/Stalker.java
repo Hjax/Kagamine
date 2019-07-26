@@ -20,7 +20,7 @@ import com.hjax.kagamine.unitcontrollers.GenericUnit;
 
 public class Stalker {
 	
-	private static Map<Tag, Long> last_blink_frame = new HashMap<>();
+	private static final Map<Tag, Long> last_blink_frame = new HashMap<>();
 	
 	public static void on_frame(HjaxUnit u) {
 		if (Game.has_upgrade(Upgrades.BLINK_TECH) && Game.get_frame() - last_blink_frame.getOrDefault(u.tag(), (long) 0) > 10 * Constants.FPS) {

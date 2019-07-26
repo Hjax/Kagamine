@@ -35,13 +35,12 @@ import com.hjax.kagamine.unitcontrollers.zerg.Creep;
 import com.hjax.kagamine.unitcontrollers.zerg.Larva;
 import com.hjax.kagamine.unitcontrollers.zerg.Mutalisk;
 
-public class Kagamine extends S2Agent{
+class Kagamine extends S2Agent {
 
-	public static double time_sum = 0;
-	public static int frame = 0;
-	public static double max = -1;
-	
-	@Override
+	private static double time_sum = 0;
+	private static int frame = 0;
+	private static double max = -1;
+
 	public void onGameFullStart() {
 		long startTime = System.nanoTime();
 		Game.start_frame(observation(), actions(), query(), debug());
@@ -58,13 +57,12 @@ public class Kagamine extends S2Agent{
 			dateScanner.close();
 			Chat.sendMessage("This version of Kagamine was built on:");
 			Chat.sendMessage(date);
-		} catch (Exception e) {}
+		} catch (Exception ignored) {}
 
 
 		System.out.println("Start game took " + ((System.nanoTime() - startTime) / 1000000.0) + " ms");
 	}
 
-	@Override
 	public void onStep() {
 		long startTime = System.nanoTime();
 		
@@ -90,8 +88,6 @@ public class Kagamine extends S2Agent{
 			BuildPlanner.on_frame();
 			BuildExecutor.on_frame();
 			UnitManager.on_frame();
-			MapAnalysis.on_frame();
-			GameInfoCache.end_frame();
 			Game.end_frame();
 			
 			if (Wisdom.cannon_rush()) {
@@ -107,7 +103,7 @@ public class Kagamine extends S2Agent{
 			}
 			
 			int[] resources = EnemyModel.resourceEstimate();
-			Game.write_text("Enemy Supply: " + EnemyModel.enemySupply());;
+			Game.write_text("Enemy Supply: " + EnemyModel.enemySupply());
 			Game.write_text("Enemy Army: " + EnemyModel.enemyArmy());
 			Game.write_text("Enemy Workers: " + EnemyModel.enemyWorkers());
 			Game.write_text("Enemy Bases: " + EnemyModel.enemyBaseCount());
@@ -138,24 +134,19 @@ public class Kagamine extends S2Agent{
 		}
 		
 	}
-	
-	@Override
+
 	public void onUnitCreated(UnitInPool unit) {
 		BaseManager.on_unit_created(HjaxUnit.getInstance(unit));
 	}
-	
-	@Override
+
 	public void onUnitDestroyed(UnitInPool unit) {
 		if (unit.unit().getAlliance() == Alliance.ENEMY) {
 			EnemyModel.removeFromModel(HjaxUnit.getInstance(unit));
 		}
 	}
-	
-	@Override
+
 	public void onGameEnd() {
 		Counter.print();
 	}
-	
-	
 
 }

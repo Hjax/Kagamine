@@ -26,21 +26,21 @@ import com.hjax.kagamine.build.Composition;
 
 public class GameInfoCache {
 	
-	public static Map<Ability, Integer> production = new HashMap<>();
-	public static Map<Tag, HjaxUnit> all_units = new HashMap<>();
+	private static final Map<Ability, Integer> production = new HashMap<>();
+	public static final Map<Tag, HjaxUnit> all_units = new HashMap<>();
 	
-	public static Map<Tag, HjaxUnit> visible_friendly = new HashMap<>();
-	public static Map<Tag, HjaxUnit> visible_enemy = new HashMap<>();
-	public static Map<Tag, HjaxUnit> visible_neutral = new HashMap<>();
+	public static final Map<Tag, HjaxUnit> visible_friendly = new HashMap<>();
+	private static final Map<Tag, HjaxUnit> visible_enemy = new HashMap<>();
+	private static final Map<Tag, HjaxUnit> visible_neutral = new HashMap<>();
 	
-	public static Map<UnitType, List<HjaxUnit>> visible_friendly_types = new HashMap<>();
-	public static Map<UnitType, List<HjaxUnit>> visible_enemy_types = new HashMap<>();
-	public static Map<UnitType, List<HjaxUnit>> visible_neutral_types = new HashMap<>();
+	private static final Map<UnitType, List<HjaxUnit>> visible_friendly_types = new HashMap<>();
+	private static final Map<UnitType, List<HjaxUnit>> visible_enemy_types = new HashMap<>();
+	private static final Map<UnitType, List<HjaxUnit>> visible_neutral_types = new HashMap<>();
 	
-	public static Map<UnitType, Integer> double_counts = new HashMap<>();
+	private static final Map<UnitType, Integer> double_counts = new HashMap<>();
 	
-	static Set<Tag> claimed_gases = new HashSet<>();
-	static Set<Tag> morphing_drones = new HashSet<>();
+	private static final Set<Tag> claimed_gases = new HashSet<>();
+	private static final Set<Tag> morphing_drones = new HashSet<>();
 	
 	public static void start_frame() {
 		
@@ -127,9 +127,7 @@ public class GameInfoCache {
 
 		}
 	}
-	static void on_frame() {}
-	public static void end_frame() {}
-	
+
 	public static int count_friendly(UnitType type) {
 		if (Game.is_worker(type)) return Game.worker_count();
 		if (Game.is_structure(type)) {
@@ -149,9 +147,7 @@ public class GameInfoCache {
 	// TODO filter out old units
 	public static ArrayList<HjaxUnit> get_units() {
 		ArrayList<HjaxUnit> units = new ArrayList<>();
-		for (HjaxUnit u: all_units.values()) {
-			units.add(u);
-		}
+		units.addAll(all_units.values());
 		return units;
 	}
 	

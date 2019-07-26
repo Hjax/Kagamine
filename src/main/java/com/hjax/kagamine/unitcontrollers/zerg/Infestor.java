@@ -24,9 +24,9 @@ import com.hjax.kagamine.game.HjaxUnit;
 
 public class Infestor {
 	
-	private static Map<Point2d, Long> fungal_frames = new HashMap<>();
+	private static final Map<Point2d, Long> fungal_frames = new HashMap<>();
 	
-	public static Set<UnitType> neural_targets = new HashSet<>();
+	private static final Set<UnitType> neural_targets = new HashSet<>();
 	static {
 		neural_targets.add(Units.PROTOSS_CARRIER);
 		neural_targets.add(Units.PROTOSS_TEMPEST);

@@ -13,7 +13,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
 public class BanelingAvoidance {
-	public static Map<Tag, Tag> banelingAssignments = new HashMap<>();
+	public static final Map<Tag, Tag> banelingAssignments = new HashMap<>();
 	public static void on_frame() {
 		
 		

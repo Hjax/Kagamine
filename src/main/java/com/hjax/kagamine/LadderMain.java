@@ -3,7 +3,7 @@ package com.hjax.kagamine;
 import com.github.ocraft.s2client.bot.S2Coordinator;
 import com.github.ocraft.s2client.protocol.game.Race;
 
-public class LadderMain {
+class LadderMain {
     public static void main(String[] args) {
     	Constants.CHAT = true;
     	Constants.DEBUG = true;

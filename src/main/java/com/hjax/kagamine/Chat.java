@@ -7,7 +7,7 @@ import com.hjax.kagamine.game.Game;
 
 public class Chat {
 	
-	private static Set<String> sent = new HashSet<>();
+	private static final Set<String> sent = new HashSet<>();
 	
 	public static void sendMessage(String message) {
 		if (!sent.contains(message)) {

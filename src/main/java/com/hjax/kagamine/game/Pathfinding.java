@@ -2,9 +2,9 @@ package com.hjax.kagamine.game;
 
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 
-public class Pathfinding {
+class Pathfinding {
 	
-	static boolean[][] pathable_grid = new boolean[1000][1000];	
+	private static final boolean[][] pathable_grid = new boolean[1000][1000];
 	
 	public static void start_game() {
 		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();

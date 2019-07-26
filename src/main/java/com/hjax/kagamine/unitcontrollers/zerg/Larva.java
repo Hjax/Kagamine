@@ -11,7 +11,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
 public class Larva {
-	private static List<HjaxUnit> larva = new ArrayList<>();
+	private static final List<HjaxUnit> larva = new ArrayList<>();
 	private static int larva_index = 0;
 	public static void start_frame() {
 		larva_index = 0;
@@ -21,10 +21,8 @@ public class Larva {
 	public static boolean has_larva() {
 		return larva_index < larva.size();
 	}
-	public static void on_frame(HjaxUnit u) {
-		
-	}
-	public static void produce_unit(UnitType type) {
+
+    public static void produce_unit(UnitType type) {
 		larva.get(larva_index).use_ability(Game.get_unit_type_data().get(type).getAbility().get());
 		larva_index++;
 	}

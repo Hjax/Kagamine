@@ -16,7 +16,7 @@ import com.hjax.kagamine.game.RaceInterface;
 public class Wisdom {
 	
 	
-	public static boolean early_cheese = false;
+	private static boolean early_cheese = false;
 	
 	public static boolean proxy_detected() {
 		if (Game.army_supply() >= 30) return false;
@@ -55,7 +55,7 @@ public class Wisdom {
 		return false;
 	}
 	
-	public static int enemy_production() {
+	private static int enemy_production() {
 		int production = 0;
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Balance.is_production_structure(u.type())) {
@@ -67,7 +67,7 @@ public class Wisdom {
 	
 	public static boolean confused() {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) return false;
-		return enemy_production() == 0 && EnemyModel.enemyBaseCount() >= 1;
+		return enemy_production() == 0 && Game.worker_count() > 20;
 	}
 	
 	public static boolean ahead() {

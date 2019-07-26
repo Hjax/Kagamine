@@ -20,11 +20,11 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
 public class BaseDefense {
-	public static Set<Tag> used = new HashSet<>();
-	public static Map<Tag, Point2d> assignments = new HashMap<>();
-	public static Map<Tag, Point2d> surroundCenter = new HashMap<>();
+	private static final Set<Tag> used = new HashSet<>();
+	public static final Map<Tag, Point2d> assignments = new HashMap<>();
+	public static final Map<Tag, Point2d> surroundCenter = new HashMap<>();
 	
-	public static Point2d defense_point = null;
+	private static Point2d defense_point = null;
 	public static int detection_points = 0;
 	
 	public static void on_frame() {
@@ -88,7 +88,7 @@ public class BaseDefense {
 						}
 						break;
 					}
-				} catch (Exception e) {
+				} catch (Exception ignored) {
 					
 				}
 			}
@@ -100,7 +100,7 @@ public class BaseDefense {
 		}
 	}
 	
-	public static HjaxUnit closest_free_detection(Point2d p) {
+	private static HjaxUnit closest_free_detection(Point2d p) {
 		HjaxUnit best = null;
 		for (HjaxUnit ally : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERSEER)) {
 			if (!assignments.containsKey(ally.tag())) {
@@ -112,7 +112,7 @@ public class BaseDefense {
 		return best;
 	}
 	
-	public static HjaxUnit closest_free(Point2d p, boolean aa) {
+	private static HjaxUnit closest_free(Point2d p, boolean aa) {
 		HjaxUnit best = null;
 		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (aa != Game.hits_air(ally.type())) continue;
@@ -141,7 +141,7 @@ public class BaseDefense {
 		return defense_point;
 	}
 	
-	public static Point2d average_point_zergling(List<HjaxUnit> l, Point2d target_center) {
+	private static Point2d average_point_zergling(List<HjaxUnit> l, Point2d target_center) {
 		float x = 0;
 		float y = 0;
 		int n = 0;

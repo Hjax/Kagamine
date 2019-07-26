@@ -14,7 +14,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
 public class EnemySquadManager {
-	public static ArrayList<Set<HjaxUnit>> enemy_squads = new ArrayList<>();
+	public static final ArrayList<Set<HjaxUnit>> enemy_squads = new ArrayList<>();
 	public static void on_frame() {
 		Set<Tag> parsed = new HashSet<>();
 		enemy_squads.clear();

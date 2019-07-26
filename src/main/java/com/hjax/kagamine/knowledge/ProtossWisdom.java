@@ -7,7 +7,7 @@ import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.RaceInterface;
 
-public class ProtossWisdom {
+class ProtossWisdom {
 
 	public static boolean should_build_workers() {
 		if (GameInfoCache.count(RaceInterface.get_race_worker()) > Build.ideal_workers) return false;

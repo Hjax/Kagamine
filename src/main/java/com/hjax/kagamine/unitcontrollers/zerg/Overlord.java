@@ -23,7 +23,7 @@ public class Overlord {
 		}
 	}
 	
-	public static void pressure(HjaxUnit ovie, Base target) {
+	private static void pressure(HjaxUnit ovie, Base target) {
 
 		List<Vector2d> negative_pressure = new ArrayList<>();
 		List<Vector2d> positive_pressure = new ArrayList<>();
@@ -40,7 +40,7 @@ public class Overlord {
 		
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.hits_air(enemy.type())) {
-				negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(enemy.location())).scale((float) (70 / Math.pow((double) ovie.location().distance(enemy.location()), 1.7))));
+				negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(enemy.location())).scale((float) (70 / Math.pow(ovie.location().distance(enemy.location()), 1.7))));
 			} 
 		}
 		float x = 0;

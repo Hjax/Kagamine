@@ -21,7 +21,6 @@ public class UnitManager {
 			} else if (u.type() == Units.ZERG_ZERGLING) {
 				Zergling.on_frame(u);
 			} else if (u.type() == Units.ZERG_LARVA) {
-				Larva.on_frame(u);
 			} else if (u.type() == Units.ZERG_LURKER_MP || u.type() == Units.ZERG_LURKER_MP_BURROWED) {
 				Lurker.on_frame(u);
 			} else if (u.is_gas()) {

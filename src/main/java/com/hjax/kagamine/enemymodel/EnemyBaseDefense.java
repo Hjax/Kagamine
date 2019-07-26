@@ -19,11 +19,11 @@ import com.hjax.kagamine.game.HjaxUnit;
 
 public class EnemyBaseDefense {
 	
-	public static Map<HjaxUnit, Base> defenses = new HashMap<>();
-	public static Map<Base, Double> ground_defense = new HashMap<>();
-	public static Map<Base, Double> air_defense = new HashMap<>();
+	private static final Map<HjaxUnit, Base> defenses = new HashMap<>();
+	private static final Map<Base, Double> ground_defense = new HashMap<>();
+	private static final Map<Base, Double> air_defense = new HashMap<>();
 	
-	public static Map<UnitType, Pair<Double, Double>> threats = new HashMap<>();
+	private static final Map<UnitType, Pair<Double, Double>> threats = new HashMap<>();
 	static {
 		threats.put(Units.TERRAN_MARINE, Pair.of(1.0, 1.0));
 		threats.put(Units.TERRAN_REAPER, Pair.of(1.0, 0.0));

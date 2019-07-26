@@ -4,8 +4,8 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 
 public class Vector2d {
 	
-	public float x;
-	public float y;
+	public final float x;
+	public final float y;
 	
 	public Vector2d(float mx, float my) {
 		x = mx;

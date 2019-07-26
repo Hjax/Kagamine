@@ -26,8 +26,8 @@ import com.hjax.kagamine.unitcontrollers.GenericUnit;
 
 public class Mutalisk {
 	
-	public static Map<UnitType, Integer> scores = new HashMap<>();
-	public static Map<UnitType, Integer> threats = new HashMap<>();
+	private static final Map<UnitType, Integer> scores = new HashMap<>();
+	private static final Map<UnitType, Integer> threats = new HashMap<>();
 	static {
 		scores.put(Units.TERRAN_SCV, 1);
 		scores.put(Units.TERRAN_MEDIVAC, 2);
@@ -81,10 +81,10 @@ public class Mutalisk {
 		threats.put(Units.PROTOSS_VOIDRAY, 4);
 	}
 	
-	public static Point2d swarm_center = null;
-	public static Point2d swarm_target = null;
-	public static Base target = null;
-	public static List<HjaxUnit> swarm = new ArrayList<HjaxUnit>();
+	private static Point2d swarm_center = null;
+	private static Point2d swarm_target = null;
+	private static Base target = null;
+	private static final List<HjaxUnit> swarm = new ArrayList<>();
 	public static void on_frame() {
 		
 		if (EnemyModel.enemyBaseCount() == 0) {
@@ -187,7 +187,7 @@ public class Mutalisk {
 	}
 
 	
-	public static Point2d pressure(Point2d swarm, Point2d target) {
+	private static Point2d pressure(Point2d swarm, Point2d target) {
 
 		List<Vector2d> negative_pressure = new ArrayList<>();
 		List<Vector2d> positive_pressure = new ArrayList<>();
@@ -206,7 +206,7 @@ public class Mutalisk {
 			if (enemy.alive()) {
 				if (enemy.distance(swarm) < 30) {
 					if (Game.hits_air(enemy.type())) {
-						negative_pressure.add(Utilities.direction_to(Vector2d.of(swarm), Vector2d.of(enemy.location())).scale((float) (70 / Math.pow((double) swarm.distance(enemy.location()), 2))));
+						negative_pressure.add(Utilities.direction_to(Vector2d.of(swarm), Vector2d.of(enemy.location())).scale((float) (70 / Math.pow(swarm.distance(enemy.location()), 2))));
 					} 
 				}
 			}
@@ -258,7 +258,7 @@ public class Mutalisk {
 		
 	}
 
-	public static int get_score(UnitType t) {
+	private static int get_score(UnitType t) {
 		return scores.getOrDefault(t, 0);
 	}
 }

@@ -24,8 +24,8 @@ import com.hjax.kagamine.knowledge.Wisdom;
 
 public class UpgradeManager {
 	
-	public static Map<UnitType, List<Upgrade>> upgrades = new HashMap<>();
-	public static Map<Upgrade, List<UnitType>> upgraders = new HashMap<>();
+	private static final Map<UnitType, List<Upgrade>> upgrades = new HashMap<>();
+	private static final Map<Upgrade, List<UnitType>> upgraders = new HashMap<>();
 	static {
 		upgrades.put(Units.ZERG_ZERGLING, Arrays.asList(Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_MELEE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.ZERGLING_ATTACK_SPEED, Upgrades.ZERGLING_MOVEMENT_SPEED, Upgrades.OVERLORD_SPEED));
 		upgrades.put(Units.ZERG_BANELING, Arrays.asList(Upgrades.ZERG_MELEE_WEAPONS_LEVEL1, Upgrades.ZERG_MELEE_WEAPONS_LEVEL2, Upgrades.ZERG_MELEE_WEAPONS_LEVEL3, Upgrades.ZERG_GROUND_ARMORS_LEVEL1, Upgrades.ZERG_GROUND_ARMORS_LEVEL2, Upgrades.ZERG_GROUND_ARMORS_LEVEL3, Upgrades.CENTRIFICAL_HOOKS));

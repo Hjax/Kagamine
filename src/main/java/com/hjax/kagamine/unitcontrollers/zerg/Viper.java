@@ -1,8 +1,6 @@
 package com.hjax.kagamine.unitcontrollers.zerg;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
@@ -16,7 +14,7 @@ import com.hjax.kagamine.game.HjaxUnit;
 
 public class Viper {
 	
-	public static Set<UnitType> yoink_targets = new HashSet<>();
+	private static final Set<UnitType> yoink_targets = new HashSet<>();
 	static {
 		yoink_targets.add(Units.PROTOSS_CARRIER);
 		yoink_targets.add(Units.PROTOSS_TEMPEST);

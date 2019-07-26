@@ -3,7 +3,6 @@ package com.hjax.kagamine.unitcontrollers;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.build.ZergBuildExecutor;
 import com.hjax.kagamine.economy.Base;
@@ -39,7 +38,7 @@ public class Extractor {
 		}
 	}
 	
-	public static boolean is_near_base(Point2d p) {
+	private static boolean is_near_base(Point2d p) {
 		for (Base b: BaseManager.bases) {
 			if (b.has_friendly_command_structure() && b.location.distance(p) < 10) return true;
 		}

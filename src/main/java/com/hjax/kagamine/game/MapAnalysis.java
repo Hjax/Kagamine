@@ -5,10 +5,10 @@ import java.util.ArrayList;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 
 public class MapAnalysis {
-	static boolean[][] pathable = new boolean[1000][1000];
-	static float[][] height = new float[1000][1000];
-	static boolean[][] air_safe = new boolean[1000][1000];
-	public static ArrayList<Point2d> overlord_spots = new ArrayList<>();
+	private static final boolean[][] pathable = new boolean[1000][1000];
+	private static final float[][] height = new float[1000][1000];
+	private static final boolean[][] air_safe = new boolean[1000][1000];
+	private static final ArrayList<Point2d> overlord_spots = new ArrayList<>();
 	static {
 		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
 		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
@@ -66,11 +66,7 @@ public class MapAnalysis {
 				}
 			}
 		}
-	}	
-	
-	public static void on_frame() {
-		
 	}
-	
-	
+
+
 }

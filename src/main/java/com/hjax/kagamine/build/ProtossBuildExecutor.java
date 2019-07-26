@@ -13,7 +13,7 @@ import com.hjax.kagamine.knowledge.Balance;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.Worker;
 
-public class ProtossBuildExecutor {
+class ProtossBuildExecutor {
 
 	public static void on_frame() {
 		if (!build_completed()) execute_build();
@@ -96,7 +96,7 @@ public class ProtossBuildExecutor {
 		}
 	}
 
-	public static void execute_build() {
+	private static void execute_build() {
 		if (Build.build.get(Build.build_index).getKey() <= Game.supply()) {
 			if (Build.build.get(Build.build_index).getValue() == Units.PROTOSS_NEXUS && !(BaseManager.get_next_base().has_walking_drone()) && Game.minerals() > 250) {
 				for (HjaxUnit u: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
@@ -119,11 +119,11 @@ public class ProtossBuildExecutor {
 		}
 	}
 
-	public static boolean build_completed() {
+	private static boolean build_completed() {
 		return Build.build_index >= Build.build.size();
 	}
 
-	public static UnitType next_army_unit() {
+	private static UnitType next_army_unit() {
 		UnitType best = Units.INVALID;
 		for (UnitType u: Composition.comp()) {
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {

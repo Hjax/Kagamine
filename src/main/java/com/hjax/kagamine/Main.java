@@ -10,9 +10,9 @@ import com.github.ocraft.s2client.protocol.game.Difficulty;
 import com.github.ocraft.s2client.protocol.game.LocalMap;
 import com.github.ocraft.s2client.protocol.game.Race;
 
-public class Main {
-	    @SuppressWarnings("unused")
-		public static void main(String[] args) throws IOException {
+class Main {
+
+		public static void main(String[] args) {
 			Kagamine bot = new Kagamine();
 			Nothing bot2 = new Nothing();
 			S2Coordinator s2Coordinator;

@@ -23,8 +23,8 @@ import com.hjax.kagamine.economy.Base;
 
 public class HjaxUnit {
 
-	private UnitInPool contained;
-	private static Map<Tag, HjaxUnit> cache = new HashMap<>();
+	private final UnitInPool contained;
+	private static final Map<Tag, HjaxUnit> cache = new HashMap<>();
 	
 	private HjaxUnit(UnitInPool unit) {
 		contained = unit;
@@ -57,8 +57,8 @@ public class HjaxUnit {
 		return contained.getTag();
 	}
 	
-	long type_frame = -1;
-	UnitType type = Units.INVALID;
+	private long type_frame = -1;
+	private UnitType type = Units.INVALID;
 	public UnitType type() {
 		if (type_frame != Game.get_frame()) {
 			type_frame = Game.get_frame();
@@ -89,7 +89,7 @@ public class HjaxUnit {
 	
 	private long unit_frame = -1;
 	private Unit unit = null;
-	public Unit get_unit() {
+	private Unit get_unit() {
 		if (unit_frame != Game.get_frame()) {
 			unit_frame = Game.get_frame();
 			unit = contained.unit();
@@ -169,8 +169,8 @@ public class HjaxUnit {
 		return get_unit().getHallucination().orElse(false);
 	}
 	
-	public boolean is_snapshot() {
-		return get_unit().getDisplayType() == DisplayType.SNAPSHOT;
+	public boolean is_not_snapshot() {
+		return get_unit().getDisplayType() != DisplayType.SNAPSHOT;
 	}
 	
 	public void stop() {
@@ -204,7 +204,7 @@ public class HjaxUnit {
 		return get_unit().getIdealHarvesters().orElse(0);
 	}
 	
-	protected Unit unit() {
+	Unit unit() {
 		return get_unit();
 	}
 	

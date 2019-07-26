@@ -30,9 +30,9 @@ import com.hjax.kagamine.unitcontrollers.Worker;
 
 public class BaseManager {
 	// the index of bases must never change
-	public static ArrayList<Base> bases = new ArrayList<>();
-	static ArrayList<Point2d> expos = new ArrayList<>();
-	private static Map<Pair<Integer, Integer>, Float> distances = new HashMap<>();
+	public static final ArrayList<Base> bases = new ArrayList<>();
+	private static final ArrayList<Point2d> expos = new ArrayList<>();
+	private static final Map<Pair<Integer, Integer>, Float> distances = new HashMap<>();
 	
 	public static void start_game() {
 		bases.clear();
@@ -152,12 +152,12 @@ public class BaseManager {
 		return main_base;
 	}
 	
-	public static float get_distance(Base b1, Base b2) {
+	private static float get_distance(Base b1, Base b2) {
 		return distances.get(new ImmutablePair<>(bases.indexOf(b1), bases.indexOf(b2)));
 	}
 	
-	public static long next_base_frame = -1;
-	public static Base next_base = null;
+	private static long next_base_frame = -1;
+	private static Base next_base = null;
 	public static Base get_next_base() {
 		if (next_base_frame != Game.get_frame()) {
 			Base best = null;
@@ -176,7 +176,7 @@ public class BaseManager {
 		return next_base;
 	}
 	
-	public static int inject_queen_count() {
+	private static int inject_queen_count() {
 		int result = 0;
 		for (Base b : bases) {
 			if (b.has_friendly_command_structure() && b.has_queen()) result++;
@@ -289,7 +289,7 @@ public class BaseManager {
 		return total;
 	}
 	
-	private static Map<Integer, Point2d> get_numbers = new HashMap<>();
+	private static final Map<Integer, Point2d> get_numbers = new HashMap<>();
 	public static Point2d get_base(int n) {
 		if (!get_numbers.containsKey(n)) {
 			ArrayList<Point2d> found = new ArrayList<>();
@@ -332,7 +332,7 @@ public class BaseManager {
 		return best;
 	}
 	
-	static Point2d get_spine_placement_location(Base b) {
+	private static Point2d get_spine_placement_location(Base b) {
 		Point2d target = Scouting.closest_enemy_spawn();
 		target = Point2d.of(target.getX() + 4, target.getY());
 		Point2d result = null;
@@ -349,8 +349,8 @@ public class BaseManager {
 		return result;
 	}
 	
-	public static long forward_base_frame = -1;
-	public static Base forward_base = null;
+	private static long forward_base_frame = -1;
+	private static Base forward_base = null;
 	public static Base get_forward_base() {
 		if (forward_base_frame != Game.get_frame()) {
 			Base best = null;
@@ -389,7 +389,7 @@ public class BaseManager {
 		return best;
 	}
 	
-	static Point2d get_spore_placement_location(Base b) {
+	private static Point2d get_spore_placement_location(Base b) {
 		float x = 0;
 		float y = 0;
 		int total = 0;
@@ -477,7 +477,7 @@ public class BaseManager {
 		}
 	}
 	
-	static Point2d[] get_spore_triangle_placement_locations(Base b) {
+	private static Point2d[] get_spore_triangle_placement_locations(Base b) {
 		
 		Point2d[] results = new Point2d[2];
 		
@@ -546,7 +546,7 @@ public class BaseManager {
 			for (int x_offset = -10; x_offset < 11; x_offset++) {
 				for (int y_offset = -10; y_offset < 11; y_offset++) {
 					if ((average.x + x_offset) > 0 && (average.y + y_offset) > 0) {
-						Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
+						Point2d current = Point2d.of(average.x + x_offset, average.y + y_offset);
 						points.add(current);
 					}
 				}
@@ -556,7 +556,7 @@ public class BaseManager {
 			for (int x_offset = -10; x_offset < 11; x_offset++) {
 				for (int y_offset = -10; y_offset < 11; y_offset++) {
 					if ((average.x + x_offset) > 0 && (average.y + y_offset) > 0) {
-						Point2d current = Point2d.of((float) (average.x + x_offset), (float) (average.y + y_offset));
+						Point2d current = Point2d.of(average.x + x_offset, average.y + y_offset);
 						if (best == null || average.toPoint2d().distance(current) < average.toPoint2d().distance(best)) {
 							if (results.get((x_offset + 10) * 21 + (y_offset + 10) - skipped)) {
 								best = current;

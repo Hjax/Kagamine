@@ -17,13 +17,13 @@ import com.hjax.kagamine.game.HjaxUnit;
 
 public class ResourceTracking {
 	
-	private static Map<Tag, Integer> self_mined = new HashMap<>();
-	private static Map<Tag, Integer> start_value = new HashMap<>();
-	private static Map<Tag, ImmutablePair<Integer, Integer>> recent_value = new HashMap<>();
-	private static Map<Tag, ImmutablePair<Integer, Integer>> previous_value = new HashMap<>();
-	private static Set<Tag> gas = new HashSet<>();
-	private static Set<Tag> my_resources = new HashSet<>();
-	private static Set<Tag> enemy_resources = new HashSet<>();
+	private static final Map<Tag, Integer> self_mined = new HashMap<>();
+	private static final Map<Tag, Integer> start_value = new HashMap<>();
+	private static final Map<Tag, ImmutablePair<Integer, Integer>> recent_value = new HashMap<>();
+	private static final Map<Tag, ImmutablePair<Integer, Integer>> previous_value = new HashMap<>();
+	private static final Set<Tag> gas = new HashSet<>();
+	private static final Set<Tag> my_resources = new HashSet<>();
+	private static final Set<Tag> enemy_resources = new HashSet<>();
 	
 	public static void on_frame() {
 		
@@ -48,7 +48,7 @@ public class ResourceTracking {
 		}
 		
 		for (HjaxUnit u: GameInfoCache.get_units()) {
-			if (!u.is_snapshot() && Game.is_resource(u.type())) {
+			if (u.is_not_snapshot() && Game.is_resource(u.type())) {
 				if (recent_value.containsKey(u.tag())) {
 					if ((Game.get_frame() - recent_value.get(u.tag()).left > Constants.RESOURCE_UPDATE_TIMER) && Game.is_visible(u.location())) {
 						previous_value.put(u.tag(), recent_value.get(u.tag()));

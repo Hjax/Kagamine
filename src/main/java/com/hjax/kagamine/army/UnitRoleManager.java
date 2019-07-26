@@ -3,7 +3,6 @@ package com.hjax.kagamine.army;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
-import com.hjax.kagamine.build.Composition;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
@@ -14,14 +13,14 @@ import java.util.Map;
 
 public class UnitRoleManager {
 	
-	public static enum UnitRole {
+	public enum UnitRole {
 		ARMY,
 		DEFENDER,
-		HARASS;
+		HARASS
 	}
 	
-    public static Map<UnitRole, ArrayList<HjaxUnit>> groups = new HashMap<>();
-    public static Map<Tag, UnitRole> roles = new HashMap<>();
+    private static final Map<UnitRole, ArrayList<HjaxUnit>> groups = new HashMap<>();
+    private static final Map<Tag, UnitRole> roles = new HashMap<>();
 
     public static void on_frame() {
     	
@@ -51,9 +50,8 @@ public class UnitRoleManager {
     }
     
     public static ArrayList<HjaxUnit> get(UnitRole i) {
-    	ArrayList<HjaxUnit> result = new ArrayList<>();
-    	if (groups.containsKey(i)) {
-    		result.addAll(groups.get(i));
+		if (groups.containsKey(i)) {
+			ArrayList<HjaxUnit> result = new ArrayList<>(groups.get(i));
     		return result;
     	}
     	return new ArrayList<>();

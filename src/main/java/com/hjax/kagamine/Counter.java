@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class Counter {
 	
-	public static Map<String, Integer> values = new HashMap<>();
+	private static final Map<String, Integer> values = new HashMap<>();
 	
 	public static void increment(String s) {
 		values.put(s, values.getOrDefault(s, 0) + 1);

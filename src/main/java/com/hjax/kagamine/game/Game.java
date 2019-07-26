@@ -42,35 +42,35 @@ import com.hjax.kagamine.Counter;
 
 public class Game {
 	
-	static ActionInterface action;
-	static ObservationInterface observation;
-	static QueryInterface query;
+	private static ActionInterface action;
+	private static ObservationInterface observation;
+	private static QueryInterface query;
 	public static DebugInterface debug;
 	
-	static ResponseGameInfo game_info = null;
-	static Map<UnitType, UnitTypeData> unit_type_data = null;
-	static Map<Upgrade, UpgradeData> upgrade_data = null;
-	static Map<Ability, AbilityData> ability_data = null;
-	static Map<Effect, EffectData> effect_data = null;
+	private static ResponseGameInfo game_info = null;
+	private static Map<UnitType, UnitTypeData> unit_type_data = null;
+	private static Map<Upgrade, UpgradeData> upgrade_data = null;
+	private static Map<Ability, AbilityData> ability_data = null;
+	private static Map<Effect, EffectData> effect_data = null;
 	
-	static Map<Ability, Set<Tag>> normal_abilities = new HashMap<>();
-	static Map<Ability, Map<Point2d, Set<Tag>>> point_target_abilities = new HashMap<>();
-	static Map<Ability, Map<Unit, Set<Tag>>> unit_target_abilities = new HashMap<>();
+	private static final Map<Ability, Set<Tag>> normal_abilities = new HashMap<>();
+	private static final Map<Ability, Map<Point2d, Set<Tag>>> point_target_abilities = new HashMap<>();
+	private static final Map<Ability, Map<Unit, Set<Tag>>> unit_target_abilities = new HashMap<>();
 	
-	static boolean[][] visibility = new boolean[1000][1000];
-	static boolean[][] pathable = null;
-	static long last_visibility_update = -9999;
+	private static boolean[][] visibility = new boolean[1000][1000];
+	private static boolean[][] pathable = null;
+	private static long last_visibility_update = -9999;
 	
 	private static long frame = -1;
 
-	static int lines = 0;
+	private static int lines = 0;
 	
 	/**
 	 * The money that has been spent this frame
 	 * index 0 is minerals
 	 * index 1 is gas
 	 */
-	static int[] spending = new int[2];
+	private static int[] spending = new int[2];
 	
 	public static void start_frame(ObservationInterface o, ActionInterface a, QueryInterface q, DebugInterface d) {
 		
@@ -108,18 +108,14 @@ public class Game {
 		
 		lines = 0;
 	}
-	
-	public static void on_frame() {
 
-	}
-	
 	private static void calculate_visibility() {
 		
 		visibility = new boolean[1000][1000];
 		
 		for (UnitInPool u : get_units()) {
 			if (u.unit().getAlliance() == Alliance.SELF) {
-				int vision_radius = (int) Math.round(get_unit_type_data().get(u.unit().getType()).getSightRange().orElse((float) 0.0));
+				int vision_radius = Math.round(get_unit_type_data().get(u.unit().getType()).getSightRange().orElse((float) 0.0));
 				for (int x = (int) u.unit().getPosition().getX() - vision_radius; x < (int) u.unit().getPosition().getX() + vision_radius; x += 1) {
 					for (int y = (int) u.unit().getPosition().getY() - vision_radius; y < (int) u.unit().getPosition().getY() + vision_radius; y += 1) {
 						if (x > 0 && y > 0) {
@@ -180,7 +176,7 @@ public class Game {
 		action.sendActions();
 	}
 	
-	public static void unit_command(Unit u, Ability a, Unit t, boolean queued) {
+	private static void unit_command(Unit u, Ability a, Unit t, boolean queued) {
 		if (u.getOrders().size() > 0 && !queued) {
 			if (u.getOrders().get(0).getAbility() == a) {
 				if (u.getOrders().get(0).getTargetedUnitTag().isPresent()) {
@@ -206,7 +202,7 @@ public class Game {
 
 	}
 	
-	public static void unit_command(Unit u, Ability a, Point2d p, boolean queued) {
+	private static void unit_command(Unit u, Ability a, Point2d p, boolean queued) {
 		if (u.getOrders().size() > 0 && !queued) {
 			if (u.getOrders().get(0).getAbility() == a) {
 				if (u.getOrders().get(0).getTargetedWorldSpacePosition().isPresent()) {
@@ -232,7 +228,7 @@ public class Game {
 		
 	}
 	
-	public static void unit_command(Unit u, Ability a, boolean queued) {
+	private static void unit_command(Unit u, Ability a, boolean queued) {
 		Counter.increment(u.getType().toString());
 		
 		if (!queued) {
@@ -445,7 +441,7 @@ public class Game {
 	}
 	
 	public static boolean pathable(Point2d p) {
-		return pathable[(int) Math.round(p.getX())][(int) Math.round(p.getY())];
+		return pathable[Math.round(p.getX())][Math.round(p.getY())];
 	}
 	
 	public static float height(Point2d p) {
@@ -543,7 +539,7 @@ public class Game {
 	
 	public static void draw_line(Point2d a, Point2d b, Color c) {
 		if (Constants.DEBUG) {
-			debug.debugLineOut(Point.of(a.getX(), a.getY(), (float) (Game.height(a) + 1)), Point.of((float) (b.getX()), (float) (b.getY()), (float) (Game.height(b) + 1)), c);
+			debug.debugLineOut(Point.of(a.getX(), a.getY(), Game.height(a) + 1), Point.of(b.getX(), b.getY(), Game.height(b) + 1), c);
 		}
 	}
 	
@@ -570,7 +566,7 @@ public class Game {
 		return false;
 	}
 	
-	private static Map<UnitType, Boolean> is_combat_cache = new HashMap<>();
+	private static final Map<UnitType, Boolean> is_combat_cache = new HashMap<>();
 	public static boolean is_combat(UnitType ut) {
 		return is_combat_cache.computeIfAbsent(ut, u -> {
 			if (u == Units.ZERG_LURKER_MP || u == Units.ZERG_LURKER_MP_BURROWED) return true;
@@ -585,11 +581,11 @@ public class Game {
 		return u.toString().toLowerCase().contains("changeling");
 	}
 	
-	public static boolean is_gas(UnitType u) {
+	private static boolean is_gas(UnitType u) {
 		return u.toString().toLowerCase().contains("geyser");
 	}
 	
-	public static boolean is_mineral(UnitType u) {
+	private static boolean is_mineral(UnitType u) {
 		return u.toString().toLowerCase().contains("mineral");
 	}
 	
@@ -621,7 +617,7 @@ public class Game {
 		return Game.get_unit_type_data().get(u).getAbility().orElse(Abilities.INVALID);
 	}
 	
-	private static Map<Ability, List<UnitType>> uwa_cache = new HashMap<>();
+	private static final Map<Ability, List<UnitType>> uwa_cache = new HashMap<>();
 	public static List<UnitType> unit_with_ability(Ability a) {
 		if (uwa_cache.containsKey(a)) return uwa_cache.get(a);
 		List<UnitType> result = new ArrayList<>();
