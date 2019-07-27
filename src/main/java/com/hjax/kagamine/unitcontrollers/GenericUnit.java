@@ -69,6 +69,7 @@ public class GenericUnit {
 					}
 				}
 			}
+			return;
 		} else if (BaseDefense.assignments.containsKey(u.tag())) {
 			u.attack(BaseDefense.assignments.get(u.tag()));
 			return;
@@ -97,11 +98,7 @@ public class GenericUnit {
 		if (moveOut && !(Wisdom.shouldAttack() || Game.supply() >= Build.push_supply)) {
 			Base front = BaseManager.get_forward_base();
 			if (u.location().distance(front.location) > 8) {
-				if (BaseManager.closest_base(u.location()).has_enemy_command_structure()) {
-					u.move(BaseManager.closest_friendly_base(u.location()).location);
-				} else {
-					u.attack(front.location);
-				}
+				u.move(front.location);
 			}
 		}
 	}

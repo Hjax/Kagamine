@@ -64,9 +64,9 @@ public class Composition {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR);
 			}
 			if (Game.army_supply() < 80) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_HYDRALISK);
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			}
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_HYDRALISK,  Units.ZERG_INFESTOR, Units.ZERG_ULTRALISK);
+			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK,  Units.ZERG_INFESTOR, Units.ZERG_ULTRALISK);
 		}
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 			if (Wisdom.cannon_rush() || Wisdom.proxy_detected()) {

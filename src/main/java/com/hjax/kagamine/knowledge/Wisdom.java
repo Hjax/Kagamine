@@ -84,7 +84,7 @@ public class Wisdom {
 				shouldAttack = true;
 				return shouldAttack;
 			}
-			if (Game.supply() >= Build.push_supply) {
+			if (Game.supply() >= Build.push_supply || (shouldAttack && Game.supply() >= Build.push_supply - 20)) {
 				shouldAttack = true;
 				return true;
 			}

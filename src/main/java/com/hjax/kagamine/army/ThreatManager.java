@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Set;
 
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
+import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
@@ -46,16 +48,21 @@ public class ThreatManager {
 			if (only_medivacs) supply *= 10;
 			
 			if (closest.has_friendly_command_structure()) {
-				threat += supply * 2;
+				threat += supply * 1.5;
 				attacking_threat += supply;
 			} else if (closest.has_enemy_command_structure()) {
-				threat += supply * 0.5;
+				if (GameInfoCache.get_opponent_race() == Race.ZERG) {
+					threat += supply;
+				} else {
+					threat += supply * 0.5;
+				}
+				
 			} else {
-				threat += supply * 1.5;
+				threat += supply * 1.1;
 			}
-			
-			
 		}
+		
+		threat += 5 * EnemyModel.enemyBaseCount();
 	}
 	
 	public static double total_supply(List<HjaxUnit> list) {

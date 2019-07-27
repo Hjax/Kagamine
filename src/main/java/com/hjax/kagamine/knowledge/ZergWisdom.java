@@ -23,8 +23,6 @@ public class ZergWisdom {
 	public static int army_target() {
 		int target = Math.max((int) (ThreatManager.threat() - Math.min(EconomyManager.larva_rate(), 6)), 3);
 		
-		target -= 7 * (EnemyModel.enemyBaseCount() - 1);
-		target = Math.max(target, 4);
 		if (target < 10) {
 			if (Wisdom.all_in_detected()) target = 10;
 			if (Wisdom.proxy_detected()) target = 30;

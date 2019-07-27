@@ -38,20 +38,22 @@ public class BaseDefense {
 			float ground_supply = 0;
 			float flyer_supply = 0;
 			boolean needs_detection = false;
+			
+			for (HjaxUnit enemy : enemy_squad) {
+				if (enemy.flying()) {
+					flyer_supply += Game.supply(enemy.type());
+				} else {
+					ground_supply += Game.supply(enemy.type());
+				}
+				needs_detection = needs_detection || enemy.cloaked();
+			}
+			
 			average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
-				for (HjaxUnit enemy : enemy_squad) {
-					if (enemy.flying()) {
-						flyer_supply += Game.supply(enemy.type());
-					} else {
-						ground_supply += Game.supply(enemy.type());
-					}
-					needs_detection = needs_detection || enemy.cloaked();
-				}
 				if (needs_detection) detection_points++;
 				try {
 					if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 
-							((Game.closest_invisible(average).distance(average) > 12 && (flyer_supply + ground_supply) * 1.3 < Game.army_supply()) 
+							((Game.closest_invisible(average).distance(average) > 12 && ThreatManager.threat() * 1.2 < Game.army_supply() && !BaseManager.closest_base(average).has_enemy_command_structure()) 
 						   || b.location.distance(average) < Constants.THREAT_DISTANCE)) {
 						ArrayList<HjaxUnit> assigned = new ArrayList<>();
 						if (ground_supply > 70 || flyer_supply > 70) {
@@ -85,7 +87,6 @@ public class BaseDefense {
 								surroundCenter.put(u.tag(), center);
 							}
 							Game.draw_line(average, u.location(), Color.GREEN);
-							Game.draw_line(center, u.location(), Color.RED);
 						}
 						break;
 					}
