@@ -26,7 +26,7 @@ public class ArmyManager {
 	
 	public static Point2d army_center = Point2d.of(0, 0);
 	private static final List<HjaxUnit> main_army = new ArrayList<>();
-	public static boolean has_target = false;
+	public static boolean has_target;
 	static {
 		target = Scouting.closest_enemy_spawn();
 		has_target = true;
@@ -35,10 +35,10 @@ public class ArmyManager {
 	public static void on_frame() {
 		
 		main_army.clear();
-		
+
+		List<HjaxUnit> main_army_candidate = new ArrayList<>();
 		for (HjaxUnit u : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (u.type() == Units.ZERG_QUEEN) continue;
-			List<HjaxUnit> main_army_candidate = new ArrayList<>();
 			for (HjaxUnit second : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 				if (u.distance(second) < Constants.REGROUP_RADIUS) {
 					main_army_candidate.add(second);
@@ -48,6 +48,7 @@ public class ArmyManager {
 				main_army.clear();
 				main_army.addAll(main_army_candidate);
 			}
+			main_army_candidate.clear();
 		}
 		
 		army_center = EnemySquadManager.average_point(main_army);
@@ -88,7 +89,7 @@ public class ArmyManager {
 			}
 		}
 
-		if (Game.completed_army_supply() * 2 < (ThreatManager.seen.size()) && ThreatManager.seen.size() < 15) {
+		if (Game.completed_army_supply() < (ThreatManager.attacking_supply()) && ThreatManager.attacking_supply() < 15) {
 			if (!Wisdom.worker_rush()) {
 				if (GameInfoCache.get_opponent_race() == Race.ZERG || (!Wisdom.cannon_rush() && !Wisdom.proxy_detected())) {
 					enemy_loop: for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {

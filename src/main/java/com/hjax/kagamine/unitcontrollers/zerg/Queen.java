@@ -45,7 +45,7 @@ public class Queen {
 			}
 		}
 
-		if (!Wisdom.cannon_rush() && !ThreatManager.under_attack()) {
+		if (!Wisdom.cannon_rush() && (ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply())) {
 			if (u.idle() && ((u.energy() >= 25 && GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) < 25) || u.energy() >= 75)) {
 				Point2d p = Creep.get_creep_point();
 				if (p != null) {

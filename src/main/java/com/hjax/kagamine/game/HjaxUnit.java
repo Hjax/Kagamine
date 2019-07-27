@@ -244,5 +244,9 @@ public class HjaxUnit {
 		}
 		return true;
 	}
+	
+	public double supply() {
+		return Game.get_unit_type_data().get(type()).getFoodRequired().orElse(0f);
+	}
 }
 

@@ -37,8 +37,8 @@ import com.hjax.kagamine.unitcontrollers.zerg.Mutalisk;
 
 class Kagamine extends S2Agent {
 
-	private static double time_sum = 0;
-	private static int frame = 0;
+	private static double time_sum;
+	private static int frame;
 	private static double max = -1;
 
 	public void onGameFullStart() {
@@ -73,6 +73,7 @@ class Kagamine extends S2Agent {
 			ResourceTracking.on_frame();
 			EnemyModel.on_frame();
 			EnemySquadManager.on_frame();
+			ThreatManager.on_frame();
 			BaseDefense.on_frame();
 			MiningOptimizer.on_frame();
 			BanelingAvoidance.on_frame();
@@ -81,7 +82,6 @@ class Kagamine extends S2Agent {
 			Larva.start_frame();
 			Scouting.on_frame();
 			ArmyManager.on_frame();
-			ThreatManager.on_frame();
 			BaseManager.on_frame();
 			EconomyManager.on_frame();
 			Creep.start_frame();

@@ -24,8 +24,8 @@ public class BaseDefense {
 	public static final Map<Tag, Point2d> assignments = new HashMap<>();
 	public static final Map<Tag, Point2d> surroundCenter = new HashMap<>();
 	
-	private static Point2d defense_point = null;
-	public static int detection_points = 0;
+	private static Point2d defense_point;
+	public static int detection_points;
 	
 	public static void on_frame() {
 		defense_point = null;
@@ -33,11 +33,12 @@ public class BaseDefense {
 		assignments.clear();
 		surroundCenter.clear();
 		detection_points = 0;
+		Point2d average;
 		for (Set<HjaxUnit> enemy_squad : EnemySquadManager.enemy_squads) {
 			float ground_supply = 0;
 			float flyer_supply = 0;
 			boolean needs_detection = false;
-			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			for (Base b : BaseManager.bases) {
 				for (HjaxUnit enemy : enemy_squad) {
 					if (enemy.flying()) {

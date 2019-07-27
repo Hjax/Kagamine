@@ -21,9 +21,8 @@ import com.hjax.kagamine.game.RaceInterface;
 public class ZergWisdom {
 	
 	public static int army_target() {
-		int target = Math.max((int) (EnemyModel.enemyArmy() * 1.4 - Math.min(EconomyManager.larva_rate(), 6)), 3);
-		// queens dont count
-		//target += GameInfoCache.count(Units.ZERG_QUEEN) * 2;
+		int target = Math.max((int) (ThreatManager.threat() - Math.min(EconomyManager.larva_rate(), 6)), 3);
+		
 		target -= 7 * (EnemyModel.enemyBaseCount() - 1);
 		target = Math.max(target, 4);
 		if (target < 10) {
@@ -40,7 +39,7 @@ public class ZergWisdom {
 		if (Wisdom.ahead()) return true;
 
 		
-		if (Game.army_supply() < army_target() || (ThreatManager.under_attack() && Game.army_supply() < ThreatManager.seen.size() * 3)) {
+		if (Game.army_supply() < army_target() || (ThreatManager.attacking_supply() > GameInfoCache.attacking_army_supply())) {
 			if (ZergBuildExecutor.next_army_unit() != Units.INVALID) {
 				return true;
 			}
@@ -96,7 +95,7 @@ public class ZergWisdom {
 				return false;
 			}
 			
-			if (ThreatManager.under_attack() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 40) return false; 
+			if ((ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply()) && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 40) return false; 
 			if (GameInfoCache.count(RaceInterface.get_race_worker()) < 35 && GameInfoCache.count(Units.ZERG_LARVA) > 0 && GameInfoCache.count(Units.ZERG_QUEEN) < 2 && GameInfoCache.count(RaceInterface.get_race_worker()) > 15) return false;
 
 			return GameInfoCache.count(Units.ZERG_QUEEN) < queen_target() && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0;

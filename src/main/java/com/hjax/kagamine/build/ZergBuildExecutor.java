@@ -72,7 +72,7 @@ public class ZergBuildExecutor {
 				pulled_off_gas = true;
 				for (HjaxUnit drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 					if (drone.ability() == Abilities.HARVEST_GATHER && 
-							GameInfoCache.get_unit((drone.orders().get(0).getTargetedUnitTag()).get()).type() == Units.ZERG_EXTRACTOR) {
+							drone.orders().get(0).getTargetedUnitTag().isPresent() && GameInfoCache.get_unit((drone.orders().get(0).getTargetedUnitTag()).get()).type() == Units.ZERG_EXTRACTOR) {
 						drone.stop();
 					}
 				}
@@ -209,7 +209,7 @@ public class ZergBuildExecutor {
 				}
 			}
 
-			if (!ThreatManager.under_attack() || Wisdom.cannon_rush() || Wisdom.proxy_detected() || GameInfoCache.attacking_army_supply() > 50) {
+			if ((ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply()) || Wisdom.cannon_rush() || Wisdom.proxy_detected() || GameInfoCache.attacking_army_supply() > 50) {
 				if (Game.minerals() > 25 && Game.gas() > 75 && GameInfoCache.count_friendly(Units.ZERG_ROACH) > 0 && Composition.comp().contains(Units.ZERG_RAVAGER)) {
 					for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ROACH)) {
 						unit.use_ability(Abilities.MORPH_RAVAGER);

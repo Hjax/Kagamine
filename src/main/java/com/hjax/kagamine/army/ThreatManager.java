@@ -1,44 +1,77 @@
 package com.hjax.kagamine.army;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.github.ocraft.s2client.protocol.unit.Tag;
-import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
 public class ThreatManager {
-	public static final Map<Tag, Integer> seen = new HashMap<>();
+	
+	public static double threat = 0;
+	public static double attacking_threat = 0;
+	
 	public static void on_frame() {
-		Set<Tag> to_remove = new HashSet<>();
-		for (Tag t: seen.keySet()) {
-			seen.put(t, seen.get(t) + 1);
-			if (GameInfoCache.get_unit(t) == null || !GameInfoCache.get_unit(t).alive() || seen.get(t) > (Constants.FPS * 20)) {
-				to_remove.add(t);
-			}
-		}
-		for (Tag t: to_remove) {
-			seen.remove(t);
-		}
-		for (HjaxUnit unit : GameInfoCache.get_units(Alliance.ENEMY)) {
-			for (Base b: BaseManager.bases) {
-				if (!b.has_friendly_command_structure()) continue;
-				if (unit.distance(b.location) < Constants.THREAT_DISTANCE && unit.type() != Units.PROTOSS_ADEPT_PHASE_SHIFT) {
-					seen.put(unit.tag(), 0);
+		Point2d center;
+		
+		threat = 0;
+		attacking_threat = 0;
+		
+		for (Set<HjaxUnit> squad : EnemySquadManager.enemy_squads) {
+			center = EnemySquadManager.average_point(new ArrayList<>(squad));
+			Base closest = null;
+			for (Base b : BaseManager.bases) {
+				if (closest == null || b.location.distance(center) < closest.location.distance(center)) {
+					closest = b;
 				}
 			}
+			
+			double supply = total_supply(new ArrayList<>(squad));
+			
+			boolean only_medivacs = true;
+			
+			for (HjaxUnit u: squad) {
+				if (u.type() != Units.TERRAN_MEDIVAC) {
+					only_medivacs = false;
+					break;
+				}
+			}
+			
+			if (only_medivacs) supply *= 10;
+			
+			if (closest.has_friendly_command_structure()) {
+				threat += supply * 2;
+				attacking_threat += supply;
+			} else if (closest.has_enemy_command_structure()) {
+				threat += supply * 0.5;
+			} else {
+				threat += supply * 1.5;
+			}
+			
+			
 		}
 	}
-	public static boolean under_attack() {
-		return seen.size() >= 3;
+	
+	public static double total_supply(List<HjaxUnit> list) {
+		int result = 0;
+		for (HjaxUnit u : list) {
+			result += u.supply();
+		}
+		return result;
+	}
+	
+	public static double threat() {
+		return threat;
+	}
+	
+	public static double attacking_supply() {
+		return attacking_threat;
 	}
 	
 	public static boolean is_safe(Point2d p) {
