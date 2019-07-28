@@ -24,6 +24,8 @@ public class BaseDefense {
 	public static final Map<Tag, Point2d> assignments = new HashMap<>();
 	public static final Map<Tag, Point2d> surroundCenter = new HashMap<>();
 	
+	private static Map<Set<HjaxUnit>, Boolean> assigned = new HashMap<>();
+	
 	private static Point2d defense_point;
 	public static int detection_points;
 	
@@ -33,72 +35,117 @@ public class BaseDefense {
 		assignments.clear();
 		surroundCenter.clear();
 		detection_points = 0;
-		Point2d average;
+
+		assigned.clear();
+		
+		
 		for (Set<HjaxUnit> enemy_squad : EnemySquadManager.enemy_squads) {
-			float ground_supply = 0;
-			float flyer_supply = 0;
-			boolean needs_detection = false;
 			
-			for (HjaxUnit enemy : enemy_squad) {
-				if (enemy.flying()) {
-					flyer_supply += Game.supply(enemy.type());
-				} else {
-					ground_supply += Game.supply(enemy.type());
-				}
-				needs_detection = needs_detection || enemy.cloaked();
-			}
+			assigned.put(enemy_squad, false);
 			
-			average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			
 			for (Base b : BaseManager.bases) {
-				if (needs_detection) detection_points++;
 				try {
-					if ((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 
-							((Game.closest_invisible(average).distance(average) > 12 && ThreatManager.threat() * 1.2 < Game.army_supply() && !BaseManager.closest_base(average).has_enemy_command_structure()) 
-						   || b.location.distance(average) < Constants.THREAT_DISTANCE)) {
-						ArrayList<HjaxUnit> assigned = new ArrayList<>();
-						if (ground_supply > 70 || flyer_supply > 70) {
-							defense_point = average;
-							continue;
-						}
-						float assigned_supply = 0;
-						while (assigned_supply < ground_supply * 1.5) {
-							HjaxUnit current = closest_free(average, false);
-							if (current == null) current = closest_free(average, true);
-							if (current == null) break;
-							assigned_supply += Game.supply(current.type());
-							assigned.add(current);
-						}
-						assigned_supply = 0;
-						while (assigned_supply < flyer_supply) {
-							HjaxUnit current = closest_free(average, true);
-							if (current == null) break;
-							assigned_supply += Game.supply(current.type());
-							assigned.add(current);
-						}
-						if (needs_detection) {
-							HjaxUnit current = closest_free_detection(average);
-							if (current == null) continue;
-							assigned.add(current);
-						}
-						Point2d center = average_point_zergling(assigned, average);
-						for (HjaxUnit u: assigned) {
-							assignments.put(u.tag(), average);
-							if (center.distance(Point2d.of(0, 0)) > 1 && enemy_squad.size() * 2 <= assigned.size()) {
-								surroundCenter.put(u.tag(), center);
-							}
-							Game.draw_line(average, u.location(), Color.GREEN);
-						}
-						break;
-					}
+					if (((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 
+						 b.location.distance(average) < Constants.THREAT_DISTANCE)) {
+						assign_defense(enemy_squad);
+						assigned.put(enemy_squad, true);
+
+					} 
 				} catch (Exception ignored) {
 					
 				}
 			}
 		}
+		
+		for (Set<HjaxUnit> enemy_squad : EnemySquadManager.enemy_squads) {
+			if (assigned.get(enemy_squad)) continue;
+			
+			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			
+			if ((Game.closest_invisible(average).distance(average) > 12 && 
+					BaseManager.closest_base(average).has_friendly_command_structure())) {
+						
+				assign_defense(enemy_squad);
+				assigned.put(enemy_squad, true);
+				
+			}
+		}
+		
+		for (Set<HjaxUnit> enemy_squad : EnemySquadManager.enemy_squads) {
+			if (assigned.get(enemy_squad)) continue;
+			
+			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			
+			if ((Game.closest_invisible(average).distance(average) > 12 && 
+					ThreatManager.threat() * 1.1 < Game.army_supply() && 
+					!BaseManager.closest_base(average).has_enemy_command_structure())) {
+						
+				assign_defense(enemy_squad);
+				assigned.put(enemy_squad, true);
+				
+			}
+		}
+		
 		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (used.contains(ally.tag())) {
 				UnitRoleManager.add(ally, UnitRoleManager.UnitRole.DEFENDER);
 			}
+		}
+	}
+	
+	private static void assign_defense(Set<HjaxUnit> enemy_squad) {
+		float ground_supply = 0;
+		float flyer_supply = 0;
+		boolean needs_detection = false;
+		
+		Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+		
+		for (HjaxUnit enemy : enemy_squad) {
+			if (enemy.flying()) {
+				flyer_supply += Game.supply(enemy.type());
+			} else {
+				ground_supply += Game.supply(enemy.type());
+			}
+			needs_detection = needs_detection || enemy.cloaked();
+		}
+		
+		if (needs_detection) detection_points++;
+		
+		ArrayList<HjaxUnit> assigned = new ArrayList<>();
+		if (ground_supply > 70 || flyer_supply > 70) {
+			defense_point = average;
+			return;
+		}
+		
+		float assigned_supply = 0;
+		while (assigned_supply < ground_supply * 1.5) {
+			HjaxUnit current = closest_free(average, false);
+			if (current == null) current = closest_free(average, true);
+			if (current == null) break;
+			assigned_supply += Game.supply(current.type());
+			assigned.add(current);
+		}
+		assigned_supply = 0;
+		while (assigned_supply < flyer_supply) {
+			HjaxUnit current = closest_free(average, true);
+			if (current == null) break;
+			assigned_supply += Game.supply(current.type());
+			assigned.add(current);
+		}
+		if (needs_detection) {
+			HjaxUnit current = closest_free_detection(average);
+			if (current == null) return;
+			assigned.add(current);
+		}
+		Point2d center = average_point_zergling(assigned, average);
+		for (HjaxUnit u: assigned) {
+			assignments.put(u.tag(), average);
+			if (center.distance(Point2d.of(0, 0)) > 1 && enemy_squad.size() * 2 <= assigned.size()) {
+				surroundCenter.put(u.tag(), center);
+			}
+			Game.draw_line(average, u.location(), Color.GREEN);
 		}
 	}
 	

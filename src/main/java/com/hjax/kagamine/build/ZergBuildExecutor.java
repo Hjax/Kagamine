@@ -84,7 +84,7 @@ public class ZergBuildExecutor {
 			}
 			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count() < 3) {
 				if (GameInfoCache.get_opponent_race() != Race.ZERG) {
-					if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush() && Build.scout) {
+					if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush()) {
 						if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count() > 1 || Wisdom.proxy_detected())) {
 							if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
 								if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
@@ -146,12 +146,12 @@ public class ZergBuildExecutor {
 			UpgradeManager.on_frame();
 
 			for (UnitType u: Composition.comp()) {
-				if (!pulled_off_gas && ((GameInfoCache.count(Units.ZERG_DRONE) > Build.tech_drones || (Wisdom.all_in_detected() && GameInfoCache.count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && GameInfoCache.get_opponent_race() == Race.ZERG && GameInfoCache.count(Units.ZERG_DRONE) >= 16))) {
+				if (!pulled_off_gas && ((GameInfoCache.count(Units.ZERG_DRONE) > 25 || Wisdom.worker_rush() || Wisdom.cannon_rush() || (Wisdom.all_in_detected() && GameInfoCache.count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && GameInfoCache.get_opponent_race() == Race.ZERG && GameInfoCache.count(Units.ZERG_DRONE) >= 16))) {
 					if (Balance.has_tech_requirement(u)) {
 						if (!(GameInfoCache.count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_INFESTATION_PIT && (BaseManager.base_count() < 4 || GameInfoCache.count(Units.ZERG_DRONE) < 60)) continue;
 							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
-								if (Build.two_base_tech || (BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 40)) {
+								if ((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 40)) {
 									if (Game.can_afford(Balance.next_tech_requirement(u))) {
 										for (Base b: BaseManager.bases) {
 											if (b.has_friendly_command_structure() && b.command_structure.done() && b.command_structure.idle()) {
@@ -270,7 +270,7 @@ public class ZergBuildExecutor {
 				}
 			}
 
-			if ((GameInfoCache.count(Units.ZERG_DRONE) >= Wisdom.worker_cap() || GameInfoCache.count(Units.ZERG_HATCHERY) >= Build.ideal_bases && Build.ideal_bases > 0) && !Wisdom.should_build_workers() && BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) >= Wisdom.worker_cap()) && !Wisdom.should_build_workers() && BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
 				if ((Game.gas() < 400 && GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) == 0) || Game.gas() < 150) {
 					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
 						BaseManager.build(Units.ZERG_EXTRACTOR);

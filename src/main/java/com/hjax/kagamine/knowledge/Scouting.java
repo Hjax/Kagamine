@@ -56,10 +56,10 @@ public class Scouting {
 				}
 			}
 		}
-		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 16 && Build.scout) {
+		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 16) {
 			assign_scout();
 		}
-		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 12 && spawns.size() >= 3 && Build.scout) {
+		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 12 && spawns.size() >= 3) {
 			assign_scout();
 		}
 		if (Wisdom.confused() && Game.army_supply() < 20 && patrol_base < 7) {

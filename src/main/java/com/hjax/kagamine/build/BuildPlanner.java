@@ -27,11 +27,6 @@ public class BuildPlanner {
 			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
 					new ImmutablePair<>(14, Units.ZERG_SPAWNING_POOL)));
 			Build.ideal_gases = 0;
-			Build.ideal_bases = 1;
-			Build.scout = false;
-			Build.push_supply = 30;
-			Build.ideal_workers = 14;
-			Build.tech_drones = 12;
 			is_all_in = true;
 		}
 		
@@ -67,12 +62,6 @@ public class BuildPlanner {
 		is_all_in = true;
 		Build.build = new ArrayList<>();
 				Build.ideal_gases = 2;
-				Build.ideal_bases = 1;
-				Build.max_queens = 1;
-				Build.tech_drones = 16;
-				Build.scout = true;
-				Build.push_supply = 40;
-				Build.ideal_workers = 22;
 				Build.pull_off_gas = false;
 	}
 	
@@ -86,52 +75,31 @@ public class BuildPlanner {
 						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_bases = -1;
-				Build.push_supply = 195;
-				Build.ideal_workers = 80;
 				Build.ideal_gases = 9;
-				Build.tech_drones = 25;
-				Build.pull_off_gas = true;
-				Build.max_queens = -1;			
+				Build.pull_off_gas = true;	
 				break;
 			case ZERG:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
 						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_bases = -1;
-				Build.scout = true;
-				Build.push_supply = 150;
 				Build.ideal_gases = 6;
-				Build.ideal_workers = 80;
 				Build.pull_off_gas = true;
-				Build.tech_drones = 25;
-				Build.max_queens = 4;		
 				break;			
 			case TERRAN:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
 						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_bases = -1;
-				Build.scout = true;
 				Build.ideal_gases = 9;
-				Build.push_supply = 195;
-				Build.ideal_workers = 85;
-				Build.max_queens = -1;
 				Build.pull_off_gas = true;
-				Build.tech_drones = 25;
 				break;
 			default:
 				Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
 						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_bases = -1;
-				Build.scout = true;
 				Build.ideal_gases = 8;
-				Build.push_supply = 190;
-				Build.ideal_workers = 70;
 				Build.pull_off_gas = true;	
 			}
 		} else {
@@ -142,11 +110,7 @@ public class BuildPlanner {
 					new ImmutablePair<>(20, Units.PROTOSS_CYBERNETICS_CORE),
 					new ImmutablePair<>(21, Units.PROTOSS_ASSIMILATOR),
 					new ImmutablePair<>(22, Units.PROTOSS_PYLON)));
-			Build.ideal_bases = -1;
-			Build.scout = true;
 			Build.ideal_gases = 2;
-			Build.push_supply = 150;
-			Build.ideal_workers = 65;
 			Build.pull_off_gas = true;	
 		}
 	}

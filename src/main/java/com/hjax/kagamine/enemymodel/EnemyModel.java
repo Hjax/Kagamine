@@ -129,6 +129,7 @@ public class EnemyModel {
 				result += Game.supply(ut) * counts.get(ut);
 			}
 		}
+		
 		return result;
 	}
 	

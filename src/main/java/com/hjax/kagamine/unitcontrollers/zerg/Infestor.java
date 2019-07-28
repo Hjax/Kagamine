@@ -85,7 +85,9 @@ public class Infestor {
 			}
 		}
 		if (best_target != null) {
-			fungal_frames.put(best_target.location(), Game.get_frame());
+			if (u.distance(best_target) < 10) {
+				fungal_frames.put(best_target.location(), Game.get_frame());
+			}
 			u.use_ability(Abilities.EFFECT_FUNGAL_GROWTH, best_target.location());
 		}
 		
@@ -109,9 +111,12 @@ public class Infestor {
 			}
 			
 			if (enemies.size() > ally_count * 1.2 || enemies.size() > 20 || pf) {
-				u.use_ability(Abilities.EFFECT_INFESTED_TERRANS, 
-						Vector2d.of(u.location()).add(
-								Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(EnemySquadManager.average_point(enemies))).scale(5)).toPoint2d());
+				for (double i = 0; i < u.energy() / 25; i++) {
+					u.use_ability(Abilities.EFFECT_INFESTED_TERRANS, 
+							Vector2d.of(u.location()).add(
+									Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(EnemySquadManager.average_point(enemies))).scale(5)).toPoint2d());
+
+				}
 			}
 		}
 		

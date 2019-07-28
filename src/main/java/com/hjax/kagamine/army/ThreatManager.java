@@ -54,7 +54,7 @@ public class ThreatManager {
 				if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 					threat += supply;
 				} else {
-					threat += supply * 0.5;
+					threat += supply * 0.7;
 				}
 				
 			} else {
@@ -62,11 +62,15 @@ public class ThreatManager {
 			}
 		}
 		
+		int[] res = EnemyModel.resourceEstimate();
+		threat += (Math.max(res[0], 0) / 100) * 0.5;
+		
 		threat += 5 * EnemyModel.enemyBaseCount();
+		
 	}
 	
 	public static double total_supply(List<HjaxUnit> list) {
-		int result = 0;
+		double result = 0;
 		for (HjaxUnit u : list) {
 			result += u.supply();
 		}

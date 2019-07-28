@@ -84,7 +84,7 @@ public class Wisdom {
 				shouldAttack = true;
 				return shouldAttack;
 			}
-			if (Game.supply() >= Build.push_supply || (shouldAttack && Game.supply() >= Build.push_supply - 20)) {
+			if (Game.supply() >= 190 || (shouldAttack && Game.supply() >= 150)) {
 				shouldAttack = true;
 				return true;
 			}
@@ -92,7 +92,7 @@ public class Wisdom {
 				shouldAttack = false;
 				return false;
 			}
-			if (EnemyModel.enemyWorkers() < GameInfoCache.count(RaceInterface.get_race_worker()) - 20) {
+			if (EnemyModel.enemyWorkers() < GameInfoCache.count(RaceInterface.get_race_worker()) - 20 && Game.army_supply() < EnemyModel.enemyArmy() * 2.4) {
 				shouldAttack = false;
 				return false;
 			}
@@ -150,7 +150,6 @@ public class Wisdom {
 	}
 	
 	public static int worker_cap() {
-		int drone_target = 100;
-		return Math.min(drone_target, Build.ideal_workers);
+		return 85;
 	}
 }

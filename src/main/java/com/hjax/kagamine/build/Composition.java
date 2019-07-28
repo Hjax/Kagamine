@@ -39,7 +39,7 @@ public class Composition {
 				}
 			}
 		}
-		
+
 		if (Game.race() == Race.PROTOSS) {
 			return Arrays.asList(Units.PROTOSS_ZEALOT, Units.PROTOSS_STALKER);
 		}
@@ -109,7 +109,7 @@ public class Composition {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_QUEEN);
 			}
 			if (Game.army_supply() < 60) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
 		}

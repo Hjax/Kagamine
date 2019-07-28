@@ -54,17 +54,13 @@ public class ZergWisdom {
 	
 	public static int queen_target() {
 		int target = 0;
-		if (Build.max_queens == -1) {
-			if (BaseManager.base_count() < 3) {
-				target = BaseManager.base_count() - 1;
-			} else {
-				target = Math.min(BaseManager.base_count() + 5, 10);
-			}
-			if (Game.minerals() > 400) {
-				target += 1;
-			}
+		if (BaseManager.base_count() < 3) {
+			target = BaseManager.base_count() - 1;
 		} else {
-			target = Build.max_queens;
+			target = Math.min(BaseManager.base_count() + 5, 10);
+		}
+		if (Game.minerals() > 400) {
+			target += 1;
 		}
 		if (Game.supply() > 120) target = Math.min(BaseManager.base_count() + 2, 7);
 		if (Wisdom.proxy_detected()) {
@@ -119,7 +115,7 @@ public class ZergWisdom {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (BaseManager.base_count() < 3 && GameInfoCache.count(RaceInterface.get_race_worker()) > 23) return true;
 		//if (EconomyManager.total_minerals() + GameInfoCache.in_progress(Units.ZERG_HATCHERY) * 16 + BaseManager.active_gases() * 3 + 16 < GameInfoCache.count(Units.ZERG_DRONE)) return true;
-		return EconomyManager.free_minerals() <= 6 && ((BaseManager.base_count() < Build.ideal_bases) || (Build.ideal_bases == -1));
+		return EconomyManager.free_minerals() <= 6;
 	}
 
 }

@@ -649,6 +649,6 @@ public class Game {
 	}
 	
 	public static boolean is_free_unit(UnitType u) {
-		return u == Units.PROTOSS_INTERCEPTOR || u == Units.TERRAN_AUTO_TURRET || u == Units.ZERG_BROODLING || u == Units.ZERG_LOCUS_TMP || u == Units.ZERG_INFESTOR_TERRAN;
+		return u == Units.PROTOSS_INTERCEPTOR || u == Units.ZERG_LOCUS_TMP_FLYING || u == Units.ZERG_INFESTED_TERRANS_EGG ||  u == Units.TERRAN_AUTO_TURRET || u == Units.ZERG_BROODLING || u == Units.ZERG_LOCUS_TMP || u == Units.ZERG_INFESTOR_TERRAN;
 	}
 }
