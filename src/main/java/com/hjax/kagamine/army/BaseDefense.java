@@ -13,6 +13,7 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.army.UnitRoleManager.UnitRole;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
@@ -28,6 +29,8 @@ public class BaseDefense {
 	
 	private static Point2d defense_point;
 	public static int detection_points;
+	public static int unassigned_ground = 0;
+	public static int unassigned_air = 0;
 	
 	public static void on_frame() {
 		defense_point = null;
@@ -37,6 +40,14 @@ public class BaseDefense {
 		detection_points = 0;
 
 		assigned.clear();
+		
+		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
+			if (Game.hits_air(ally.type())) {
+				unassigned_air += ally.supply();
+			} else {
+				unassigned_ground += ally.supply();
+			}
+		}
 		
 		
 		for (Set<HjaxUnit> enemy_squad : EnemySquadManager.enemy_squads) {
@@ -54,7 +65,8 @@ public class BaseDefense {
 
 					} 
 				} catch (Exception ignored) {
-					
+					ignored.printStackTrace();
+					Game.write_text("Unable to defend 1", EnemySquadManager.average_point(new ArrayList<>(enemy_squad)));
 				}
 			}
 		}
@@ -63,13 +75,17 @@ public class BaseDefense {
 			if (assigned.get(enemy_squad)) continue;
 			
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
-			
-			if ((Game.closest_invisible(average).distance(average) > 12 && 
-					BaseManager.closest_base(average).has_friendly_command_structure())) {
-						
-				assign_defense(enemy_squad);
-				assigned.put(enemy_squad, true);
-				
+			try {
+				if ((Game.closest_invisible(average).distance(average) > 7 && 
+						BaseManager.closest_base(average).has_friendly_command_structure())) {
+							
+					assign_defense(enemy_squad);
+					assigned.put(enemy_squad, true);
+					
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				Game.write_text("Unable to defend 2", EnemySquadManager.average_point(new ArrayList<>(enemy_squad)));
 			}
 		}
 		
@@ -78,21 +94,26 @@ public class BaseDefense {
 			
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			
-			if ((Game.closest_invisible(average).distance(average) > 12 && 
-					ThreatManager.threat() * 1.1 < Game.army_supply() && 
-					!BaseManager.closest_base(average).has_enemy_command_structure())) {
-						
-				assign_defense(enemy_squad);
-				assigned.put(enemy_squad, true);
-				
+			double enemy_strength = ThreatManager.total_supply(new ArrayList<>(enemy_squad));
+			double my_strength = ThreatManager.total_supply(UnitRoleManager.get(UnitRole.ARMY));
+			
+			try {
+				if ((Game.closest_invisible(average).distance(average) > 7 && 
+						my_strength > enemy_strength * 1.2 && 
+						!BaseManager.closest_base(average).has_enemy_command_structure())) {
+							
+					assign_defense(enemy_squad);
+					assigned.put(enemy_squad, true);
+					
+				} 
+			} catch (Exception e) {
+				e.printStackTrace();
+				Game.write_text("Unable to defend 3", EnemySquadManager.average_point(new ArrayList<>(enemy_squad)));
 			}
+				
+			
 		}
 		
-		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
-			if (used.contains(ally.tag())) {
-				UnitRoleManager.add(ally, UnitRoleManager.UnitRole.DEFENDER);
-			}
-		}
 	}
 	
 	private static void assign_defense(Set<HjaxUnit> enemy_squad) {
@@ -124,14 +145,14 @@ public class BaseDefense {
 			HjaxUnit current = closest_free(average, false);
 			if (current == null) current = closest_free(average, true);
 			if (current == null) break;
-			assigned_supply += Game.supply(current.type());
+			assigned_supply += Game.supply(current.type()) * (current.health() / current.health_max());
 			assigned.add(current);
 		}
 		assigned_supply = 0;
 		while (assigned_supply < flyer_supply) {
 			HjaxUnit current = closest_free(average, true);
 			if (current == null) break;
-			assigned_supply += Game.supply(current.type());
+			assigned_supply += Game.supply(current.type()) * (current.health() / current.health_max());
 			assigned.add(current);
 		}
 		if (needs_detection) {
@@ -177,6 +198,7 @@ public class BaseDefense {
 			}
 		}
 		if (best != null) {
+			UnitRoleManager.add(best, UnitRoleManager.UnitRole.DEFENDER);
 			used.add(best.tag());
 		}
 		return best;

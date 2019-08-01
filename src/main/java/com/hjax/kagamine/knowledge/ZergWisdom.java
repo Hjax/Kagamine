@@ -34,7 +34,7 @@ public class ZergWisdom {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
-		if (Wisdom.ahead()) return true;
+		if (Wisdom.ahead() && Wisdom.shouldAttack()) return true;
 
 		
 		if (Game.army_supply() < army_target() || (ThreatManager.attacking_supply() > GameInfoCache.attacking_army_supply())) {
@@ -69,6 +69,7 @@ public class ZergWisdom {
 				target += 1;
 			}
 		}
+		
 		return target;
 	}
 	

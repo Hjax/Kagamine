@@ -63,7 +63,7 @@ public class ThreatManager {
 		}
 		
 		int[] res = EnemyModel.resourceEstimate();
-		threat += (Math.max(res[0], 0) / 100) * 0.5;
+		threat += (Math.max(res[0], 0) / 100) * 0.25;
 		
 		threat += 5 * EnemyModel.enemyBaseCount();
 		

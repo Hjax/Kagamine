@@ -10,6 +10,7 @@ import com.hjax.kagamine.build.Build;
 import com.hjax.kagamine.build.Composition;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
+import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Wisdom;
@@ -33,6 +34,7 @@ public class Queen {
 			GenericUnit.on_frame(u, true);
 			return;
 		}
+		
 		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) > 3 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) < 2 || Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
 			for (Base b : BaseManager.bases) {
 				if (GameInfoCache.count_friendly(Units.ZERG_LARVA) < BaseManager.base_count() * 3) {
@@ -45,15 +47,17 @@ public class Queen {
 			}
 		}
 
-		if (!Wisdom.cannon_rush() && (ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply())) {
-			if (u.idle() && ((u.energy() >= 25 && GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) < 25) || u.energy() >= 75)) {
-				Point2d p = Creep.get_creep_point();
-				if (p != null) {
-					u.use_ability(Abilities.BUILD_CREEP_TUMOR, p);
-					return;
+		if (tumors == 0 || GameInfoCache.count_enemy(Units.TERRAN_REAPER) < 4 || Game.army_supply() > 30) {
+			if (!Wisdom.cannon_rush() && (ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply())) {
+				if (u.idle() && ((u.energy() >= 25 && GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) < 25) || u.energy() >= 75)) {
+					Point2d p = Creep.get_creep_point();
+					if (p != null) {
+						u.use_ability(Abilities.BUILD_CREEP_TUMOR, p);
+						return;
+					}
 				}
-			}
-		} 
+			} 
+		}
 		
 		if (u.ability() == Abilities.ATTACK || u.ability() == Abilities.ATTACK_ATTACK) {
 			if (!u.orders().get(0).getTargetedUnitTag().isPresent()) {

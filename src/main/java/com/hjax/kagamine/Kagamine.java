@@ -115,6 +115,8 @@ class Kagamine extends S2Agent {
 			Game.write_text("Next Army Unit: " + ZergBuildExecutor.next_army_unit());
 			Game.write_text("Army target: " + ZergWisdom.army_target());
 			Game.write_text("Should make units: " + ZergWisdom.should_build_army());
+			Game.write_text("Should make drones: " + ZergWisdom.should_build_workers());
+			Game.write_text("Should make expand (and defense it): " + ZergWisdom.should_expand());
 			Game.write_text("Queens " + GameInfoCache.count(Units.ZERG_QUEEN) + "/" + ZergWisdom.queen_target());
 			
 		}

@@ -3,11 +3,16 @@ package com.hjax.kagamine.build;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import com.github.ocraft.s2client.protocol.data.DamageBonus;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.data.Weapon;
+import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
@@ -20,10 +25,18 @@ public class Composition {
 	private static List<UnitType> units = new ArrayList<>();
 	private static Map<UnitType, Integer> scaling = new HashMap<>();
 	private static Map<UnitType, Map<UnitType, Integer>> scores = new HashMap<>();
+	
+	private static Set<UnitType> flying = new HashSet<>();
+	
 	static {
 		units = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_QUEEN, Units.ZERG_ROACH, Units.ZERG_RAVAGER, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP, Units.ZERG_SWARM_HOST_MP, Units.ZERG_INFESTOR, Units.ZERG_ULTRALISK, Units.ZERG_MUTALISK, Units.ZERG_VIPER, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD,
 				Units.TERRAN_BANSHEE, Units.TERRAN_BATTLECRUISER, Units.TERRAN_GHOST, Units.TERRAN_MARINE, Units.TERRAN_MARAUDER, Units.TERRAN_REAPER, Units.TERRAN_HELLION, Units.TERRAN_HELLION_TANK, Units.TERRAN_SIEGE_TANK, Units.TERRAN_WIDOWMINE, Units.TERRAN_THOR, Units.TERRAN_LIBERATOR, Units.TERRAN_VIKING_FIGHTER, Units.TERRAN_RAVEN, Units.TERRAN_CYCLONE,
 				Units.PROTOSS_ZEALOT, Units.PROTOSS_ADEPT, Units.PROTOSS_STALKER, Units.PROTOSS_HIGH_TEMPLAR, Units.PROTOSS_DARK_TEMPLAR, Units.PROTOSS_ARCHON, Units.PROTOSS_SENTRY, Units.PROTOSS_IMMORTAL, Units.PROTOSS_COLOSSUS, Units.PROTOSS_PHOENIX, Units.PROTOSS_VOIDRAY, Units.PROTOSS_CARRIER, Units.PROTOSS_TEMPEST, Units.PROTOSS_MOTHERSHIP);
+	
+		flying = new HashSet<>(Arrays.asList(Units.PROTOSS_CARRIER, Units.PROTOSS_PHOENIX, Units.PROTOSS_ORACLE, Units.PROTOSS_MOTHERSHIP, Units.PROTOSS_TEMPEST,
+				Units.TERRAN_LIBERATOR, Units.TERRAN_BANSHEE, Units.TERRAN_BATTLECRUISER, Units.TERRAN_VIKING_FIGHTER, 
+				Units.ZERG_MUTALISK, Units.ZERG_BROODLORD, Units.ZERG_VIPER, Units.ZERG_CORRUPTOR));
+		
 	}
 	
 	
@@ -34,8 +47,38 @@ public class Composition {
 			initialized = true;
 			
 			for (UnitType attacker : units) {
+				scores.put(attacker, new HashMap<>());
 				for (UnitType defender : units) {
+					scores.get(attacker).put(defender, 0);
+					for (Weapon w: Game.get_unit_type_data().get(attacker).getWeapons()) {
+						if (w.getTargetType() == TargetType.ANY || (w.getTargetType() == TargetType.AIR) == flying.contains(defender)) {
+							int score = 1;
+							for (DamageBonus d: w.getDamageBonuses()) {
+								if (Game.get_unit_type_data().get(defender).getAttributes().contains(d.getAttribute())) {
+									score += w.getDamage() + d.getBonus() / w.getDamage();
+								}
+							}
+							if (scores.get(attacker).get(defender) < score) {
+								scores.get(attacker).put(defender, score);
+							}
+						}
+					}
+				}
+				if (attacker == Units.ZERG_INFESTOR) {
 					
+					for (UnitType defender : units) {
+						scores.get(attacker).put(defender, 1);
+					}
+					
+					scores.get(attacker).put(Units.TERRAN_THOR, 2);
+					scores.get(attacker).put(Units.TERRAN_THOR_AP, 2);
+					scores.get(attacker).put(Units.TERRAN_MARINE, 2);
+					scores.get(attacker).put(Units.TERRAN_BATTLECRUISER, 2);
+					
+					scores.get(attacker).put(Units.PROTOSS_CARRIER, 2);
+					scores.get(attacker).put(Units.PROTOSS_TEMPEST, 2);
+					scores.get(attacker).put(Units.PROTOSS_MOTHERSHIP, 3);
+					scores.get(attacker).put(Units.PROTOSS_COLOSSUS, 2);
 				}
 			}
 		}
@@ -51,6 +94,7 @@ public class Composition {
 			if (EnemyModel.enemy_floated()) {
 				return Arrays.asList(Units.ZERG_MUTALISK);
 			}
+
 			if (BuildPlanner.is_all_in && EnemyModel.enemyBaseCount() == 1 && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 			}

@@ -560,6 +560,7 @@ public class Game {
 	}
 
 	public static boolean hits_air(UnitType u) {
+		if (u == Units.TERRAN_BUNKER) return true;
 		for (Weapon w: get_unit_type_data().get(u).getWeapons()) {
 			if (w.getTargetType().equals(TargetType.AIR) || w.getTargetType().equals(TargetType.ANY)) return true;
 		}

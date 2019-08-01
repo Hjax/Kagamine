@@ -39,6 +39,7 @@ public class EnemySquadManager {
 					}
 				}
 				enemy_squads.add(squad);
+				Game.write_text(String.valueOf(ThreatManager.total_supply(new ArrayList<>(squad))), average_point(new ArrayList<>(squad)));
 			}
 		}
 	}
