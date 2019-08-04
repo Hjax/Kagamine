@@ -68,7 +68,7 @@ public class Infestor {
 			if (enemy.distance(u) < 15) {
 				int count = 0;
 				for (HjaxUnit enemy2 : GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (enemy.distance(enemy2) < 2.25) {
+					if (!Game.is_structure(enemy2.type()) && enemy.distance(enemy2) < 2.25) {
 						count++;
 					}
 				}

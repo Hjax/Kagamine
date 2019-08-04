@@ -9,7 +9,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.army.BanelingAvoidance;
-import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.army.UnitMovementManager;
 import com.hjax.kagamine.army.UnitRoleManager;
 import com.hjax.kagamine.army.EnemySquadManager;
 import com.hjax.kagamine.army.ThreatManager;
@@ -17,6 +17,7 @@ import com.hjax.kagamine.army.UnitManager;
 import com.hjax.kagamine.build.ZergBuildExecutor;
 import com.hjax.kagamine.build.BuildExecutor;
 import com.hjax.kagamine.build.BuildPlanner;
+import com.hjax.kagamine.build.TechLevelManager;
 import com.hjax.kagamine.build.UpgradeManager;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
@@ -65,7 +66,6 @@ class Kagamine extends S2Agent {
 
 	public void onStep() {
 		long startTime = System.nanoTime();
-		
 		if (Game.get_true_frame() % Constants.FRAME_SKIP == 0) {
 			Game.start_frame(observation(), actions(), query(), debug());
 			GameInfoCache.start_frame();
@@ -74,7 +74,7 @@ class Kagamine extends S2Agent {
 			EnemyModel.on_frame();
 			EnemySquadManager.on_frame();
 			ThreatManager.on_frame();
-			BaseDefense.on_frame();
+			UnitMovementManager.on_frame();
 			MiningOptimizer.on_frame();
 			BanelingAvoidance.on_frame();
 			EnemyBaseDefense.on_frame();
@@ -118,6 +118,8 @@ class Kagamine extends S2Agent {
 			Game.write_text("Should make drones: " + ZergWisdom.should_build_workers());
 			Game.write_text("Should make expand (and defense it): " + ZergWisdom.should_expand());
 			Game.write_text("Queens " + GameInfoCache.count(Units.ZERG_QUEEN) + "/" + ZergWisdom.queen_target());
+			Game.write_text("Tech Level " + TechLevelManager.getTechLevel().toString());
+			Game.write_text("Spending: " + Game.minerals() + " " + Game.gas());
 			
 		}
 
@@ -130,9 +132,9 @@ class Kagamine extends S2Agent {
 				max = (System.nanoTime() - startTime) / 1000000.0;
 			}
 			frame++;
-			System.out.println("Average " + (time_sum / frame));
-			System.out.println("Max " + max);
-			System.out.println("----------------------------------");
+			//System.out.println("Average " + (time_sum / frame));
+			//System.out.println("Max " + max);
+			//System.out.println("----------------------------------");
 		}
 		
 	}

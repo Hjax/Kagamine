@@ -7,7 +7,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.army.UnitMovementManager;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
@@ -116,26 +116,25 @@ public class ZergBuildExecutor {
 			if (GameInfoCache.count(Units.ZERG_DRONE) >= 20) {
 				boolean needs_spores = false;
 				for (UnitType u : EnemyModel.counts.keySet()) {
-					if (u == Units.TERRAN_BATTLECRUISER || u == Units.ZERG_MUTALISK || u == Units.PROTOSS_DARK_TEMPLAR || u == Units.TERRAN_BANSHEE || u == Units.PROTOSS_PHOENIX || u == Units.PROTOSS_ORACLE) {
+					if (u == Units.TERRAN_BATTLECRUISER || u == Units.TERRAN_STARPORT_TECHLAB || u == Units.ZERG_MUTALISK || u == Units.PROTOSS_DARK_TEMPLAR || u == Units.TERRAN_BANSHEE || u == Units.PROTOSS_PHOENIX || u == Units.PROTOSS_ORACLE) {
 						if (EnemyModel.counts.get(u) > 0) {
 							needs_spores = true;
 						}
 					}
 				}
 				
-				if (EnemyModel.counts.getOrDefault(Units.ZERG_MUTALISK, 0) > 5 || EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) > 1 || EnemyModel.counts.getOrDefault(Units.PROTOSS_PHOENIX, 0) > 3) {
-					if (GameInfoCache.count(Units.ZERG_DRONE) > 30) {
+				if (EnemyModel.counts.getOrDefault(Units.ZERG_MUTALISK, 0) > 15 || EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) > 5 || EnemyModel.counts.getOrDefault(Units.PROTOSS_PHOENIX, 0) > 7 || EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) > 2) {
+					if (GameInfoCache.count(Units.ZERG_DRONE) > 50) {
 						BaseManager.build_triangle_spores();
 					}
 				}
 				// TODO remove this hack
 				if (needs_spores) {
-					if (!Game.can_afford(Units.ZERG_SPORE_CRAWLER) && GameInfoCache.count(Units.ZERG_SPORE_CRAWLER) < 1) return;
 					BaseManager.build_defensive_spores();
 				}
 			}
 			
-			if (Game.minerals() > 50 && Game.gas() > 50 && GameInfoCache.count_friendly(Units.ZERG_LAIR) > 0 && GameInfoCache.count(Units.ZERG_OVERSEER) + GameInfoCache.count(Units.ZERG_OVERLORD_COCOON) < Math.max(BaseDefense.detection_points, 2)) {
+			if (Game.minerals() > 50 && Game.gas() > 50 && GameInfoCache.count_friendly(Units.ZERG_LAIR) > 0 && GameInfoCache.count(Units.ZERG_OVERSEER) + GameInfoCache.count(Units.ZERG_OVERLORD_COCOON) < Math.max(UnitMovementManager.detection_points, 2)) {
 				for (HjaxUnit ovie: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
 					Game.spend(50, 50);
 					ovie.use_ability(Abilities.MORPH_OVERSEER);
@@ -145,34 +144,12 @@ public class ZergBuildExecutor {
 
 			UpgradeManager.on_frame();
 
-			for (UnitType u: Composition.comp()) {
+			for (UnitType u: Composition.full_comp()) {
 				if (!pulled_off_gas && ((GameInfoCache.count(Units.ZERG_DRONE) > 25 || Wisdom.worker_rush() || Wisdom.cannon_rush() || (Wisdom.all_in_detected() && GameInfoCache.count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && GameInfoCache.get_opponent_race() == Race.ZERG && GameInfoCache.count(Units.ZERG_DRONE) >= 16))) {
 					if (Balance.has_tech_requirement(u)) {
 						if (!(GameInfoCache.count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_INFESTATION_PIT && (BaseManager.base_count() < 4 || GameInfoCache.count(Units.ZERG_DRONE) < 60)) continue;
-							if (Balance.next_tech_requirement(u) == Units.ZERG_LAIR) {
-								if ((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 40)) {
-									if (Game.can_afford(Balance.next_tech_requirement(u))) {
-										for (Base b: BaseManager.bases) {
-											if (b.has_friendly_command_structure() && b.command_structure.done() && b.command_structure.idle()) {
-												b.command_structure.use_ability(Abilities.MORPH_LAIR);
-												break;
-											}
-										}
-									}
-									Game.purchase(Units.ZERG_LAIR);
-								}
-							} else if (Balance.next_tech_requirement(u) == Units.ZERG_HIVE) {
-								if (Game.can_afford(Balance.next_tech_requirement(u))) {
-									for (Base b: BaseManager.bases) {
-										if (b.has_friendly_command_structure() && b.command_structure.done() && b.command_structure.idle() && b.command_structure.type() == Units.ZERG_LAIR) {
-											b.command_structure.use_ability(Abilities.MORPH_HIVE);
-											break;
-										}
-									}
-								}
-								Game.purchase(Units.ZERG_HIVE);
-							} else if (Balance.next_tech_requirement(u) == Units.ZERG_GREATER_SPIRE) {
+							if (Balance.next_tech_requirement(u) == Units.ZERG_GREATER_SPIRE) {
 								for (HjaxUnit spire : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPIRE)) {
 									if (spire.done()) {
 										if (Game.can_afford(Balance.next_tech_requirement(u))) {
@@ -210,14 +187,14 @@ public class ZergBuildExecutor {
 			}
 
 			if ((ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply()) || Wisdom.cannon_rush() || Wisdom.proxy_detected() || GameInfoCache.attacking_army_supply() > 50) {
-				if (Game.minerals() > 25 && Game.gas() > 75 && GameInfoCache.count_friendly(Units.ZERG_ROACH) > 0 && Composition.comp().contains(Units.ZERG_RAVAGER)) {
+				if (Game.minerals() > 25 && Game.gas() > 75 && GameInfoCache.count_friendly(Units.ZERG_ROACH) > 0 && Composition.full_comp().contains(Units.ZERG_RAVAGER)) {
 					for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ROACH)) {
 						unit.use_ability(Abilities.MORPH_RAVAGER);
 						Game.spend(25, 75);
 						break;
 					}
 				}
-				if (GameInfoCache.count_friendly(Units.ZERG_CORRUPTOR) > 0 && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < 15) {
+				if (GameInfoCache.count_friendly(Units.ZERG_CORRUPTOR) > 0 && Composition.full_comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < 10) {
 					if (Game.minerals() >= 150 && Game.gas() >= 150) {
 						for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CORRUPTOR)) {
 							unit.use_ability(Abilities.MORPH_BROODLORD);
@@ -226,7 +203,7 @@ public class ZergBuildExecutor {
 					}
 					Game.spend(150, 150);
 				}
-				if (GameInfoCache.count_friendly(Units.ZERG_HYDRALISK) > 0 && Composition.comp().contains(Units.ZERG_LURKER_MP) && GameInfoCache.count(Units.ZERG_LURKER_MP) < 15) {
+				if (GameInfoCache.count_friendly(Units.ZERG_HYDRALISK) > 0 && Composition.full_comp().contains(Units.ZERG_LURKER_MP) && GameInfoCache.count(Units.ZERG_LURKER_MP) + GameInfoCache.count(Units.ZERG_LURKER_MP_EGG) < 10) {
 					if (Game.minerals() >= 50 && Game.gas() >= 100) {
 						for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HYDRALISK)) {
 							unit.use_ability(Abilities.MORPH_LURKER);
@@ -236,7 +213,7 @@ public class ZergBuildExecutor {
 					Game.spend(50, 100);
 				}
 				if (GameInfoCache.get_opponent_race() != Race.ZERG) {
-					if ((Game.minerals() > 25 && Game.gas() > 25 && (GameInfoCache.count_friendly(Units.ZERG_ZERGLING) >= 10) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) * 2 && Composition.comp().contains(Units.ZERG_BANELING))) {
+					if ((Game.minerals() > 25 && Game.gas() > 25 && (GameInfoCache.count_friendly(Units.ZERG_ZERGLING) >= 10) && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > GameInfoCache.count_friendly(Units.ZERG_BANELING) * 2 && Composition.full_comp().contains(Units.ZERG_BANELING))) {
 						for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ZERGLING)) {
 							unit.use_ability(Abilities.TRAIN_BANELING);
 							Game.spend(25, 25);
@@ -245,7 +222,7 @@ public class ZergBuildExecutor {
 					}
 				}
 				else {
-					if ((Game.minerals() > 25 && Game.gas() > 25 && GameInfoCache.get_opponent_race() == Race.ZERG && GameInfoCache.count(Units.ZERG_BANELING) < 6 && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > 0 && Composition.comp().contains(Units.ZERG_BANELING))) {
+					if ((Game.minerals() > 25 && Game.gas() > 25 && GameInfoCache.get_opponent_race() == Race.ZERG && GameInfoCache.count(Units.ZERG_BANELING) < 6 && GameInfoCache.count_friendly(Units.ZERG_ZERGLING) > 0 && Composition.full_comp().contains(Units.ZERG_BANELING))) {
 						for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ZERGLING)) {
 							unit.use_ability(Abilities.TRAIN_BANELING);
 							Game.spend(25, 25);
@@ -319,26 +296,26 @@ public class ZergBuildExecutor {
 	
 	public static UnitType next_army_unit() {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return Units.ZERG_ZERGLING;
+			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.full_comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return Units.ZERG_ZERGLING;
 		}
 		UnitType best = Units.INVALID;
-		for (UnitType u: Composition.comp()) {
+		for (UnitType u: Composition.full_comp()) {
 			if (u == Units.ZERG_BANELING) continue;
 			if (u == Units.ZERG_RAVAGER) continue;
 			if (u == Units.ZERG_BROODLORD) continue;
 			if (u == Units.ZERG_LURKER_MP) continue;
 			if (u == Units.ZERG_ULTRALISK && GameInfoCache.count(Units.ZERG_ULTRALISK) > 6) continue; 
-			if (Composition.comp().contains(Units.ZERG_BANELING) && u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) >= 15) continue;
-			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) < 15 && Composition.comp().contains(Units.ZERG_BROODLORD)) return u;
+			if (Composition.full_comp().contains(Units.ZERG_BANELING) && u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) >= 15) continue;
+			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) < 15 && Composition.full_comp().contains(Units.ZERG_BROODLORD)) return u;
 			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) >= 15) continue;
-			if (u == Units.ZERG_CORRUPTOR && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) == 0) continue;
+			if (u == Units.ZERG_CORRUPTOR && Composition.full_comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) == 0) continue;
 			if (u == Units.ZERG_INFESTOR && GameInfoCache.count(Units.ZERG_INFESTOR) >= 6) continue;
 			if (u == Units.ZERG_VIPER && GameInfoCache.count(Units.ZERG_VIPER) >= 4) continue;
 			if (u == Units.ZERG_BANELING && GameInfoCache.count(Units.ZERG_BANELING) < 30 && GameInfoCache.get_opponent_race() != Race.ZERG) return Units.ZERG_ZERGLING;
-			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) >= 15 && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < 15) continue;
-			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) >= 4 && Composition.comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < 10) continue;
+			if (u == Units.ZERG_HYDRALISK && GameInfoCache.count(Units.ZERG_HYDRALISK) >= 15 && Composition.full_comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < 15) continue;
+			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) >= 4 && Composition.full_comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < 10) continue;
 			if (u == Units.ZERG_CORRUPTOR && GameInfoCache.count(Units.ZERG_CORRUPTOR) < 10 && Game.army_supply() > 30 && BaseManager.active_gases() >= 4 && (GameInfoCache.count_friendly(Units.ZERG_SPIRE) + GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE)) > 0) return Units.ZERG_CORRUPTOR;
-			if (u == Units.ZERG_MUTALISK && GameInfoCache.count(Units.ZERG_MUTALISK) >= 8 && GameInfoCache.get_opponent_race() == Race.TERRAN) continue;
+			if (u == Units.ZERG_MUTALISK && GameInfoCache.count(Units.ZERG_MUTALISK) >= 20 && GameInfoCache.get_opponent_race() == Race.TERRAN) continue;
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
 				if (best == Units.INVALID) best = u;
 				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {

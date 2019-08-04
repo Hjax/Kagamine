@@ -4,7 +4,7 @@ import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.army.UnitMovementManager;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.build.Build;
 import com.hjax.kagamine.build.Composition;
@@ -29,8 +29,12 @@ public class Queen {
 			}
 		}
 		
+		if (UnitMovementManager.assignments.containsKey(u.tag())) { 
+			GenericUnit.on_frame(u, false);
+		}
+		
 		int tumors = GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_BURROWED) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_QUEEN);
-		if (tumors > 20 && Composition.comp().contains(Units.ZERG_QUEEN)) {
+		if (tumors > 4 && Composition.full_comp().contains(Units.ZERG_QUEEN)) {
 			GenericUnit.on_frame(u, true);
 			return;
 		}
@@ -61,7 +65,7 @@ public class Queen {
 		
 		if (u.ability() == Abilities.ATTACK || u.ability() == Abilities.ATTACK_ATTACK) {
 			if (!u.orders().get(0).getTargetedUnitTag().isPresent()) {
-				if (!BaseDefense.assignments.containsKey(u.tag())) { 
+				if (!UnitMovementManager.assignments.containsKey(u.tag())) { 
 					u.stop();
 					return;
 				}

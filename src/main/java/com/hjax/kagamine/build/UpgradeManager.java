@@ -71,11 +71,11 @@ public class UpgradeManager {
 			return;
 		}
 		
-		for (UnitType ut : Composition.comp()) {
+		for (UnitType ut : Composition.full_comp()) {
 			outer: for (Upgrade u : upgrades.getOrDefault(ut, Arrays.asList())) {
 				if (u == Upgrades.OVERLORD_SPEED && !(Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED) || GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED))) continue;
 				if (!(Game.has_upgrade(u)) && !GameInfoCache.is_researching(u)) {
-					if (u.toString().toLowerCase().contains("melee") && !Game.has_upgrade(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3) && (Composition.comp().contains(Units.ZERG_ROACH) || Composition.comp().contains(Units.ZERG_HYDRALISK))) continue;
+					if (u.toString().toLowerCase().contains("melee") && !Game.has_upgrade(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3) && (Composition.full_comp().contains(Units.ZERG_ROACH) || Composition.full_comp().contains(Units.ZERG_HYDRALISK))) continue;
 					for (UnitType t: upgraders.get(u)) {
 						if ((t.equals(Units.ZERG_EVOLUTION_CHAMBER) && GameInfoCache.count(t) < 1 && (GameInfoCache.count(Units.ZERG_DRONE) > 35) && GameInfoCache.get_opponent_race() == Race.ZERG) || (t.equals(Units.ZERG_EVOLUTION_CHAMBER) && GameInfoCache.count(t) < 2 && (GameInfoCache.count(Units.ZERG_DRONE) > 60))) {
 							if (Game.can_afford(t)) {
@@ -98,7 +98,7 @@ public class UpgradeManager {
 							Game.purchase(t);
 							return;
 						}
-						if (t == Units.ZERG_SPIRE && GameInfoCache.count(Units.ZERG_GREATER_SPIRE) < 1 && Composition.comp().contains(Units.ZERG_BROODLORD)) continue outer;
+						if (t == Units.ZERG_SPIRE && GameInfoCache.count(Units.ZERG_GREATER_SPIRE) < 1 && Composition.full_comp().contains(Units.ZERG_BROODLORD)) continue outer;
 						for (HjaxUnit up: GameInfoCache.get_units(Alliance.SELF, t)) {
 							if (up.idle() && up.done()) {
 								for (AvailableAbility aa: Game.availible_abilities(up, true).getAbilities()) {
@@ -107,7 +107,7 @@ public class UpgradeManager {
 											up.use_ability(Game.get_upgrade_data().get(u).getAbility().get());
 										}
 										Game.purchase(u);
-										continue outer;
+										return;
 									}
 								}
 

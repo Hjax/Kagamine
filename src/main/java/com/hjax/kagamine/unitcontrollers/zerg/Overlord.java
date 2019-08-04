@@ -36,11 +36,11 @@ public class Overlord {
 		negative_pressure.add(new Vector2d((float) (500 / Math.pow(max.getX() - ovie.location().getX(), 3)), 0));
 		negative_pressure.add(new Vector2d((float) (-500 / Math.pow(ovie.location().getX() - min.getX(), 3)), 0));
 		
-		positive_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(target.location)).scale(5));
+		positive_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(target.location)).scale(7));
 		
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.hits_air(enemy.type())) {
-				negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(enemy.location())).scale((float) (140 / Math.pow(ovie.location().distance(enemy.location()), 1.7))));
+				negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(enemy.location())).scale((float) (140 / Math.pow(ovie.location().distance(enemy.location()), 1.5))));
 			} 
 		}
 		

@@ -6,7 +6,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.BanelingAvoidance;
-import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.army.UnitMovementManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
@@ -32,16 +32,16 @@ public class Zergling {
 		}
 
 
-		if (BaseDefense.assignments.containsKey(u.tag()) && BaseDefense.surroundCenter.containsKey(u.tag())) {
-			if (BaseDefense.surroundCenter.get(u.tag()).distance(BaseDefense.assignments.get(u.tag())) < 1) {
-				u.attack(BaseDefense.assignments.get(u.tag()));
+		if (UnitMovementManager.assignments.containsKey(u.tag()) && UnitMovementManager.surroundCenter.containsKey(u.tag())) {
+			if (UnitMovementManager.surroundCenter.get(u.tag()).distance(UnitMovementManager.assignments.get(u.tag())) < 1) {
+				u.attack(UnitMovementManager.assignments.get(u.tag()));
 			} else {
-				Vector2d offset = Utilities.direction_to(Vector2d.of(BaseDefense.surroundCenter.get(u.tag())), Vector2d.of(BaseDefense.assignments.get(u.tag())));
-				Point2d result = Vector2d.of(BaseDefense.assignments.get(u.tag())).add(offset.scale(6)).toPoint2d();
+				Vector2d offset = Utilities.direction_to(Vector2d.of(UnitMovementManager.surroundCenter.get(u.tag())), Vector2d.of(UnitMovementManager.assignments.get(u.tag())));
+				Point2d result = Vector2d.of(UnitMovementManager.assignments.get(u.tag())).add(offset.scale(6)).toPoint2d();
 				if (Game.pathable(result) && Math.abs(Game.height(result) - Game.height(u.location())) < 0.5) {
 					u.move(result);
 				} else {
-					u.attack(BaseDefense.assignments.get(u.tag()));
+					u.attack(UnitMovementManager.assignments.get(u.tag()));
 				}
 			}
 		} else {

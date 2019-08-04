@@ -440,6 +440,7 @@ public class BaseManager {
 	public static void build_defensive_spores() {
 		for (Base b: bases) {
 			if (Game.minerals() < 75) {
+				Game.spend(75, 0);
 				return;
 			}
 			if (b.has_friendly_command_structure() && b.command_structure.done()) {

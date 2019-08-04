@@ -110,11 +110,6 @@ public class GameInfoCache {
 					}
 				} else if (current.alliance() == Alliance.ENEMY) {
 					visible_enemy.put(current.tag(), current);
-					if (visible_enemy_types.containsKey(current.type())) {
-						visible_enemy_types.get(current.type()).add(current);
-					} else {
-						visible_enemy_types.put(current.type(), new ArrayList<>(List.of(current)));
-					}
 				} else {
 					visible_neutral.put(current.tag(), current);
 					if (visible_neutral_types.containsKey(current.type())) {
@@ -124,8 +119,17 @@ public class GameInfoCache {
 					}
 				}
 			}
-
 		}
+		
+
+		for (HjaxUnit current : visible_enemy.values()) {
+			if (visible_enemy_types.containsKey(current.type())) {
+				visible_enemy_types.get(current.type()).add(current);
+			} else {
+				visible_enemy_types.put(current.type(), new ArrayList<>(List.of(current)));
+			}
+		}
+		
 	}
 
 	public static int count_friendly(UnitType type) {
@@ -235,7 +239,7 @@ public class GameInfoCache {
 			return aas_value;
 		}
 		float result = 0;
-		boolean queens_count = Composition.comp().contains(Units.ZERG_QUEEN);
+		boolean queens_count = Composition.full_comp().contains(Units.ZERG_QUEEN);
 		for (HjaxUnit unit: get_units(Alliance.SELF)) {
 			if (unit.done() && Game.is_combat(unit.type()) && !(!queens_count && unit.type() == Units.ZERG_QUEEN)) {
 				result += Game.supply(unit.type());

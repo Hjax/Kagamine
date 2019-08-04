@@ -93,7 +93,7 @@ public class EnemyBaseDefense {
 		}
 		
 		for (HjaxUnit u : defenses.keySet()) {
-			if (threats.containsKey(u.type())) {
+			if (threats.containsKey(u.type()) && u.done()) {
 				ground_defense.put(defenses.get(u), threats.get(u.type()).getLeft() + ground_defense.get(defenses.get(u)));
 				air_defense.put(defenses.get(u), threats.get(u.type()).getRight() + air_defense.get(defenses.get(u)));
 			}
@@ -125,6 +125,10 @@ public class EnemyBaseDefense {
 		}
 		
 		return best;
+	}
+	
+	public static double get_defense(Base b) {
+		return ground_defense.getOrDefault(b, 0.0) + air_defense.getOrDefault(b, 0.0) / 2;
 	}
 	
 }

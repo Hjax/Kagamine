@@ -48,7 +48,7 @@ public class ThreatManager {
 			if (only_medivacs) supply *= 10;
 			
 			if (closest.has_friendly_command_structure()) {
-				threat += supply * 1.5;
+				threat += supply * 1.3;
 				attacking_threat += supply;
 			} else if (closest.has_enemy_command_structure()) {
 				if (GameInfoCache.get_opponent_race() == Race.ZERG) {
@@ -65,7 +65,7 @@ public class ThreatManager {
 		int[] res = EnemyModel.resourceEstimate();
 		threat += (Math.max(res[0], 0) / 100) * 0.25;
 		
-		threat += 5 * EnemyModel.enemyBaseCount();
+		threat -= Math.min(5 * (EnemyModel.enemyBaseCount() - BaseManager.base_count()), 12);
 		
 	}
 	

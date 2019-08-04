@@ -13,7 +13,7 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
-import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.army.UnitMovementManager;
 import com.hjax.kagamine.army.EnemySquadManager;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
@@ -97,9 +97,9 @@ public class Mutalisk {
 		
 		for (HjaxUnit muta : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_MUTALISK)) {
 			swarm.clear();
-			if (BaseDefense.assignments.containsKey(muta.tag())) continue;
+			if (UnitMovementManager.assignments.containsKey(muta.tag())) continue;
 			for (HjaxUnit muta2 : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_MUTALISK)) {
-				if (BaseDefense.assignments.containsKey(muta2.tag())) continue;
+				if (UnitMovementManager.assignments.containsKey(muta2.tag())) continue;
 				if (muta.distance(muta) < 10) {
 					swarm.add(muta2);
 				}
@@ -237,14 +237,9 @@ public class Mutalisk {
 			return;
 		}
 		
-		if (BaseDefense.assignments.containsKey(u.tag())) {
-			if (u.distance(BaseDefense.assignments.get(u.tag())) < 10) {
-				u.attack(BaseDefense.assignments.get(u.tag()));
-				return;
-			} else {
-				u.move(BaseDefense.assignments.get(u.tag()));
-				return;
-			}
+		if (UnitMovementManager.assignments.containsKey(u.tag())) {
+			u.attack(UnitMovementManager.assignments.get(u.tag()));
+			return;
 		}
 		
 		if (!swarm.contains(u) && swarm_center != null) {

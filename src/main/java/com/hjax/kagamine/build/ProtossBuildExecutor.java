@@ -67,7 +67,7 @@ class ProtossBuildExecutor {
 
 			UpgradeManager.on_frame();
 
-			for (UnitType u: Composition.comp()) {
+			for (UnitType u: Composition.filler_comp()) {
 				if (Balance.has_tech_requirement(u)) {
 					if (!(GameInfoCache.count(Balance.next_tech_requirement(u)) > 0)) {
 						if (Game.can_afford(Balance.next_tech_requirement(u))) {
@@ -125,7 +125,7 @@ class ProtossBuildExecutor {
 
 	private static UnitType next_army_unit() {
 		UnitType best = Units.INVALID;
-		for (UnitType u: Composition.comp()) {
+		for (UnitType u: Composition.filler_comp()) {
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
 				if (best == Units.INVALID) best = u;
 				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {

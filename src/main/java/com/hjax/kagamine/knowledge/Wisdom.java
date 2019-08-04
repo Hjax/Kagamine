@@ -99,7 +99,16 @@ public class Wisdom {
 			else if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
 				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.3 * EnemyModel.enemyArmy())) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < (EnemyModel.enemyWorkers() - 6)));
 			} else {
-				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.3 * EnemyModel.enemyArmy() + GameInfoCache.count_enemy(Units.TERRAN_PLANETARY_FORTRESS) * 8 + GameInfoCache.count_enemy(Units.TERRAN_BUNKER) * 8 + GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) * 4)) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy() * 1.1 + GameInfoCache.count_enemy(Units.PROTOSS_PHOTON_CANNON) * 4)) && (GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < (EnemyModel.enemyWorkers() - 10)));
+				int bonus = 0;
+				for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
+					if (enemy.done()) {
+						if (enemy.type() == Units.TERRAN_PLANETARY_FORTRESS) bonus += 16;
+						if (enemy.type() == Units.TERRAN_BUNKER) bonus += 8;
+						if (enemy.type() == Units.PROTOSS_PHOTON_CANNON) bonus += 5;
+					}
+				}
+				
+				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.3 * EnemyModel.enemyArmy() + bonus) && (GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < (EnemyModel.enemyWorkers() - 10)));
 			}
 		}
 		return shouldAttack;

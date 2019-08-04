@@ -20,8 +20,15 @@ public class Worker {
 			EconomyManager.assign_worker(u);
 		}
 		int threat = 0;
+		boolean nearby_spore = false;
+		for (HjaxUnit spore: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
+			if (spore.distance(u) < 6) {
+				nearby_spore = true;
+			}
+		}
+		
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (enemy.is_combat()) {
+			if (enemy.is_combat() && (!enemy.flying() || !nearby_spore)) {
 				if (enemy.distance(u.location()) < 10) {
 					threat += Game.get_unit_type_data().get(enemy.type()).getFoodRequired().orElse(0f);
 				}

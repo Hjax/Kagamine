@@ -1,5 +1,7 @@
 package com.hjax.kagamine;
 
+import com.github.ocraft.s2client.protocol.spatial.Point2d;
+
 public class Utilities {
 	public static Vector2d normalize(Vector2d v) {
 		
@@ -11,5 +13,6 @@ public class Utilities {
 	public static Vector2d direction_to(Vector2d a, Vector2d b) {
 		return normalize(new Vector2d(b.x - a.x, b.y - a.y));
 	}
+	
 }
  

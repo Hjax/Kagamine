@@ -32,7 +32,7 @@ public class ZergWisdom {
 
 	public static boolean should_build_army() {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
+			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.full_comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
 		if (Wisdom.ahead() && Wisdom.shouldAttack()) return true;
 
@@ -80,13 +80,13 @@ public class ZergWisdom {
 			if (Game.race() != Race.ZERG) return false;
 			if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) return false;
 
-			if (Composition.comp().contains(Units.ZERG_QUEEN) && GameInfoCache.count(Units.ZERG_QUEEN) < 25) return true;
+			if (Composition.full_comp().contains(Units.ZERG_QUEEN) && GameInfoCache.count(Units.ZERG_QUEEN) < 25) return true;
 			
 			if (should_build_army() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 30) {
 				return false;
 			}
-			
-			if (GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) > 50 && GameInfoCache.count(Units.ZERG_QUEEN) >= 3) {
+			int tumors = GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_BURROWED) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_QUEEN);
+			if (tumors > 30 && GameInfoCache.count(Units.ZERG_QUEEN) >= 3) {
 				return false;
 			}
 			

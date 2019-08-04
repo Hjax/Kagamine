@@ -37,9 +37,11 @@ public class ArmyManager {
 		main_army.clear();
 
 		List<HjaxUnit> main_army_candidate = new ArrayList<>();
-		for (HjaxUnit u : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
+		for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF)) {
+			if (!Game.is_combat(u.type())) continue;
 			if (u.type() == Units.ZERG_QUEEN) continue;
-			for (HjaxUnit second : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
+			for (HjaxUnit second : GameInfoCache.get_units(Alliance.SELF)) {
+				if (!Game.is_combat(second.type())) continue;
 				if (u.distance(second) < Constants.REGROUP_RADIUS) {
 					main_army_candidate.add(second);
 				}

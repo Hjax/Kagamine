@@ -30,6 +30,10 @@ public class BuildPlanner {
 			is_all_in = true;
 		}
 		
+		if (GameInfoCache.count_enemy(Units.TERRAN_STARPORT_TECHLAB) > 1) {
+			Build.pull_off_gas = false;
+		}
+		
 		if (!is_all_in && GameInfoCache.get_opponent_race() != Race.ZERG) {
 			if (GameInfoCache.count(Units.ZERG_DRONE) < 30 && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
 				Chat.sendMessage("Oh you are cheesing me, I guess I can't play a macro game");
@@ -83,7 +87,7 @@ public class BuildPlanner {
 						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_gases = 6;
+				Build.ideal_gases = 8;
 				Build.pull_off_gas = true;
 				break;			
 			case TERRAN:

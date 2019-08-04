@@ -12,7 +12,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.ArmyManager;
-import com.hjax.kagamine.army.BaseDefense;
+import com.hjax.kagamine.army.UnitMovementManager;
 import com.hjax.kagamine.build.Build;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
@@ -44,7 +44,7 @@ public class GenericUnit {
 			}
 		}
 		
-		if (u.cooldown() > 0.1) {
+		if (u.cooldown() > 0.1 & u.ability() == Abilities.ATTACK) {
 			for (HjaxUnit e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (e.type() == Units.PROTOSS_INTERCEPTOR) continue;
 				if (Game.is_changeling(e.type())) continue;
@@ -60,7 +60,7 @@ public class GenericUnit {
 						}
 						if (best != null) {
 							if (new ArrayList<>(Game.get_unit_type_data().get(e.type()).getWeapons()).get(0).getRange() < best.getRange()) {
-								Vector2d offset = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(e.location()));
+								Vector2d offset = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(e.location())).scale(2);
 								Point2d target = Point2d.of(u.location().getX() - offset.x, u.location().getY() - offset.y);
 								u.move(target);
 								return;
@@ -70,17 +70,17 @@ public class GenericUnit {
 				}
 			}
 			return;
-		} else if (BaseDefense.assignments.containsKey(u.tag())) {
-			u.attack(BaseDefense.assignments.get(u.tag()));
+		} else if (UnitMovementManager.assignments.containsKey(u.tag())) {
+			u.attack(UnitMovementManager.assignments.get(u.tag()));
 			return;
 		}
 				
 		if (Wisdom.cannon_rush()) return;
 		
-		if ((Wisdom.shouldAttack() && moveOut) || BaseDefense.has_defense_point()) {
+		if ((Wisdom.shouldAttack() && moveOut) || UnitMovementManager.has_defense_point()) {
 			if (ArmyManager.has_target) {
-				if (BaseDefense.has_defense_point()) {
-					u.attack(BaseDefense.defense_point());
+				if (UnitMovementManager.has_defense_point()) {
+					u.attack(UnitMovementManager.defense_point());
 				} else if (u.location().distance(ArmyManager.army_center) > 15) {
 					u.attack(ArmyManager.army_center);
 				} else {

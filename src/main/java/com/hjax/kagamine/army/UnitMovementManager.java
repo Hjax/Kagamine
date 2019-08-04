@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
+import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -16,11 +17,13 @@ import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.army.UnitRoleManager.UnitRole;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
+import com.hjax.kagamine.enemymodel.EnemyBaseDefense;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
+import com.hjax.kagamine.knowledge.Scouting;
 
-public class BaseDefense {
+public class UnitMovementManager {
 	private static final Set<Tag> used = new HashSet<>();
 	public static final Map<Tag, Point2d> assignments = new HashMap<>();
 	public static final Map<Tag, Point2d> surroundCenter = new HashMap<>();
@@ -76,8 +79,7 @@ public class BaseDefense {
 			
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			try {
-				if ((Game.closest_invisible(average).distance(average) > 7 && 
-						BaseManager.closest_base(average).has_friendly_command_structure())) {
+				if (BaseManager.closest_base(average).has_friendly_command_structure()) {
 							
 					assign_defense(enemy_squad);
 					assigned.put(enemy_squad, true);
@@ -98,8 +100,8 @@ public class BaseDefense {
 			double my_strength = ThreatManager.total_supply(UnitRoleManager.get(UnitRole.ARMY));
 			
 			try {
-				if ((Game.closest_invisible(average).distance(average) > 7 && 
-						my_strength > enemy_strength * 1.2 && 
+				if ((Game.closest_invisible(average).distance(average) > 6 && 
+						my_strength > enemy_strength * 1.3 && 
 						!BaseManager.closest_base(average).has_enemy_command_structure())) {
 							
 					assign_defense(enemy_squad);
@@ -110,11 +112,22 @@ public class BaseDefense {
 				e.printStackTrace();
 				Game.write_text("Unable to defend 3", EnemySquadManager.average_point(new ArrayList<>(enemy_squad)));
 			}
-				
 			
 		}
-		
+
+		int dist = 30;
+		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
+			dist = 45;
+		}
+		if (Game.army_supply() > 30) {
+			for (Base b : BaseManager.bases) {
+				if (b.has_enemy_command_structure() && EnemyBaseDefense.get_defense(b) < 15 && Scouting.closest_enemy_spawn(b.location).distance(b.location) > dist) {
+					assign_runby(b.location, EnemyBaseDefense.get_defense(b) + 2);
+				}
+			}
+		}
 	}
+
 	
 	private static void assign_defense(Set<HjaxUnit> enemy_squad) {
 		float ground_supply = 0;
@@ -129,7 +142,7 @@ public class BaseDefense {
 			} else {
 				ground_supply += Game.supply(enemy.type());
 			}
-			needs_detection = needs_detection || enemy.cloaked();
+			needs_detection = needs_detection || enemy.cloaked() || enemy.type() == Units.TERRAN_BANSHEE || enemy.type() == Units.TERRAN_GHOST || enemy.type() == Units.PROTOSS_MOTHERSHIP;
 		}
 		
 		if (needs_detection) detection_points++;
@@ -170,6 +183,22 @@ public class BaseDefense {
 		}
 	}
 	
+	private static void assign_runby(Point2d average, double supply) {
+		ArrayList<HjaxUnit> assigned = new ArrayList<>();
+		float assigned_supply = 0;
+		while (assigned_supply < supply) {
+			HjaxUnit current = closest_free_aggressor(average);
+			if (current == null) break;
+			assigned_supply += Game.supply(current.type()) * (current.health() / current.health_max());
+			assigned.add(current);
+		}
+		
+		for (HjaxUnit u: assigned) {
+			assignments.put(u.tag(), average);
+			Game.draw_line(average, u.location(), Color.RED);
+		}
+	}
+	
 	private static HjaxUnit closest_free_detection(Point2d p) {
 		HjaxUnit best = null;
 		for (HjaxUnit ally : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERSEER)) {
@@ -187,6 +216,28 @@ public class BaseDefense {
 		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (aa != Game.hits_air(ally.type())) continue;
 			if (Game.is_spellcaster(ally.type())) continue;
+			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
+				if (!used.contains(ally.tag())) {
+					if (best == null || 
+							(best.distance(p) / Game.get_unit_type_data().get(best.type()).getMovementSpeed().orElse((float) 1)) > 
+							(ally.distance(p)) / Game.get_unit_type_data().get(ally.type()).getMovementSpeed().orElse((float) 1)) {
+						best = ally;
+					}
+				}
+			}
+		}
+		if (best != null) {
+			UnitRoleManager.add(best, UnitRoleManager.UnitRole.DEFENDER);
+			used.add(best.tag());
+		}
+		return best;
+	}
+	
+	private static HjaxUnit closest_free_aggressor(Point2d p) {
+		HjaxUnit best = null;
+		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
+			if (Game.is_spellcaster(ally.type())) continue;
+			if (ally.type() == Units.ZERG_QUEEN) continue;
 			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
 				if (!used.contains(ally.tag())) {
 					if (best == null || 

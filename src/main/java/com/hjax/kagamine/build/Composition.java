@@ -8,27 +8,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.github.ocraft.s2client.protocol.data.DamageBonus;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Weapon;
 import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.game.Race;
+import com.hjax.kagamine.build.TechLevelManager.TechLevel;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
-import com.hjax.kagamine.game.GameInfoCache;
-import com.hjax.kagamine.knowledge.Wisdom;
 
 public class Composition {
+
+	private static Map<TechLevelManager.TechLevel, Map<UnitType, Map<UnitType, Double>>> counters = new HashMap<>();
+	private static Map<UnitType, Integer> limits = new HashMap<>();
 	
-	private static boolean initialized = false;
 	private static List<UnitType> units = new ArrayList<>();
-	private static Map<UnitType, Integer> scaling = new HashMap<>();
-	private static Map<UnitType, Map<UnitType, Integer>> scores = new HashMap<>();
-	
 	private static Set<UnitType> flying = new HashSet<>();
 	
 	static {
+		
 		units = Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING, Units.ZERG_QUEEN, Units.ZERG_ROACH, Units.ZERG_RAVAGER, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP, Units.ZERG_SWARM_HOST_MP, Units.ZERG_INFESTOR, Units.ZERG_ULTRALISK, Units.ZERG_MUTALISK, Units.ZERG_VIPER, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD,
 				Units.TERRAN_BANSHEE, Units.TERRAN_BATTLECRUISER, Units.TERRAN_GHOST, Units.TERRAN_MARINE, Units.TERRAN_MARAUDER, Units.TERRAN_REAPER, Units.TERRAN_HELLION, Units.TERRAN_HELLION_TANK, Units.TERRAN_SIEGE_TANK, Units.TERRAN_WIDOWMINE, Units.TERRAN_THOR, Units.TERRAN_LIBERATOR, Units.TERRAN_VIKING_FIGHTER, Units.TERRAN_RAVEN, Units.TERRAN_CYCLONE,
 				Units.PROTOSS_ZEALOT, Units.PROTOSS_ADEPT, Units.PROTOSS_STALKER, Units.PROTOSS_HIGH_TEMPLAR, Units.PROTOSS_DARK_TEMPLAR, Units.PROTOSS_ARCHON, Units.PROTOSS_SENTRY, Units.PROTOSS_IMMORTAL, Units.PROTOSS_COLOSSUS, Units.PROTOSS_PHOENIX, Units.PROTOSS_VOIDRAY, Units.PROTOSS_CARRIER, Units.PROTOSS_TEMPEST, Units.PROTOSS_MOTHERSHIP);
@@ -37,126 +35,140 @@ public class Composition {
 				Units.TERRAN_LIBERATOR, Units.TERRAN_BANSHEE, Units.TERRAN_BATTLECRUISER, Units.TERRAN_VIKING_FIGHTER, 
 				Units.ZERG_MUTALISK, Units.ZERG_BROODLORD, Units.ZERG_VIPER, Units.ZERG_CORRUPTOR));
 		
+		limits.put(Units.ZERG_VIPER, 4);
+		limits.put(Units.ZERG_INFESTOR, 10);
+		limits.put(Units.ZERG_BROODLORD, 10);
+		limits.put(Units.ZERG_SWARM_HOST_MP, 5);
+		
+		counters.put(TechLevel.HATCH, new HashMap<>());
+		counters.get(TechLevel.HATCH).put(Units.PROTOSS_VOIDRAY, new HashMap<>());
+		counters.get(TechLevel.HATCH).get(Units.PROTOSS_VOIDRAY).put(Units.ZERG_QUEEN, 1.5);
+		counters.get(TechLevel.HATCH).put(Units.PROTOSS_ORACLE, new HashMap<>());
+		counters.get(TechLevel.HATCH).get(Units.PROTOSS_ORACLE).put(Units.ZERG_QUEEN, 1.5);
+		counters.get(TechLevel.HATCH).put(Units.TERRAN_BANSHEE, new HashMap<>());
+		counters.get(TechLevel.HATCH).get(Units.TERRAN_BANSHEE).put(Units.ZERG_QUEEN, 1.5);
+		
+		counters.put(TechLevel.LAIR, new HashMap<>());
+		counters.get(TechLevel.LAIR).put(Units.PROTOSS_TEMPEST, new HashMap<>());
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_TEMPEST).put(Units.ZERG_CORRUPTOR, 2.0);
+		counters.get(TechLevel.LAIR).put(Units.PROTOSS_CARRIER, new HashMap<>());
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_CARRIER).put(Units.ZERG_CORRUPTOR, 3.0);
+		counters.get(TechLevel.LAIR).put(Units.PROTOSS_STALKER, new HashMap<>());
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_STALKER).put(Units.ZERG_LURKER_MP, 0.5);
+		counters.get(TechLevel.LAIR).put(Units.PROTOSS_ARCHON, new HashMap<>());
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_ARCHON).put(Units.ZERG_LURKER_MP, 1.0);
+		counters.get(TechLevel.LAIR).put(Units.PROTOSS_IMMORTAL, new HashMap<>());
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_IMMORTAL).put(Units.ZERG_LURKER_MP, 1.0);
+		
+		counters.get(TechLevel.LAIR).put(Units.PROTOSS_COLOSSUS, new HashMap<>());
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_COLOSSUS).put(Units.ZERG_CORRUPTOR, 3.0);
+		
+		counters.put(TechLevel.HIVE, new HashMap<>());
+		counters.get(TechLevel.HIVE).put(Units.PROTOSS_CARRIER, new HashMap<>());
+		counters.get(TechLevel.HIVE).get(Units.PROTOSS_CARRIER).put(Units.ZERG_INFESTOR, 1.0);
+		counters.get(TechLevel.HIVE).put(Units.PROTOSS_MOTHERSHIP, new HashMap<>());
+		counters.get(TechLevel.HIVE).get(Units.PROTOSS_MOTHERSHIP).put(Units.ZERG_INFESTOR, 1.0);
+		counters.get(TechLevel.HIVE).put(Units.TERRAN_BATTLECRUISER, new HashMap<>());
+		counters.get(TechLevel.HIVE).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_INFESTOR, 1.0);
+		
+		counters.get(TechLevel.HIVE).put(Units.TERRAN_MARINE, new HashMap<>());
+		counters.get(TechLevel.HIVE).get(Units.TERRAN_MARINE).put(Units.ZERG_INFESTOR, 0.1);
+		
+		counters.get(TechLevel.HIVE).put(Units.TERRAN_THOR, new HashMap<>());
+		counters.get(TechLevel.HIVE).get(Units.TERRAN_THOR).put(Units.ZERG_INFESTOR, 1.0);
+		
+		counters.get(TechLevel.HIVE).put(Units.TERRAN_SIEGE_TANK, new HashMap<>());
+		counters.get(TechLevel.HIVE).get(Units.TERRAN_SIEGE_TANK).put(Units.ZERG_VIPER, 0.25);
+		
+		counters.get(TechLevel.HIVE).put(Units.PROTOSS_COLOSSUS, new HashMap<>());
+		counters.get(TechLevel.HIVE).get(Units.PROTOSS_COLOSSUS).put(Units.ZERG_VIPER, 0.7);
+		
+		for (UnitType unit : units) {
+			if (!flying.contains(unit)) {
+				double supply_handled = 6;
+				for (Weapon w: Game.get_unit_type_data().get(unit).getWeapons()) {
+					if (w.getTargetType() == TargetType.ANY || w.getTargetType() == TargetType.AIR) {
+						supply_handled += 6;
+					}
+				}
+				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_BROODLORD, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / supply_handled);
+			}
+		}
+		
+		for (UnitType unit : units) {
+			if (!flying.contains(unit)) {
+				counters.get(TechLevel.LAIR).get(unit).put(Units.ZERG_CORRUPTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 2.0);
+			}
+		}
+		
+		for (UnitType unit : units) {
+			if (flying.contains(unit)) {
+				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_INFESTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 10.0);
+			} else {
+				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_INFESTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 6.0);
+			}
+			
+		}
 	}
 	
 	
 	
-	public static List<UnitType> comp() {
+	public static Map<UnitType, Integer> comp() {
+
+		Map<UnitType, Integer> comp = new HashMap<>();
 		
-		if (!initialized) {
-			initialized = true;
-			
-			for (UnitType attacker : units) {
-				scores.put(attacker, new HashMap<>());
-				for (UnitType defender : units) {
-					scores.get(attacker).put(defender, 0);
-					for (Weapon w: Game.get_unit_type_data().get(attacker).getWeapons()) {
-						if (w.getTargetType() == TargetType.ANY || (w.getTargetType() == TargetType.AIR) == flying.contains(defender)) {
-							int score = 1;
-							for (DamageBonus d: w.getDamageBonuses()) {
-								if (Game.get_unit_type_data().get(defender).getAttributes().contains(d.getAttribute())) {
-									score += w.getDamage() + d.getBonus() / w.getDamage();
+		if (Game.race() != Race.ZERG) {
+			return comp;
+		}
+		
+		for (UnitType unit : units) {
+			if (EnemyModel.counts.getOrDefault(unit, 0) > 0) {
+				UnitType best = Units.INVALID;
+				TechLevel best_tech = TechLevel.HATCH;
+				for (TechLevel tech: TechLevelManager.TechLevel.values()) {
+					if (tech.ordinal() <= TechLevelManager.getTechLevel().ordinal()) {
+						if (counters.get(tech).containsKey(unit)) {
+							for (UnitType possible_counter : counters.get(tech).get(unit).keySet()) {
+								if (best == Units.INVALID || 
+										counters.get(best_tech).get(unit).get(best) * Game.get_unit_type_data().get(best).getFoodRequired().orElse(0.0f) > 
+										counters.get(tech).get(unit).get(possible_counter) * Game.get_unit_type_data().get(possible_counter).getFoodRequired().orElse(0.0f)) {
+									best = possible_counter;
 								}
-							}
-							if (scores.get(attacker).get(defender) < score) {
-								scores.get(attacker).put(defender, score);
 							}
 						}
 					}
 				}
-				if (attacker == Units.ZERG_INFESTOR) {
-					
-					for (UnitType defender : units) {
-						scores.get(attacker).put(defender, 1);
-					}
-					
-					scores.get(attacker).put(Units.TERRAN_THOR, 2);
-					scores.get(attacker).put(Units.TERRAN_THOR_AP, 2);
-					scores.get(attacker).put(Units.TERRAN_MARINE, 2);
-					scores.get(attacker).put(Units.TERRAN_BATTLECRUISER, 2);
-					
-					scores.get(attacker).put(Units.PROTOSS_CARRIER, 2);
-					scores.get(attacker).put(Units.PROTOSS_TEMPEST, 2);
-					scores.get(attacker).put(Units.PROTOSS_MOTHERSHIP, 3);
-					scores.get(attacker).put(Units.PROTOSS_COLOSSUS, 2);
+				
+				if (best != Units.INVALID) {
+					comp.put(best, (int) (comp.getOrDefault(best, 0) + EnemyModel.counts.getOrDefault(unit, 0) * counters.get(best_tech).get(unit).get(best)));
 				}
 			}
 		}
+		
+		
+		return comp;
+		
+	}
+	
+	public static List<UnitType> full_comp() {
+		List<UnitType> comp = filler_comp();
+		for (UnitType u : comp().keySet()) {
+			comp.add(u);
+		}
+		return comp;
+	}
+	
+	public static List<UnitType> filler_comp() {
 
 		if (Game.race() == Race.PROTOSS) {
 			return Arrays.asList(Units.PROTOSS_ZEALOT, Units.PROTOSS_STALKER);
 		}
-		
-		if (GameInfoCache.get_opponent_race() == Race.TERRAN) {
-			if (GameInfoCache.count_friendly(Units.ZERG_DRONE) > 50 && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) > 0) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_INFESTOR, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
-			}
-			if (EnemyModel.enemy_floated()) {
-				return Arrays.asList(Units.ZERG_MUTALISK);
-			}
-
-			if (BuildPlanner.is_all_in && EnemyModel.enemyBaseCount() == 1 && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
-			}
-			if (Game.army_supply() < 10 || GameInfoCache.count_friendly(Units.ZERG_DRONE) < 35) {
-				return Arrays.asList(Units.ZERG_ZERGLING);
-			}
-			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) >= 2 && GameInfoCache.count_friendly(Units.ZERG_SPIRE) > 0) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_CORRUPTOR);
-			}
-			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) >= 2) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_CORRUPTOR);
-			}
-			if (Game.army_supply() < 80) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
-			}
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK,  Units.ZERG_INFESTOR, Units.ZERG_ULTRALISK);
+		if (TechLevelManager.getTechLevel() == TechLevel.HATCH) {
+			return Arrays.asList(Units.ZERG_ZERGLING);
+		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {
+			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+		} else {
+			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 		}
-		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-			if (Wisdom.cannon_rush() || Wisdom.proxy_detected()) {
-				return Arrays.asList(Units.ZERG_ZERGLING);
-			}
-			if (Game.army_supply() < 30) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH);
-			}
-			if (Wisdom.cannon_rush() || Wisdom.proxy_detected()) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
-			}
-			if (EnemyModel.counts.getOrDefault(Units.ZERG_MUTALISK, 0) > 0) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
-			}
-			if (Game.army_supply() < 80) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
-			}
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);
-		}
-		if (GameInfoCache.get_opponent_race() == Race.PROTOSS) {
-			if (GameInfoCache.count_friendly(Units.ZERG_DRONE) > 50 && GameInfoCache.count_friendly(Units.ZERG_GREATER_SPIRE) > 0) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_INFESTOR, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
-			}
-			if (BuildPlanner.is_all_in && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
-			}
-			if (EnemyModel.counts.getOrDefault(Units.PROTOSS_CARRIER, 0) > 0) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_INFESTOR);
-			}
-			if (EnemyModel.counts.getOrDefault(Units.PROTOSS_VOIDRAY, 0) > 0) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
-			}
-			if (EnemyModel.counts.getOrDefault(Units.PROTOSS_TEMPEST, 0) > 2) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_CORRUPTOR);
-			}
-			if (Game.army_supply() < 15) {
-				return Arrays.asList(Units.ZERG_ZERGLING);
-			}
-			if (Wisdom.all_in_detected() && Game.army_supply() < 50) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_QUEEN);
-			}
-			if (Game.army_supply() < 60) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP);
-			}
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD);
-		}
-		return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_HYDRALISK);
 	}
 }

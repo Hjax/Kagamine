@@ -30,9 +30,7 @@ public class UnitRoleManager {
     	}
     	
         for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF)) {
-        	if (u.type() == Units.ZERG_MUTALISK) {
-        		add(u, UnitRole.HARASS);
-        	} else if (!Game.is_structure(u.type()) && Game.is_combat(u.type()) && !Game.is_worker(u.type())) {
+        	if (!Game.is_structure(u.type()) && Game.is_combat(u.type()) && !Game.is_worker(u.type())) {
             	add(u, UnitRole.ARMY);
             }
         }
