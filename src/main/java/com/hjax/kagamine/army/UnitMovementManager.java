@@ -100,7 +100,7 @@ public class UnitMovementManager {
 			double my_strength = ThreatManager.total_supply(UnitRoleManager.get(UnitRole.ARMY));
 			
 			try {
-				if ((Game.closest_invisible(average).distance(average) > 6 && 
+				if ((Game.closest_invisible(average).distance(average) > 7 && 
 						my_strength > enemy_strength * 1.3 && 
 						!BaseManager.closest_base(average).has_enemy_command_structure())) {
 							
@@ -119,9 +119,9 @@ public class UnitMovementManager {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 			dist = 45;
 		}
-		if (Game.army_supply() > 30) {
+		if (Game.army_supply() > 60) {
 			for (Base b : BaseManager.bases) {
-				if (b.has_enemy_command_structure() && EnemyBaseDefense.get_defense(b) < 15 && Scouting.closest_enemy_spawn(b.location).distance(b.location) > dist) {
+				if (b.has_enemy_command_structure() && EnemyBaseDefense.get_defense(b) < 10 && Scouting.closest_enemy_spawn(b.location).distance(b.location) > dist) {
 					assign_runby(b.location, EnemyBaseDefense.get_defense(b) + 2);
 				}
 			}
@@ -238,6 +238,7 @@ public class UnitMovementManager {
 		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (Game.is_spellcaster(ally.type())) continue;
 			if (ally.type() == Units.ZERG_QUEEN) continue;
+			if (!Game.hits_ground(ally.type())) continue;
 			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
 				if (!used.contains(ally.tag())) {
 					if (best == null || 

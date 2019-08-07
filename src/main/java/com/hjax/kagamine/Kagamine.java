@@ -17,6 +17,7 @@ import com.hjax.kagamine.army.UnitManager;
 import com.hjax.kagamine.build.ZergBuildExecutor;
 import com.hjax.kagamine.build.BuildExecutor;
 import com.hjax.kagamine.build.BuildPlanner;
+import com.hjax.kagamine.build.Composition;
 import com.hjax.kagamine.build.TechLevelManager;
 import com.hjax.kagamine.build.UpgradeManager;
 import com.hjax.kagamine.economy.BaseManager;
@@ -120,6 +121,7 @@ class Kagamine extends S2Agent {
 			Game.write_text("Queens " + GameInfoCache.count(Units.ZERG_QUEEN) + "/" + ZergWisdom.queen_target());
 			Game.write_text("Tech Level " + TechLevelManager.getTechLevel().toString());
 			Game.write_text("Spending: " + Game.minerals() + " " + Game.gas());
+			Game.write_text("Comp: " + Composition.comp().toString());
 			
 		}
 

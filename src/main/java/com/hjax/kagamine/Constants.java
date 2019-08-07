@@ -13,5 +13,6 @@ public class Constants {
 	public static final int THREAT_DISTANCE = 14;
 	public static final double MEMORY = 10 * 60 * FPS;
 	public static final int REGROUP_RADIUS = 16;
+	public static final double DEFENSE_DISTANCE = 30;
 	
 }

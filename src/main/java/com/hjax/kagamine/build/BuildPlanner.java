@@ -79,7 +79,7 @@ public class BuildPlanner {
 						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_gases = 9;
+				Build.ideal_gases = 10;
 				Build.pull_off_gas = true;	
 				break;
 			case ZERG:
@@ -95,7 +95,7 @@ public class BuildPlanner {
 						new ImmutablePair<>(16, Units.ZERG_HATCHERY),
 						new ImmutablePair<>(18, Units.ZERG_EXTRACTOR),
 						new ImmutablePair<>(17, Units.ZERG_SPAWNING_POOL)));
-				Build.ideal_gases = 9;
+				Build.ideal_gases = 10;
 				Build.pull_off_gas = true;
 				break;
 			default:

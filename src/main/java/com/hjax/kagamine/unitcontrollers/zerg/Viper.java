@@ -44,7 +44,7 @@ public class Viper {
 		
 		for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (yoink_targets.contains(enemy.type())) {
-				if (enemy.distance(u) < 14 && enemy.distance(u) > 5) {
+				if (enemy.distance(u) < 14 && enemy.distance(ArmyManager.army_center) > 5) {
 					u.use_ability(Abilities.EFFECT_ABDUCT, enemy);
 					return;
 				}

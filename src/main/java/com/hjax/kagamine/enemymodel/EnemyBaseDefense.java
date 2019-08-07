@@ -60,30 +60,35 @@ public class EnemyBaseDefense {
 		threats.put(Units.ZERG_SPINE_CRAWLER, Pair.of(4.0, 0.0));
 		threats.put(Units.ZERG_SPORE_CRAWLER, Pair.of(0.0, 4.0));
 		
+		threats.put(Units.PROTOSS_PHOTON_CANNON, Pair.of(4.0, 4.0));
+		threats.put(Units.PROTOSS_ZEALOT, Pair.of(2.0, 0.0));
+		threats.put(Units.PROTOSS_STALKER, Pair.of(1.5, 1.5));
+		threats.put(Units.PROTOSS_SENTRY, Pair.of(1.0, 1.0));
+		threats.put(Units.PROTOSS_ADEPT, Pair.of(1.5, 0.0));
+		threats.put(Units.PROTOSS_HIGH_TEMPLAR, Pair.of(6.0, 6.0));
+		threats.put(Units.PROTOSS_DARK_TEMPLAR, Pair.of(4.0, 0.0));
+		threats.put(Units.PROTOSS_ARCHON, Pair.of(6.0, 6.0));
+		threats.put(Units.PROTOSS_IMMORTAL, Pair.of(6.0, 0.0));
+		threats.put(Units.PROTOSS_COLOSSUS, Pair.of(8.0, 0.0));
+		
+		threats.put(Units.PROTOSS_CARRIER, Pair.of(8.0, 8.0));
+		threats.put(Units.PROTOSS_TEMPEST, Pair.of(4.0, 4.0));
+		threats.put(Units.PROTOSS_ORACLE, Pair.of(4.0, 0.0));
+		threats.put(Units.PROTOSS_PHOENIX, Pair.of(2.0, 6.0));
+		threats.put(Units.PROTOSS_MOTHERSHIP, Pair.of(20.0, 20.0));
 	}
 
 	public static void on_frame() {
-		List<HjaxUnit> to_remove = new ArrayList<>();
-		for (HjaxUnit u: defenses.keySet()) {
-			if ((Game.get_frame() - u.last_seen()) > Constants.MEMORY || !u.alive()) {
-				to_remove.add(u);
-			}
-		}
-		for (HjaxUnit u : to_remove) {
-			defenses.remove(u);
-		}
+
+		defenses.clear();
 		
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			Base best = null;
 			for (Base base : BaseManager.bases) {
 				if (base.has_enemy_command_structure()) {
-					if (best == null || u.distance(best) > u.distance(base)) {
-						best = base;
+					if (u.distance(base) < Constants.DEFENSE_DISTANCE) {
+						defenses.put(u, base);
 					}
 				}
-			}
-			if (best != null) {
-				defenses.put(u, best);
 			}
 		}
 		

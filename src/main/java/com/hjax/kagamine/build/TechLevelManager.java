@@ -36,7 +36,7 @@ public class TechLevelManager {
 		} 
 		
 		if (getTechLevel() == TechLevel.LAIR && GameInfoCache.count(Units.ZERG_HIVE) == 0) {
-			if ((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 80)) {
+			if ((BaseManager.base_count() >= 4 && GameInfoCache.count(Units.ZERG_DRONE) > 80 && Game.army_supply() >= 60)) {
 				if (!Balance.has_tech_requirement(Units.ZERG_HIVE)) {
 					if (Game.can_afford(Units.ZERG_HIVE)) {
 						RaceInterface.make(Units.ZERG_HIVE);

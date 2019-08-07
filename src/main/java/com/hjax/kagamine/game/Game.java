@@ -392,7 +392,7 @@ public class Game {
 	}
 	
 	public static void purchase(Upgrade u) {
-		System.out.println("Purchasing " + u.toString());
+
 		int minerals = Game.get_upgrade_data().get(u).getMineralCost().orElse(0);
 		int gas = Game.get_upgrade_data().get(u).getVespeneCost().orElse(0);
 		spend(minerals, gas);
@@ -400,7 +400,7 @@ public class Game {
 	
 	// TODO deal with morphs
 	public static void purchase(UnitType u) {
-		System.out.println("Purchasing " + u.toString());
+
 		int minerals = Game.get_unit_type_data().get(u).getMineralCost().orElse(0);
 		int gas = Game.get_unit_type_data().get(u).getVespeneCost().orElse(0);
 		if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
@@ -565,6 +565,16 @@ public class Game {
 		if (u == Units.TERRAN_BUNKER) return true;
 		for (Weapon w: get_unit_type_data().get(u).getWeapons()) {
 			if (w.getTargetType().equals(TargetType.AIR) || w.getTargetType().equals(TargetType.ANY)) return true;
+		}
+		return false;
+	}
+	
+	public static boolean hits_ground(UnitType u) {
+		if (u == Units.TERRAN_BUNKER) return true;
+		for (Weapon w : get_unit_type_data().get(u).getWeapons()) {
+			if (w.getTargetType() == TargetType.ANY || w.getTargetType() == TargetType.GROUND) {
+				return true;
+			}
 		}
 		return false;
 	}
