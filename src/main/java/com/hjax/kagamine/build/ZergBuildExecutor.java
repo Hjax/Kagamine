@@ -301,12 +301,14 @@ public class ZergBuildExecutor {
 		UnitType best = Units.INVALID;
 		for (UnitType u: Composition.comp().keySet()) {
 			UnitType current = u;
+			int limit = Composition.comp().getOrDefault(current, 0);
 			if (Balance.is_morph(u)) {
 				current = Balance.get_morph_source(u);
-				if (GameInfoCache.count(current) >= Composition.comp().getOrDefault(current, 0) + Composition.comp().getOrDefault(u, 0)) continue;
+				limit +=  Composition.comp().getOrDefault(u, 0);
 			}
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(current)) > 0) {
 				if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
+					if (GameInfoCache.count(current) >= limit) continue;
 					if (best == Units.INVALID || Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
 						best = current;
 					}
