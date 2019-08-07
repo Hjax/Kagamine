@@ -135,10 +135,10 @@ public class Game {
 		Point2d best = null;
 		
 		for (int offset = 1; offset < 500; offset += 1) {
-			for (int x = (int) p.getX() - offset; x < p.getX() + offset; x += offset * 2) {
+			for (int x = (int) p.getX() - offset; x <= p.getX() + offset; x += offset * 2) {
 				if (x < min.getX()) continue;
 				if (x > max.getX()) continue;
-				for (int y = (int) p.getY() - offset; y < p.getY() + offset; y += offset * 2) {
+				for (int y = (int) p.getY() - offset; y <= p.getY() + offset; y += offset * 2) {
 					if (y < min.getY()) continue;
 					if (y > max.getY()) continue;
 					if (!visibility[x][y] && (best == null || p.distance(Point2d.of(x, y)) < best.distance(p))) {

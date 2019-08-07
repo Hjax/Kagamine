@@ -16,12 +16,21 @@ import com.hjax.kagamine.game.GameInfoCache;
 public class Balance {
 	
 	private static final Map<UnitType, UnitType> overrides;
+	
+	private static final Map<UnitType, UnitType> morphs;
+	
 	static {
 		overrides = new HashMap<>();
 		overrides.put(Units.ZERG_LAIR, Units.ZERG_SPAWNING_POOL);
 		overrides.put(Units.PROTOSS_ZEALOT, Units.PROTOSS_GATEWAY);
 		overrides.put(Units.ZERG_HIVE, Units.ZERG_INFESTATION_PIT);
 		overrides.put(Units.ZERG_GREATER_SPIRE, Units.ZERG_HIVE);
+		
+		morphs = new HashMap<>();
+		morphs.put(Units.ZERG_LURKER_MP, Units.ZERG_HYDRALISK);
+		morphs.put(Units.ZERG_BANELING, Units.ZERG_ZERGLING);
+		morphs.put(Units.ZERG_OVERSEER, Units.ZERG_OVERLORD);
+		morphs.put(Units.ZERG_BROODLORD, Units.ZERG_CORRUPTOR);
 	}
 	
 	public static boolean has_tech_requirement(UnitType u) {
@@ -81,5 +90,13 @@ public class Balance {
 			return Game.get_unit_type_data().get(u).getTechRequirement().get();
 		}
 		return Units.INVALID;
+	}
+	
+	public static boolean is_morph(UnitType u) {
+		return morphs.containsKey(u);
+	}
+	
+	public static UnitType get_morph_source(UnitType u) {
+		return morphs.getOrDefault(u, Units.INVALID);
 	}
 }

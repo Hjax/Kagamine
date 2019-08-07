@@ -135,8 +135,6 @@ public class Composition {
 			enemy_units.put(u, (double) EnemyModel.counts.get(u));
 		}
 		
-		System.out.println("-------------------------------------");
-		
 		for (int i = 0; i < 5; i++) {
 			for (UnitType unit : units) {
 				if (enemy_units.getOrDefault(unit, 0.0) > 0) {

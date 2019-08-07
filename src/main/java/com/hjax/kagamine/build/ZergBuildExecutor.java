@@ -298,42 +298,26 @@ public class ZergBuildExecutor {
 	}
 	
 	public static UnitType next_army_unit() {
-		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.full_comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return Units.ZERG_ZERGLING;
-		}
 		UnitType best = Units.INVALID;
 		for (UnitType u: Composition.comp().keySet()) {
-			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
-				if (GameInfoCache.count(u) >= Composition.comp().get(u)) continue;
-				if (best == Units.INVALID) best = u;
-				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {
-					if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
-						best = u;
+			UnitType current = u;
+			if (Balance.is_morph(u)) {
+				current = Balance.get_morph_source(u);
+				if (GameInfoCache.count(current) >= Composition.comp().getOrDefault(current, 0) + Composition.comp().getOrDefault(u, 0)) continue;
+			}
+			if (GameInfoCache.count_friendly(Balance.get_tech_structure(current)) > 0) {
+				if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
+					if (best == Units.INVALID || Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
+						best = current;
 					}
 				}
 			}
 		}
 		
-		if (best != Units.INVALID) {
-			if (best == Units.ZERG_BROODLORD && GameInfoCache.count(Units.ZERG_CORRUPTOR) < 5) {
-				return Units.ZERG_CORRUPTOR;
-			} 
-			if (best == Units.ZERG_LURKER_MP && GameInfoCache.count(Units.ZERG_HYDRALISK) < 10) {
-				return Units.ZERG_HYDRALISK;
-			}
-			if (best == Units.ZERG_BANELING && GameInfoCache.count(Units.ZERG_ZERGLING) < 40) {
-				return Units.ZERG_ZERGLING;
-			}
-			if (best != Units.ZERG_BANELING && best != Units.ZERG_LURKER_MP && best != Units.ZERG_BROODLORD) {
-				return best;
-			}
-
-		}
 		for (UnitType u: Composition.filler_comp()) {
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
-				if (best == Units.INVALID) best = u;
-				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Game.gas()) {
-					if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
+				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
+					if (best == Units.INVALID || Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
 						best = u;
 					}
 				}
