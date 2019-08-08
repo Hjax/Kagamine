@@ -299,6 +299,9 @@ public class ZergBuildExecutor {
 	
 	public static UnitType next_army_unit() {
 		UnitType best = Units.INVALID;
+		
+		boolean save_gas = false;
+		
 		for (UnitType u: Composition.comp().keySet()) {
 			UnitType current = u;
 			int limit = Composition.comp().getOrDefault(current, 0);
@@ -312,6 +315,8 @@ public class ZergBuildExecutor {
 					if (best == Units.INVALID || Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
 						best = current;
 					}
+				} else {
+					save_gas = true;
 				}
 			}
 		}
@@ -319,8 +324,10 @@ public class ZergBuildExecutor {
 		for (UnitType u: Composition.filler_comp()) {
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
 				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
-					if (best == Units.INVALID || Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
-						best = u;
+					if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < 1 || !save_gas) {
+	 					if (best == Units.INVALID || Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
+							best = u;
+						}
 					}
 				}
 			}

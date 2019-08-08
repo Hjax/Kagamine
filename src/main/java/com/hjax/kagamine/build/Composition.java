@@ -58,8 +58,8 @@ public class Composition {
 		
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_TEMPEST).put(Units.ZERG_CORRUPTOR, 2.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_CARRIER).put(Units.ZERG_CORRUPTOR, 3.0);
-		counters.get(TechLevel.LAIR).get(Units.PROTOSS_STALKER).put(Units.ZERG_LURKER_MP, 0.25);
-		counters.get(TechLevel.LAIR).get(Units.PROTOSS_ZEALOT).put(Units.ZERG_LURKER_MP, 0.25);
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_STALKER).put(Units.ZERG_LURKER_MP, 0.3);
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_ZEALOT).put(Units.ZERG_LURKER_MP, 0.45);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_ADEPT).put(Units.ZERG_LURKER_MP, 0.20);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_ARCHON).put(Units.ZERG_LURKER_MP, 1.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_IMMORTAL).put(Units.ZERG_LURKER_MP, 1.0);
