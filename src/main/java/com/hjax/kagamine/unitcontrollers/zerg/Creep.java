@@ -140,21 +140,7 @@ public class Creep {
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
 				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
 					found = true;
-					Point2d closest = u.location();
-					for (Point2d p: creep_points) {
-						if (p.distance(u.location()) <= 12 && closest.distance(Scouting.closest_enemy_spawn()) > p.distance(Scouting.closest_enemy_spawn())) {
-							closest = p;
-						}
-					}
-					if (closest.distance(u.location()) < 1) {
-						closest = Scouting.closest_enemy_spawn();
-						for (Point2d p: creep_points) {
-							if (closest.distance(u.location()) > p.distance(u.location())) {
-								closest = p;
-							}
-						}
-					}
-					spread_towards(u, closest);
+					spread_towards(u, Scouting.closest_enemy_spawn());
 					break;
 				}
 			}
@@ -165,25 +151,20 @@ public class Creep {
 	}
 	
 	private static void spread_towards(HjaxUnit u, Point2d p) {
-		Vector2d direction = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(p));
-		for (int i = 9; i > 0; i -= 0.5) {
-			Point2d point = Point2d.of(u.location().getX() + i * direction.x, u.location().getY() + i * direction.y);
-			Game.draw_box(point, Color.RED);
-			if (Game.on_creep(point) && Game.is_placeable(point) && Game.can_place(Abilities.BUILD_CREEP_TUMOR_TUMOR, point)) {
-				boolean skip = false;
-				for (Base b : BaseManager.bases) {
-					if (b.location.distance(point) < 6) {
-						skip = true;
-					}
-				}
-				if (!skip) {
-					u.use_ability(Abilities.BUILD_CREEP_TUMOR, point);
-					used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
-					return;
+		
+		Point2d best = null;
+		for (Point2d point: creep_points) {
+			if (point.distance(u.location()) < 10) {
+				if (best == null || best.distance(p) > point.distance(p)) {
+					best = point;
 				}
 			}
 		}
-		used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
+		if (best != null) {
+			u.use_ability(Abilities.BUILD_CREEP_TUMOR, best);
+			used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
+		}
+
 	}
 	
 	private static double score(Point2d p) {

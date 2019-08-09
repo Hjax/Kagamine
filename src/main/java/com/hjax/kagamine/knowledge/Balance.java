@@ -24,7 +24,7 @@ public class Balance {
 		overrides.put(Units.ZERG_LAIR, Units.ZERG_SPAWNING_POOL);
 		overrides.put(Units.PROTOSS_ZEALOT, Units.PROTOSS_GATEWAY);
 		overrides.put(Units.ZERG_HIVE, Units.ZERG_INFESTATION_PIT);
-		overrides.put(Units.ZERG_GREATER_SPIRE, Units.ZERG_HIVE);
+		overrides.put(Units.ZERG_GREATER_SPIRE, Units.ZERG_SPIRE);
 		
 		morphs = new HashMap<>();
 		morphs.put(Units.ZERG_LURKER_MP, Units.ZERG_HYDRALISK);

@@ -44,7 +44,7 @@ public class GenericUnit {
 			}
 		}
 		
-		if (u.cooldown() > 0.1 & u.ability() == Abilities.ATTACK) {
+		if (u.cooldown() > 0.1) {
 			for (HjaxUnit e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (e.type() == Units.PROTOSS_INTERCEPTOR) continue;
 				if (Game.is_changeling(e.type())) continue;
@@ -69,8 +69,9 @@ public class GenericUnit {
 					}
 				}
 			}
-			return;
-		} else if (UnitMovementManager.assignments.containsKey(u.tag())) {
+		}
+		
+		if (UnitMovementManager.assignments.containsKey(u.tag())) {
 			u.attack(UnitMovementManager.assignments.get(u.tag()));
 			return;
 		}

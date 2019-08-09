@@ -148,16 +148,27 @@ public class GameInfoCache {
 		return count_friendly(u) + in_progress(u);
 	}
 	
-	// TODO filter out old units
 	public static ArrayList<HjaxUnit> get_units() {
 		ArrayList<HjaxUnit> units = new ArrayList<>();
-		units.addAll(all_units.values());
+		units.addAll(visible_friendly.values());
+		units.addAll(visible_enemy.values());
+		units.addAll(visible_neutral.values());
 		return units;
 	}
 	
 	public static ArrayList<HjaxUnit> get_units(UnitType type) {
 		ArrayList<HjaxUnit> units = new ArrayList<>();
-		for (HjaxUnit u: all_units.values()) {
+		for (HjaxUnit u: visible_friendly.values()) {
+			if (u.type() == type) {
+				units.add(u);
+			}
+		}
+		for (HjaxUnit u: visible_enemy.values()) {
+			if (u.type() == type) {
+				units.add(u);
+			}
+		}
+		for (HjaxUnit u: visible_neutral.values()) {
 			if (u.type() == type) {
 				units.add(u);
 			}

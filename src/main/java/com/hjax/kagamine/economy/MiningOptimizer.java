@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.game.Game;
@@ -22,14 +23,15 @@ public class MiningOptimizer {
 		
 		Set<Tag> to_remove = new HashSet<>();
 		for (Tag u: assignments.keySet()) {
-			if (GameInfoCache.get_unit(u) == null) to_remove.add(u);
-			else if (GameInfoCache.get_unit(u) == null || !Game.is_worker(GameInfoCache.get_unit(u).type()) || !GameInfoCache.get_unit(u).alive()) {
-				if (GameInfoCache.get_unit(u).orders().size() == 0 || (GameInfoCache.get_unit(u).orders().get(0).getAbility() != Abilities.HARVEST_GATHER && GameInfoCache.get_unit(u).orders().get(0).getAbility() != Abilities.HARVEST_RETURN)) {
-					to_remove.add(u);
-				}
+			if (GameInfoCache.get_unit(u) == null || !Game.is_worker(GameInfoCache.get_unit(u).type()) || !GameInfoCache.get_unit(u).alive()) {
+				to_remove.add(u);
+			} 
+			if (GameInfoCache.get_unit(u).orders().size() == 0 || (GameInfoCache.get_unit(u).orders().get(0).getAbility() != Abilities.HARVEST_GATHER && GameInfoCache.get_unit(u).orders().get(0).getAbility() != Abilities.HARVEST_RETURN)) {
+				to_remove.add(u);
 			}
 		}
 		for (Tag t: to_remove) assignments.remove(t);
+		
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.SELF)) {
 			if (Game.is_worker(u.type())) {
 				if (u.ability() == Abilities.HARVEST_GATHER) {

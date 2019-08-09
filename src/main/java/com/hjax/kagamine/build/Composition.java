@@ -83,10 +83,10 @@ public class Composition {
 		
 		for (UnitType unit : units) {
 			if (!flying.contains(unit)) {
-				double supply_handled = 6;
+				double supply_handled = 7;
 				for (Weapon w: Game.get_unit_type_data().get(unit).getWeapons()) {
 					if (w.getTargetType() == TargetType.ANY || w.getTargetType() == TargetType.AIR) {
-						supply_handled += 6;
+						supply_handled -= 2;
 					}
 				}
 				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_BROODLORD, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / supply_handled);
@@ -101,9 +101,9 @@ public class Composition {
 		
 		for (UnitType unit : units) {
 			if (flying.contains(unit)) {
-				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_INFESTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 6.0);
-			} else {
 				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_INFESTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 4.0);
+			} else {
+				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_INFESTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 2.1);
 			}
 		}
 		

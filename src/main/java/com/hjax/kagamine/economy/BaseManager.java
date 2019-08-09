@@ -103,6 +103,7 @@ public class BaseManager {
 			if (unit.is_command()) {
 				for (Base base: bases) {
 					if (unit.distance(base) < 7) {
+						Game.draw_line(base.location, unit.location(), Color.RED);
 						base.set_command_structure(unit);
 						base.set_walking_drone(null);
 					}
