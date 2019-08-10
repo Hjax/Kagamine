@@ -43,18 +43,14 @@ public class GenericUnit {
 			}
 		}
 		
-		if (u.cooldown() > 0.1) {
+		if (u.cooldown() > 0.1 & u.ability() == Abilities.ATTACK) {
 			for (HjaxUnit e: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (e.type() == Units.PROTOSS_INTERCEPTOR) continue;
 				if (Game.is_changeling(e.type())) continue;
 				if (Game.get_unit_type_data().get(e.type()).getWeapons().size() > 0) {
 					float range = new ArrayList<>(Game.get_unit_type_data().get(u.type()).getWeapons()).get(0).getRange();
-					float enemy_range = 0.0f;
-					if (Game.get_unit_type_data().get(e.type()).getWeapons().size() > 0) {
-						enemy_range = new ArrayList<>(Game.get_unit_type_data().get(e.type()).getWeapons()).get(0).getRange();
-					}
 					if (u.type() == Units.ZERG_HYDRALISK && Game.has_upgrade(Upgrades.EVOLVE_GROOVED_SPINES)) range++;
-					if (u.location().distance(e.location()) < enemy_range && range > enemy_range) {
+					if (u.location().distance(e.location()) < range) {
 						Weapon best = null;
 						for (Weapon w: Game.get_unit_type_data().get(u.type()).getWeapons()) {
 							if (w.getTargetType() == TargetType.ANY || (w.getTargetType() == TargetType.AIR && e.flying()) || ( (w.getTargetType() == TargetType.GROUND && !e.flying()))) {
@@ -63,7 +59,7 @@ public class GenericUnit {
 						}
 						if (best != null) {
 							if (new ArrayList<>(Game.get_unit_type_data().get(e.type()).getWeapons()).get(0).getRange() < best.getRange()) {
-								Vector2d offset = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(e.location())).scale(2);
+								Vector2d offset = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(e.location()));
 								Point2d target = Point2d.of(u.location().getX() - offset.x, u.location().getY() - offset.y);
 								u.move(target);
 								return;
@@ -72,9 +68,9 @@ public class GenericUnit {
 					}
 				}
 			}
+			return;
 		}
-		
-		if (UnitMovementManager.assignments.containsKey(u.tag())) {
+		else if (UnitMovementManager.assignments.containsKey(u.tag())) {
 			u.attack(UnitMovementManager.assignments.get(u.tag()));
 			return;
 		}

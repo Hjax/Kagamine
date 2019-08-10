@@ -157,7 +157,7 @@ public class ZergBuildExecutor {
 			UpgradeManager.on_frame();
 
 			for (UnitType u: Composition.full_comp()) {
-				if (!pulled_off_gas && ((GameInfoCache.count(Units.ZERG_DRONE) > 25 || Wisdom.worker_rush() || Wisdom.cannon_rush() || (Wisdom.all_in_detected() && GameInfoCache.count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && GameInfoCache.get_opponent_race() == Race.ZERG && GameInfoCache.count(Units.ZERG_DRONE) >= 16))) {
+				if (!pulled_off_gas && ((GameInfoCache.count(Units.ZERG_DRONE) > 25 || Wisdom.proxy_detected() || Wisdom.worker_rush() || Wisdom.cannon_rush() || (Wisdom.all_in_detected() && GameInfoCache.count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && GameInfoCache.get_opponent_race() == Race.ZERG && GameInfoCache.count(Units.ZERG_DRONE) >= 16))) {
 					if (Balance.has_tech_requirement(u)) {
 						if (!(GameInfoCache.count(Balance.next_tech_requirement(u)) > 0)) {
 							if (Balance.next_tech_requirement(u) == Units.ZERG_INFESTATION_PIT && (BaseManager.base_count() < 4 || GameInfoCache.count(Units.ZERG_DRONE) < 60)) continue;
