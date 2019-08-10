@@ -40,7 +40,7 @@ class Main {
 			input.close();
 			s2Coordinator = S2Coordinator.setup()
 					.loadSettings(args)
-					.setRealtime(false)
+					.setRealtime(true)
 					.setNeedsSupportDir(true)
 					.setTimeoutMS(600 * 1000)
 					//.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))

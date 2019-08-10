@@ -13,7 +13,6 @@ import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.army.UnitMovementManager;
-import com.hjax.kagamine.build.Build;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
@@ -50,8 +49,12 @@ public class GenericUnit {
 				if (Game.is_changeling(e.type())) continue;
 				if (Game.get_unit_type_data().get(e.type()).getWeapons().size() > 0) {
 					float range = new ArrayList<>(Game.get_unit_type_data().get(u.type()).getWeapons()).get(0).getRange();
+					float enemy_range = 0.0f;
+					if (Game.get_unit_type_data().get(e.type()).getWeapons().size() > 0) {
+						enemy_range = new ArrayList<>(Game.get_unit_type_data().get(e.type()).getWeapons()).get(0).getRange();
+					}
 					if (u.type() == Units.ZERG_HYDRALISK && Game.has_upgrade(Upgrades.EVOLVE_GROOVED_SPINES)) range++;
-					if (u.location().distance(e.location()) < range) {
+					if (u.location().distance(e.location()) < enemy_range && range > enemy_range) {
 						Weapon best = null;
 						for (Weapon w: Game.get_unit_type_data().get(u.type()).getWeapons()) {
 							if (w.getTargetType() == TargetType.ANY || (w.getTargetType() == TargetType.AIR && e.flying()) || ( (w.getTargetType() == TargetType.GROUND && !e.flying()))) {

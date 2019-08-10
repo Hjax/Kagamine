@@ -16,6 +16,7 @@ import com.github.ocraft.s2client.protocol.game.Race;
 import com.hjax.kagamine.build.TechLevelManager.TechLevel;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.knowledge.Wisdom;
 
 public class Composition {
 
@@ -200,6 +201,14 @@ public class Composition {
 		if (Game.race() == Race.PROTOSS) {
 			return Arrays.asList(Units.PROTOSS_ZEALOT, Units.PROTOSS_STALKER);
 		}
+		
+		
+		if (Wisdom.proxy_detected() || Wisdom.cannon_rush()) {
+			if (Game.army_supply() < 50) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
+			}
+		}
+		
 		if (TechLevelManager.getTechLevel() == TechLevel.HATCH) {
 			return Arrays.asList(Units.ZERG_ZERGLING);
 		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {

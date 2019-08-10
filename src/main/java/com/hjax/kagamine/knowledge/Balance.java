@@ -30,6 +30,7 @@ public class Balance {
 		morphs.put(Units.ZERG_LURKER_MP, Units.ZERG_HYDRALISK);
 		morphs.put(Units.ZERG_BANELING, Units.ZERG_ZERGLING);
 		morphs.put(Units.ZERG_OVERSEER, Units.ZERG_OVERLORD);
+		morphs.put(Units.ZERG_RAVAGER, Units.ZERG_ROACH);
 		morphs.put(Units.ZERG_BROODLORD, Units.ZERG_CORRUPTOR);
 	}
 	

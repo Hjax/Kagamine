@@ -67,6 +67,15 @@ public class ZergBuildExecutor {
 				}
 			}
 			
+			if (BaseManager.base_count() == 1 && Wisdom.cannon_rush() || Wisdom.proxy_detected()) {
+				if (GameInfoCache.count(Units.ZERG_EXTRACTOR) < 2) {
+					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
+						BaseManager.build(Units.ZERG_EXTRACTOR);
+					}
+					Game.purchase(Units.ZERG_EXTRACTOR);
+				}
+			}
+			
 			// TODO make this less of a hack
 			if ((GameInfoCache.count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || (Build.pull_off_gas && Game.gas() > 200) || ((GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED) || Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) && (GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED)) && Build.pull_off_gas)) {
 				pulled_off_gas = true;
@@ -322,11 +331,15 @@ public class ZergBuildExecutor {
 		}
 		
 		for (UnitType u: Composition.filler_comp()) {
-			if (GameInfoCache.count_friendly(Balance.get_tech_structure(u)) > 0) {
-				if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
-					if (Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) < 1 || !save_gas) {
-	 					if (best == Units.INVALID || Game.get_unit_type_data().get(u).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
-							best = u;
+			UnitType current = u;
+			if (Balance.is_morph(u)) {
+				current = Balance.get_morph_source(u);
+			}
+			if (GameInfoCache.count_friendly(Balance.get_tech_structure(current)) > 0) {
+				if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
+					if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < 1 || !save_gas) {
+	 					if (best == Units.INVALID || Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
+							best = current;
 						}
 					}
 				}
