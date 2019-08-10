@@ -80,7 +80,7 @@ class Kagamine extends S2Agent {
 			MiningOptimizer.on_frame();
 			BanelingAvoidance.on_frame();
 			EnemyBaseDefense.on_frame();
-			Mutalisk.on_frame();
+			//Mutalisk.on_frame();
 			Larva.start_frame();
 			Scouting.on_frame();
 			ArmyManager.on_frame();
@@ -125,8 +125,6 @@ class Kagamine extends S2Agent {
 			Game.write_text("Comp: " + Composition.comp().toString());
 			
 		}
-
-		
 		
 		if (Constants.DEBUG) {
 			Game.debug.sendDebug();

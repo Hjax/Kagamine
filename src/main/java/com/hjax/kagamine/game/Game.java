@@ -616,7 +616,7 @@ public class Game {
 	}
 	
 	public static void write_text(String text, Point2d location) {
-		debug.debugTextOut(text, Point.of(location.getX(), location.getY()), Color.WHITE, 15);
+		debug.debugTextOut(text, Point.of(location.getX(), location.getY(), height(location) + 1), Color.WHITE, 15);
 	}
 	
 	public static int worker_count() {

@@ -26,6 +26,7 @@ public class Viper {
 		yoink_targets.add(Units.TERRAN_SIEGE_TANK_SIEGED);
 		yoink_targets.add(Units.TERRAN_THOR);
 		yoink_targets.add(Units.TERRAN_THOR_AP);
+		yoink_targets.add(Units.TERRAN_LIBERATOR_AG);
 		yoink_targets.add(Units.TERRAN_BATTLECRUISER);
 		
 	}

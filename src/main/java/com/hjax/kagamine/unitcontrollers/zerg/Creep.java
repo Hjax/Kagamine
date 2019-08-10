@@ -48,10 +48,7 @@ public class Creep {
 		calculate();
 	}
 	
-	private static long last_update = -9999;
 	private static void calculate() {
-		if (Game.get_frame() - last_update < Constants.FPS * 0.5) return;
-		last_update = Game.get_frame();
 		ArrayList<ImmutablePair<Integer, Integer>> to_erase = new ArrayList<>();
 		for (ImmutablePair<Integer, Integer> item : reserved.keySet()) {
 			if (reserved.get(item) < Game.get_frame() - Constants.FPS * 10) {
@@ -68,7 +65,7 @@ public class Creep {
 		for (int x = (int) min.getX(); x <= max.getX(); x += Constants.CREEP_RESOLUTION) {
 			for (int y = (int) min.getY(); y <= max.getY(); y += Constants.CREEP_RESOLUTION) {
 				if (Game.pathable(Point2d.of(x, y)) && bases[x][y] == 0) {
-					if (Game.on_creep(Point2d.of(x, y))) {
+					if (Game.on_creep(Point2d.of(x, y)) && Game.is_visible(Point2d.of(x, y))) {
 						terrain[x][y] = 1;
 					}
 				} else {
@@ -98,6 +95,7 @@ public class Creep {
 								if (Game.height(Point2d.of(x,  y)) == Game.height(BaseManager.main_base().location)) {
 									alt.add(Point2d.of(x, y));
 								} else {
+									Game.draw_box(Point2d.of(x, y), Color.PURPLE);
 									creep_points.add(Point2d.of(x, y));
 								}
 							}
@@ -110,7 +108,7 @@ public class Creep {
 		
 		for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR_BURROWED)) {
 			for (int i = creep_points.size() - 1; i > 0; i--) {
-				if (u.distance(creep_points.get(i)) <= 8) {
+				if (u.distance(creep_points.get(i)) <= 4) {
 					creep_points.remove(i);
 				}
 			}
@@ -118,7 +116,7 @@ public class Creep {
 		
 		for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR_QUEEN)) {
 			for (int i = creep_points.size() - 1; i > 0; i--) {
-				if (u.distance(creep_points.get(i)) <= 8) {
+				if (u.distance(creep_points.get(i)) <= 4) {
 					creep_points.remove(i);
 				}
 			}
@@ -126,7 +124,7 @@ public class Creep {
 		
 		for (HjaxUnit u : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_CREEP_TUMOR)) {
 			for (int i = creep_points.size() - 1; i > 0; i--) {
-				if (u.distance(creep_points.get(i)) <= 8) {
+				if (u.distance(creep_points.get(i)) <= 4) {
 					creep_points.remove(i);
 				}
 			}
@@ -135,7 +133,8 @@ public class Creep {
 	}
 
 	public static void on_frame(HjaxUnit u) {
-		if (used.getOrDefault(u.tag(), 0) < 30 && u.done()) {
+		if (used.getOrDefault(u.tag(), 0) < 1000 && u.done()) {
+			Game.write_text("Attemping to spread", u.location());
 			boolean found = false;
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
 				if (x.getAbility() == Abilities.BUILD_CREEP_TUMOR) {
@@ -156,11 +155,14 @@ public class Creep {
 		for (Point2d point: creep_points) {
 			if (point.distance(u.location()) < 10) {
 				if (best == null || best.distance(p) > point.distance(p)) {
-					best = point;
+					if (Game.can_place(Abilities.BUILD_CREEP_TUMOR_QUEEN, point)) {
+						best = point;
+					}
 				}
 			}
 		}
 		if (best != null) {
+			Game.draw_line(u.location(), best, Color.PURPLE);
 			u.use_ability(Abilities.BUILD_CREEP_TUMOR, best);
 			used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
 		}

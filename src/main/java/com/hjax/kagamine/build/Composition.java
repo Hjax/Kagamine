@@ -55,7 +55,7 @@ public class Composition {
 		
 		counters.get(TechLevel.HATCH).get(Units.PROTOSS_VOIDRAY).put(Units.ZERG_QUEEN, 1.5);
 		counters.get(TechLevel.HATCH).get(Units.PROTOSS_ORACLE).put(Units.ZERG_QUEEN, 1.5);
-		counters.get(TechLevel.HATCH).get(Units.TERRAN_BANSHEE).put(Units.ZERG_QUEEN, 1.5);
+		counters.get(TechLevel.HATCH).get(Units.TERRAN_BANSHEE).put(Units.ZERG_QUEEN, 1.8);
 		
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_TEMPEST).put(Units.ZERG_CORRUPTOR, 2.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_CARRIER).put(Units.ZERG_CORRUPTOR, 3.0);
@@ -70,7 +70,6 @@ public class Composition {
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_CARRIER).put(Units.ZERG_INFESTOR, 1.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_MOTHERSHIP).put(Units.ZERG_INFESTOR, 1.0);
 		
-		counters.get(TechLevel.HIVE).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_INFESTOR, 1.0);
 		counters.get(TechLevel.HIVE).get(Units.PROTOSS_CARRIER).put(Units.ZERG_VIPER, 0.5);
 		
 		counters.get(TechLevel.HIVE).get(Units.TERRAN_MARINE).put(Units.ZERG_INFESTOR, 0.1);
@@ -95,12 +94,8 @@ public class Composition {
 		}
 		
 		for (UnitType unit : units) {
-			if (flying.contains(unit)) {
-				counters.get(TechLevel.LAIR).get(unit).put(Units.ZERG_CORRUPTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 2.0);
-			}
-		}
-		
-		for (UnitType unit : units) {
+			if (unit == Units.TERRAN_BATTLECRUISER) continue;
+			if (unit == Units.PROTOSS_TEMPEST) continue;
 			if (flying.contains(unit)) {
 				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_INFESTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 4.0);
 			} else {
@@ -118,6 +113,10 @@ public class Composition {
 			counters.get(TechLevel.LAIR).get(unit).put(Units.ZERG_HYDRALISK, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 2);
 		}
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.ZERG_HYDRALISK, 4.0);
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_BANSHEE).put(Units.ZERG_HYDRALISK, 2.0);
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_BANSHEE).put(Units.ZERG_MUTALISK, 1.5);
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_HYDRALISK, 4.0);
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_CORRUPTOR, 3.0);
 	}
 	
 	

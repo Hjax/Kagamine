@@ -1,6 +1,5 @@
 package com.hjax.kagamine;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
@@ -40,14 +39,14 @@ class Main {
 			input.close();
 			s2Coordinator = S2Coordinator.setup()
 					.loadSettings(args)
-					.setRealtime(true)
+					.setRealtime(false)
 					.setNeedsSupportDir(true)
 					.setTimeoutMS(600 * 1000)
 					//.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
 					.setParticipants(
-							S2Coordinator.createParticipant(choice, bot2),
-							S2Coordinator.createParticipant(Race.ZERG, bot))
-							//S2Coordinator.createComputer(choice, Difficulty.CHEAT_INSANE, AiBuild.MACRO))
+							//S2Coordinator.createParticipant(choice, bot2),
+							S2Coordinator.createParticipant(Race.ZERG, bot),
+							S2Coordinator.createComputer(choice, Difficulty.CHEAT_INSANE, AiBuild.MACRO))
 					.launchStarcraft()
 					.startGame(LocalMap.of(Paths.get("BlueShiftLE.SC2Map")));
 			while (s2Coordinator.update()) {

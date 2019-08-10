@@ -1,8 +1,6 @@
 package com.hjax.kagamine.enemymodel;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.tuple.Pair;
@@ -19,7 +17,6 @@ import com.hjax.kagamine.game.HjaxUnit;
 
 public class EnemyBaseDefense {
 	
-	private static final Map<HjaxUnit, Base> defenses = new HashMap<>();
 	private static final Map<Base, Double> ground_defense = new HashMap<>();
 	private static final Map<Base, Double> air_defense = new HashMap<>();
 	
@@ -79,29 +76,25 @@ public class EnemyBaseDefense {
 	}
 
 	public static void on_frame() {
-
-		defenses.clear();
-		
-		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			for (Base base : BaseManager.bases) {
-				if (base.has_enemy_command_structure()) {
-					if (u.distance(base) < Constants.DEFENSE_DISTANCE) {
-						defenses.put(u, base);
-					}
-				}
-			}
-		}
 		
 		for (Base b : BaseManager.bases) {
 			ground_defense.put(b, 0.0);
 			air_defense.put(b, 0.0);
 		}
 		
-		for (HjaxUnit u : defenses.keySet()) {
-			if (threats.containsKey(u.type()) && u.done()) {
-				ground_defense.put(defenses.get(u), threats.get(u.type()).getLeft() + ground_defense.get(defenses.get(u)));
-				air_defense.put(defenses.get(u), threats.get(u.type()).getRight() + air_defense.get(defenses.get(u)));
+		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
+			for (Base base : BaseManager.bases) {
+				if (base.has_enemy_command_structure()) {
+					if (u.distance(base) < Constants.DEFENSE_DISTANCE && !Game.is_structure(u.type()) || (u.distance(base) < 10)) {
+						ground_defense.put(base, threats.getOrDefault(u.type(), Pair.of(0.0, 0.0)).getLeft() + ground_defense.get(base));
+						air_defense.put(base, threats.getOrDefault(u.type(), Pair.of(0.0, 0.0)).getRight() + air_defense.get(base));
+					}
+				}
 			}
+		}
+		
+		for (Base b : BaseManager.bases) {
+			Game.write_text(ground_defense.get(b) + " " + air_defense.get(b), b.location);
 		}
 		
 	}

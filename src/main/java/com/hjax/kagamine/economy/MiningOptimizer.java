@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.game.Game;
@@ -28,8 +29,17 @@ public class MiningOptimizer {
 			if (GameInfoCache.get_unit(u).orders().size() == 0 || (GameInfoCache.get_unit(u).orders().get(0).getAbility() != Abilities.HARVEST_GATHER && GameInfoCache.get_unit(u).orders().get(0).getAbility() != Abilities.HARVEST_RETURN)) {
 				to_remove.add(u);
 			}
+			if (GameInfoCache.get_unit(u).orders().size() > 0 && GameInfoCache.get_unit(u).orders().get(0).getAbility() == Abilities.HARVEST_GATHER) {
+				if (GameInfoCache.get_unit(u).orders().get(0).getTargetedUnitTag().isPresent() && GameInfoCache.get_unit(GameInfoCache.get_unit(u).orders().get(0).getTargetedUnitTag().get()) != null && GameInfoCache.get_unit(GameInfoCache.get_unit(u).orders().get(0).getTargetedUnitTag().get()).is_gas()) {
+					to_remove.add(u);
+				}
+			}
 		}
 		for (Tag t: to_remove) assignments.remove(t);
+		
+		for (Tag t : assignments.keySet()) {
+			Game.draw_line(GameInfoCache.get_unit(t).location(), GameInfoCache.get_unit(assignments.get(t)).location(), Color.BLUE);
+		}
 		
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.SELF)) {
 			if (Game.is_worker(u.type())) {

@@ -47,7 +47,7 @@ public class ZergWisdom {
 		}
 		
 		if (Wisdom.all_in_detected() && Game.army_supply() < GameInfoCache.count(RaceInterface.get_race_worker()) && GameInfoCache.count(RaceInterface.get_race_worker()) > 30) return true;
-		if (GameInfoCache.count(RaceInterface.get_race_worker()) > 50 && Game.gas() > 100 && ZergBuildExecutor.next_army_unit() == Units.ZERG_MUTALISK && GameInfoCache.count(Units.ZERG_MUTALISK) < 10) return true;
+
 		return GameInfoCache.count(RaceInterface.get_race_worker()) >= Wisdom.worker_cap();
 	}
 	

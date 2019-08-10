@@ -3,6 +3,7 @@ package com.hjax.kagamine.unitcontrollers.zerg;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Utilities;
@@ -36,11 +37,13 @@ public class Overlord {
 		negative_pressure.add(new Vector2d((float) (500 / Math.pow(max.getX() - ovie.location().getX(), 3)), 0));
 		negative_pressure.add(new Vector2d((float) (-500 / Math.pow(ovie.location().getX() - min.getX(), 3)), 0));
 		
-		positive_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(target.location)).scale(7));
+		positive_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(target.location)).scale(10));
+		
+		Game.draw_line(ovie.location(), target.location, Color.GREEN);
 		
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.hits_air(enemy.type())) {
-				negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(enemy.location())).scale((float) (140 / Math.pow(ovie.location().distance(enemy.location()), 1.5))));
+				negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(enemy.location())).scale((float) (160 / Math.pow(ovie.location().distance(enemy.location()), 1.8))));
 			} 
 		}
 		

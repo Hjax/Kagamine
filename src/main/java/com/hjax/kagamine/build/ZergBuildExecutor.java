@@ -8,6 +8,7 @@ import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.UnitMovementManager;
+import com.hjax.kagamine.build.TechLevelManager.TechLevel;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
@@ -136,7 +137,7 @@ public class ZergBuildExecutor {
 				}
 				
 				if (EnemyModel.counts.getOrDefault(Units.ZERG_MUTALISK, 0) > 15 || EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) > 5 || EnemyModel.counts.getOrDefault(Units.PROTOSS_PHOENIX, 0) > 7 || EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) > 2) {
-					if (GameInfoCache.count(Units.ZERG_DRONE) > 50) {
+					if (GameInfoCache.count(Units.ZERG_DRONE) > 50 && TechLevelManager.getTechLevel() == TechLevel.HATCH) {
 						BaseManager.build_triangle_spores();
 					}
 				}
@@ -317,6 +318,7 @@ public class ZergBuildExecutor {
 			if (Balance.is_morph(u)) {
 				current = Balance.get_morph_source(u);
 				limit +=  Composition.comp().getOrDefault(u, 0);
+				if (!(GameInfoCache.count(Balance.get_tech_structure(u)) > 0)) continue;
 			}
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(current)) > 0) {
 				if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
