@@ -41,7 +41,7 @@ public class Wisdom {
 				return true;
 			}
 		}
-		if (Game.army_supply() >= 70) return false;
+		if (Game.army_supply() >= 85) return false;
 		if (Game.worker_count() > 40 && EnemyModel.enemyBaseCount() == 2 && GameInfoCache.get_opponent_race() == Race.PROTOSS) return true;
 		return enemy_production() >= 3 * Math.max(EnemyModel.enemyBaseCount(), 1);
 	}

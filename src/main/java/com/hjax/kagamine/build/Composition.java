@@ -218,7 +218,7 @@ public class Composition {
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING);
 		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {
-			if (Wisdom.all_in_detected() && Game.army_supply() < 60) {
+			if (Wisdom.all_in_detected() && Game.army_supply() < 85) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);

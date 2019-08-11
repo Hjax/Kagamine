@@ -84,4 +84,13 @@ public class Queen {
 			GenericUnit.on_frame(u, false);
 		}
 	}
+	
+	public static Base get_base(HjaxUnit queen) {
+		for (Base b : BaseManager.bases) {
+			if (b.has_queen() && b.queen == queen && b.has_friendly_command_structure() && b.command_structure.done()) {
+				return b;
+			}
+		}
+		return null;
+	}
 }

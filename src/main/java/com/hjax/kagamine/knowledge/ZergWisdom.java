@@ -46,7 +46,7 @@ public class ZergWisdom {
 			return true;
 		}
 		
-		if (Wisdom.all_in_detected() && GameInfoCache.count(RaceInterface.get_race_worker()) > 25 * EnemyModel.enemyBaseCount() && Game.army_supply() < GameInfoCache.count(RaceInterface.get_race_worker()) && GameInfoCache.count(RaceInterface.get_race_worker()) > 30) return true;
+		if (Wisdom.all_in_detected() && GameInfoCache.count(RaceInterface.get_race_worker()) > 25 * EnemyModel.enemyBaseCount() && Game.army_supply() < GameInfoCache.count(RaceInterface.get_race_worker()) + 15 * EnemyModel.enemyBaseCount() && GameInfoCache.count(RaceInterface.get_race_worker()) > 30) return true;
 
 		return GameInfoCache.count(RaceInterface.get_race_worker()) >= Wisdom.worker_cap();
 	}
