@@ -104,6 +104,13 @@ class Kagamine extends S2Agent {
 				Game.write_text("Enemy Strategy: Macro");
 			}
 			
+			try {
+				Thread.sleep(40);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 			int[] resources = EnemyModel.resourceEstimate();
 			Game.write_text("Enemy Supply: " + EnemyModel.enemySupply());
 			Game.write_text("Enemy Army: " + EnemyModel.enemyArmy());

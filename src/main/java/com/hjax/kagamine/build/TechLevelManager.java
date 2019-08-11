@@ -10,6 +10,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.game.RaceInterface;
 import com.hjax.kagamine.knowledge.Balance;
+import com.hjax.kagamine.knowledge.Wisdom;
 
 public class TechLevelManager {
 	
@@ -22,7 +23,7 @@ public class TechLevelManager {
 	public static void on_frame() {
 
 		if (getTechLevel() == TechLevel.HATCH && GameInfoCache.count(Units.ZERG_LAIR) == 0) {
-			if ((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 30)) {
+			if ((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 40) && !Wisdom.all_in_detected() || Game.army_supply() > 70) {
 				if (Game.can_afford(Units.ZERG_LAIR)) {
 					for (Base b: BaseManager.bases) {
 						if (b.has_friendly_command_structure() && b.command_structure.done() && b.command_structure.idle()) {

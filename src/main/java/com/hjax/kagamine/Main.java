@@ -9,7 +9,7 @@ import com.github.ocraft.s2client.protocol.game.Difficulty;
 import com.github.ocraft.s2client.protocol.game.LocalMap;
 import com.github.ocraft.s2client.protocol.game.Race;
 
-class Main {
+public class Main {
 
 		public static void main(String[] args) {
 			Kagamine bot = new Kagamine();
@@ -39,16 +39,16 @@ class Main {
 			input.close();
 			s2Coordinator = S2Coordinator.setup()
 					.loadSettings(args)
-					.setRealtime(false)
+					.setRealtime(true)
 					.setNeedsSupportDir(true)
 					.setTimeoutMS(600 * 1000)
 					//.setProcessPath(Paths.get("C:\\Ladder\\4.8.4\\StarCraft II\\Versions\\Base73286\\SC2_x64.exe"))
 					.setParticipants(
-							//S2Coordinator.createParticipant(choice, bot2),
-							S2Coordinator.createParticipant(Race.ZERG, bot),
-							S2Coordinator.createComputer(choice, Difficulty.CHEAT_INSANE, AiBuild.MACRO))
+							S2Coordinator.createParticipant(choice, bot2),
+							S2Coordinator.createParticipant(Race.ZERG, bot))
+							//S2Coordinator.createComputer(choice, Difficulty.CHEAT_INSANE, AiBuild.MACRO))
 					.launchStarcraft()
-					.startGame(LocalMap.of(Paths.get("BlueShiftLE.SC2Map")));
+					.startGame(LocalMap.of(Paths.get("Acropolis.SC2Map")));
 			while (s2Coordinator.update()) {
 			}
 			s2Coordinator.quit();

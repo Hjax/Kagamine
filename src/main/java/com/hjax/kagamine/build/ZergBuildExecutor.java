@@ -199,13 +199,15 @@ public class ZergBuildExecutor {
 				}
 			}
 
-			if ((ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply()) || Wisdom.cannon_rush() || Wisdom.proxy_detected() || GameInfoCache.attacking_army_supply() > 50) {
-				if (Game.minerals() > 25 && Game.gas() > 75 && GameInfoCache.count_friendly(Units.ZERG_ROACH) > 0 && Composition.full_comp().contains(Units.ZERG_RAVAGER)) {
-					for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ROACH)) {
-						unit.use_ability(Abilities.MORPH_RAVAGER);
-						Game.spend(25, 75);
-						break;
+			if ((ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply()) || Wisdom.cannon_rush() || Wisdom.proxy_detected() || GameInfoCache.attacking_army_supply() > 20) {
+				if (GameInfoCache.count_friendly(Units.ZERG_ROACH) > 0 && Composition.full_comp().contains(Units.ZERG_RAVAGER)) {
+					if (Game.minerals() > 25 && Game.gas() > 75) {
+						for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_ROACH)) {
+							unit.use_ability(Abilities.MORPH_RAVAGER);
+							break;
+						}
 					}
+					Game.spend(25, 75);
 				}
 				if (GameInfoCache.count_friendly(Units.ZERG_CORRUPTOR) > 0 && Composition.full_comp().contains(Units.ZERG_BROODLORD) && GameInfoCache.count(Units.ZERG_BROODLORD) < Composition.comp().getOrDefault(Units.ZERG_BROODLORD, 0)) {
 					if (Game.minerals() >= 150 && Game.gas() >= 150) {
