@@ -71,6 +71,7 @@ public class Game {
 	 * index 1 is gas
 	 */
 	private static int[] spending = new int[2];
+	public static Map<String, Integer> saving_up = new HashMap<>();
 	
 	public static void start_frame(ObservationInterface o, ActionInterface a, QueryInterface q, DebugInterface d) {
 		
@@ -78,6 +79,8 @@ public class Game {
 		action = a;
 		query = q;
 		debug = d;
+		
+		saving_up.clear();
 		
 		frame = observation.getGameLoop();
 		
@@ -392,7 +395,7 @@ public class Game {
 	}
 	
 	public static void purchase(Upgrade u) {
-
+		saving_up.put(u.toString(), saving_up.getOrDefault(u.toString(), 0) + 1);
 		int minerals = Game.get_upgrade_data().get(u).getMineralCost().orElse(0);
 		int gas = Game.get_upgrade_data().get(u).getVespeneCost().orElse(0);
 		spend(minerals, gas);
@@ -400,7 +403,7 @@ public class Game {
 	
 	// TODO deal with morphs
 	public static void purchase(UnitType u) {
-
+		saving_up.put(u.toString(), saving_up.getOrDefault(u.toString(), 0) + 1);
 		int minerals = Game.get_unit_type_data().get(u).getMineralCost().orElse(0);
 		int gas = Game.get_unit_type_data().get(u).getVespeneCost().orElse(0);
 		if (get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) == Race.ZERG && is_structure(u)) {
@@ -663,5 +666,14 @@ public class Game {
 	
 	public static boolean is_free_unit(UnitType u) {
 		return u == Units.PROTOSS_INTERCEPTOR || u == Units.ZERG_LOCUS_TMP_FLYING || u == Units.ZERG_INFESTED_TERRANS_EGG ||  u == Units.TERRAN_AUTO_TURRET || u == Units.ZERG_BROODLING || u == Units.ZERG_LOCUS_TMP || u == Units.ZERG_INFESTOR_TERRAN;
+	}
+	
+	public static Weapon get_aa_weapon(UnitType u) {
+		for (Weapon w: get_unit_type_data().get(u).getWeapons())  {
+			if (w.getTargetType() == TargetType.ANY || w.getTargetType() == TargetType.AIR) {
+				return w;
+			}
+		}
+		return null;
 	}
 }

@@ -25,11 +25,6 @@ public class Ravager {
 	
 	public static void on_frame(HjaxUnit u2) {
 		HjaxUnit best = null;
-		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
-			if (best == null || u.distance(u2.location()) < best.distance(u2.location())) {
-				best = u;
-			}
-		}
 		
 		for (HjaxUnit u : GameInfoCache.get_units(Units.NEUTRAL_FORCE_FIELD)) {
 			if (u.distance(u2) < 9) {
@@ -45,14 +40,32 @@ public class Ravager {
 			}
 		}
 		
+		if (best == null) {
+			for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
+				if (best == null || u.distance(u2.location()) < best.distance(u2.location())) {
+					best = u;
+				}
+			}
+		}
+		
+		if (best == null) {
+			for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (u.distance(u2) < 9) {
+					if (best == null || u.distance(u2.location()) < best.distance(u2.location())) {
+						best = u;
+					}
+				}
+			}
+		}
+		
 		if (best != null) {
 			for (AvailableAbility ab : Game.availible_abilities(u2).getAbilities()) {
-				
-				if (best.type() == Units.NEUTRAL_FORCE_FIELD) {
-					ff_biles.put(best.location(), Game.get_frame());
-				}
-				
 				if (ab.getAbility() == Abilities.EFFECT_CORROSIVE_BILE) {
+					
+					if (best.type() == Units.NEUTRAL_FORCE_FIELD) {
+						ff_biles.put(best.location(), Game.get_frame());
+					}
+					
 					u2.use_ability(Abilities.EFFECT_CORROSIVE_BILE, best.location());
 					return;
 				}

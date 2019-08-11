@@ -246,6 +246,7 @@ public class HjaxUnit {
 	}
 	
 	public double supply() {
+		if (type() == Units.PROTOSS_ADEPT_PHASE_SHIFT) return 1;
 		return Game.get_unit_type_data().get(type()).getFoodRequired().orElse(0f);
 	}
 }

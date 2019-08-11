@@ -33,7 +33,7 @@ public class Zergling {
 
 
 		if (UnitMovementManager.assignments.containsKey(u.tag()) && UnitMovementManager.surroundCenter.containsKey(u.tag())) {
-			if (UnitMovementManager.surroundCenter.get(u.tag()).distance(UnitMovementManager.assignments.get(u.tag())) < 1) {
+			if (UnitMovementManager.surroundCenter.get(u.tag()).distance(UnitMovementManager.assignments.get(u.tag())) < 1.5) {
 				u.attack(UnitMovementManager.assignments.get(u.tag()));
 			} else {
 				Vector2d offset = Utilities.direction_to(Vector2d.of(UnitMovementManager.surroundCenter.get(u.tag())), Vector2d.of(UnitMovementManager.assignments.get(u.tag())));

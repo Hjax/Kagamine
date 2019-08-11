@@ -133,7 +133,7 @@ public class Creep {
 	}
 
 	public static void on_frame(HjaxUnit u) {
-		if (used.getOrDefault(u.tag(), 0) < 1000 && u.done()) {
+		if (used.getOrDefault(u.tag(), 0) < 300 && u.done()) {
 			Game.write_text("Attemping to spread", u.location());
 			boolean found = false;
 			for (AvailableAbility x : Game.availible_abilities(u).getAbilities()) {
@@ -143,7 +143,7 @@ public class Creep {
 					break;
 				}
 			}
-			if (!found && used.getOrDefault(u.tag(), 0) > 0) {
+			if (!found) {
 				used.put(u.tag(), used.getOrDefault(u.tag(), 0) + 1);
 			}
 		}

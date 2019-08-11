@@ -104,13 +104,6 @@ class Kagamine extends S2Agent {
 				Game.write_text("Enemy Strategy: Macro");
 			}
 			
-			try {
-				Thread.sleep(40);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
 			int[] resources = EnemyModel.resourceEstimate();
 			Game.write_text("Enemy Supply: " + EnemyModel.enemySupply());
 			Game.write_text("Enemy Army: " + EnemyModel.enemyArmy());
@@ -130,6 +123,7 @@ class Kagamine extends S2Agent {
 			Game.write_text("Tech Level " + TechLevelManager.getTechLevel().toString());
 			Game.write_text("Spending: " + Game.minerals() + " " + Game.gas());
 			Game.write_text("Comp: " + Composition.comp().toString());
+			Game.write_text("Saving up for: " + Game.saving_up.toString());
 			
 		}
 		

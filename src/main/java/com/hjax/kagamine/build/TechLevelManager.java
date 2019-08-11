@@ -5,6 +5,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
+import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
@@ -23,7 +24,7 @@ public class TechLevelManager {
 	public static void on_frame() {
 
 		if (getTechLevel() == TechLevel.HATCH && GameInfoCache.count(Units.ZERG_LAIR) == 0) {
-			if ((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 40) && !Wisdom.all_in_detected() || Game.army_supply() > 70) {
+			if ((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 35 && EnemyModel.enemyBaseCount() >= 3) && !Wisdom.all_in_detected() || Game.army_supply() > 70) {
 				if (Game.can_afford(Units.ZERG_LAIR)) {
 					for (Base b: BaseManager.bases) {
 						if (b.has_friendly_command_structure() && b.command_structure.done() && b.command_structure.idle()) {

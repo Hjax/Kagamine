@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
@@ -19,7 +20,7 @@ public class EnemySquadManager {
 		Set<Tag> parsed = new HashSet<>();
 		enemy_squads.clear();
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_structure(enemy.type()) || !Game.is_combat(enemy.type())) continue;
+			if (Game.is_structure(enemy.type()) || (!Game.is_combat(enemy.type()) && enemy.type() != Units.PROTOSS_ADEPT_PHASE_SHIFT)) continue;
 			if (!parsed.contains(enemy.tag())) {
 				List<HjaxUnit> open = new ArrayList<>();
 				Set<HjaxUnit> squad = new HashSet<>();

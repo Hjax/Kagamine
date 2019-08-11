@@ -24,7 +24,7 @@ public class GenericUnit {
 	public static void on_frame(HjaxUnit u, boolean moveOut) {
 		if (Game.hits_air(u.type())) {
 			for (HjaxUnit medi: GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (medi.flying() && medi.distance(u) < 6) {
+				if (medi.flying() && medi.distance(u) < Game.get_aa_weapon(u.type()).getRange() + 1) {
 					u.attack(medi);
 					return;
 				}

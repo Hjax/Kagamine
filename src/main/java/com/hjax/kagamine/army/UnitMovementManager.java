@@ -179,7 +179,7 @@ public class UnitMovementManager {
 		Point2d center = average_point_zergling(assigned, average);
 		for (HjaxUnit u: assigned) {
 			assignments.put(u.tag(), average);
-			if (center.distance(Point2d.of(0, 0)) > 1 && enemy_squad.size() * 2 <= assigned.size()) {
+			if (center.distance(Point2d.of(0, 0)) > 1 && enemy_squad.size() * 2.5 <= assigned.size()) {
 				surroundCenter.put(u.tag(), center);
 			}
 			Game.draw_line(average, u.location(), Color.GREEN);

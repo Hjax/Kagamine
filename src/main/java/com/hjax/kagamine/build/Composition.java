@@ -43,6 +43,7 @@ public class Composition {
 		limits.put(Units.ZERG_VIPER, 4);
 		limits.put(Units.ZERG_INFESTOR, 10);
 		limits.put(Units.ZERG_BROODLORD, 10);
+		limits.put(Units.ZERG_BANELING, 30);
 		limits.put(Units.ZERG_SWARM_HOST_MP, 5);
 		limits.put(Units.ZERG_LURKER_MP, 12);
 		
@@ -107,7 +108,7 @@ public class Composition {
 		}
 		
 		for (UnitType unit : units) {
-			if (!flying.contains(unit)) {
+			if (!flying.contains(unit) && Game.get_unit_type_data().get(unit).getRace().orElse(Race.NO_RACE) != Race.TERRAN) {
 				counters.get(TechLevel.HATCH).get(unit).put(Units.ZERG_ROACH, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 1.5);
 			}
 		}
@@ -212,8 +213,14 @@ public class Composition {
 		}
 		
 		if (TechLevelManager.getTechLevel() == TechLevel.HATCH) {
+			if (Wisdom.all_in_detected()) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
+			}
 			return Arrays.asList(Units.ZERG_ZERGLING);
 		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {
+			if (Wisdom.all_in_detected() && Game.army_supply() < 60) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
+			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 		} else {
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
