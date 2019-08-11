@@ -59,7 +59,7 @@ public class ThreatManager {
 				}
 				
 			} else {
-				threat += Math.max(supply * (1 - (BaseManager.main_base().location.distance(center) / BaseManager.main_base().location.distance(Scouting.closest_enemy_spawn()))), supply * 0.7) * 1.3;
+				threat += Math.max(supply * (1 - (BaseManager.main_base().location.distance(center) / BaseManager.main_base().location.distance(Scouting.closest_enemy_spawn()))), supply * 0.8) * 1.3;
 			}
 		}
 		

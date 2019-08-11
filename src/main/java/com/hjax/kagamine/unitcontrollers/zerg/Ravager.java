@@ -17,6 +17,7 @@ import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
+import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.GenericUnit;
 
 public class Ravager {
@@ -40,7 +41,7 @@ public class Ravager {
 			}
 		}
 		
-		if (best == null) {
+		if (best == null && Wisdom.cannon_rush()) {
 			for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
 				if (best == null || u.distance(u2.location()) < best.distance(u2.location())) {
 					best = u;
