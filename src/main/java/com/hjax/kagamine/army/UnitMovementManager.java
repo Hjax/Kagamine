@@ -22,6 +22,7 @@ import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
+import com.hjax.kagamine.unitcontrollers.zerg.Queen;
 
 public class UnitMovementManager {
 	private static final Set<Tag> used = new HashSet<>();
@@ -139,6 +140,7 @@ public class UnitMovementManager {
 		Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 		
 		for (HjaxUnit enemy : enemy_squad) {
+			if (enemy.type() == Units.PROTOSS_ADEPT_PHASE_SHIFT) ground_supply += 1;
 			if (enemy.flying()) {
 				flyer_supply += Game.supply(enemy.type());
 			} else {
@@ -220,6 +222,7 @@ public class UnitMovementManager {
 			if (aa && !Game.hits_air(ally.type())) continue;
 			if (!aa && !Game.hits_ground(ally.type())) continue;
 			if (Game.is_spellcaster(ally.type())) continue;
+			if (ally.type() == Units.ZERG_QUEEN && Queen.get_base(ally) != null && p.distance(Queen.get_base(ally).location) > 15) continue;
 			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
 				if (!used.contains(ally.tag())) {
 					if (best == null || 
