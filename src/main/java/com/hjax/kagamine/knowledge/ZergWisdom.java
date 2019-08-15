@@ -111,6 +111,7 @@ public class ZergWisdom {
 		return (GameInfoCache.count(RaceInterface.get_race_worker()) < Wisdom.worker_cap() && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < minerals);
 	}
 	public static boolean should_expand() {
+		if (Game.minerals() > 800) return true;
 		if ((Wisdom.cannon_rush() || Wisdom.proxy_detected() && BaseManager.base_count() >= EnemyModel.enemyBaseCount())) return false;
 		if (Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;

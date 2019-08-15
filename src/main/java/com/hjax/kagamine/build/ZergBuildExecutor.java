@@ -319,8 +319,10 @@ public class ZergBuildExecutor {
 			int limit = Composition.comp().getOrDefault(current, 0);
 			if (Balance.is_morph(u)) {
 				current = Balance.get_morph_source(u);
-				limit +=  Composition.comp().getOrDefault(u, 0);
-				if (!(GameInfoCache.count(Balance.get_tech_structure(u)) > 0)) continue;
+				limit +=  Composition.comp().getOrDefault(current, 0);
+				if (Balance.get_tech_structure(u) != Units.ZERG_SPIRE || GameInfoCache.count(Units.ZERG_GREATER_SPIRE) == 0) {
+					if (!(GameInfoCache.count(Balance.get_tech_structure(u)) > 0)) continue;
+				}
 			}
 			if (GameInfoCache.count_friendly(Balance.get_tech_structure(current)) > 0) {
 				if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {

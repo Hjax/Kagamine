@@ -23,7 +23,6 @@ public class BuildPlanner {
 	public static void on_frame() {
 		if (Wisdom.worker_rush() && !worker_rush) {
 			worker_rush = true;
-			Chat.sendMessage("Sorry im not tycklish");
 			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
 					new ImmutablePair<>(14, Units.ZERG_SPAWNING_POOL)));
 			Build.ideal_gases = 0;
@@ -36,7 +35,6 @@ public class BuildPlanner {
 		
 		if (!is_all_in && GameInfoCache.get_opponent_race() != Race.ZERG) {
 			if (GameInfoCache.count(Units.ZERG_DRONE) < 30 && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) {
-				Chat.sendMessage("Oh you are cheesing me, I guess I can't play a macro game");
 				do_ravager_all_in();
 				if (GameInfoCache.count_friendly(Units.ZERG_HATCHERY) == 1) {
 					for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
@@ -54,7 +52,6 @@ public class BuildPlanner {
 		}
 		
 		if (is_all_in && Game.army_killed() - Game.army_lost() < -400) {
-			Chat.sendMessage("You held my attack! Really well done, but can you beat me if I go back to macro?");
 			is_all_in = false;
 			decide_build();
 		}

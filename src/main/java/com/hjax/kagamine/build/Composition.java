@@ -116,6 +116,10 @@ public class Composition {
 		for (UnitType unit : units) {
 			counters.get(TechLevel.LAIR).get(unit).put(Units.ZERG_HYDRALISK, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 2);
 		}
+		
+		counters.get(TechLevel.HATCH).get(Units.TERRAN_HELLION).put(Units.ZERG_ROACH, 1.0);
+		counters.get(TechLevel.HATCH).get(Units.TERRAN_HELLION_TANK).put(Units.ZERG_ROACH, 1.0);
+		
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.ZERG_HYDRALISK, 4.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BANSHEE).put(Units.ZERG_HYDRALISK, 2.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BANSHEE).put(Units.ZERG_MUTALISK, 1.5);

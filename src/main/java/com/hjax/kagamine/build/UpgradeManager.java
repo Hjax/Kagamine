@@ -73,8 +73,8 @@ public class UpgradeManager {
 		
 		for (UnitType ut : Composition.full_comp()) {
 			outer: for (Upgrade u : upgrades.getOrDefault(ut, Arrays.asList())) {
-				if (u == Upgrades.OVERLORD_SPEED && Wisdom.cannon_rush() || Wisdom.proxy_detected()) continue;
-				if (u == Upgrades.BURROW && Wisdom.cannon_rush() || Wisdom.proxy_detected() || Wisdom.all_in_detected()) continue;
+				if (u == Upgrades.OVERLORD_SPEED && (Wisdom.cannon_rush() || Wisdom.proxy_detected())) continue;
+				if (u == Upgrades.BURROW && (Wisdom.cannon_rush() || Wisdom.proxy_detected() || Wisdom.all_in_detected())) continue;
 				if (u == Upgrades.OVERLORD_SPEED && !(Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED) || GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED))) continue;
 				if (!(Game.has_upgrade(u)) && !GameInfoCache.is_researching(u)) {
 					if (u.toString().toLowerCase().contains("melee") && !Game.has_upgrade(Upgrades.ZERG_MISSILE_WEAPONS_LEVEL3) && (Composition.full_comp().contains(Units.ZERG_ROACH) || Composition.full_comp().contains(Units.ZERG_HYDRALISK))) continue;
