@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
+import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
@@ -16,46 +17,27 @@ import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
-import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.GenericUnit;
 
 public class Ravager {
 	
 	public static Map<Point2d, Long> ff_biles = new HashMap<>();
 	
+	static UnitType[] bile_targets = {	Units.NEUTRAL_FORCE_FIELD, Units.PROTOSS_WARP_PRISM_PHASING, Units.TERRAN_SIEGE_TANK_SIEGED, Units.PROTOSS_PHOTON_CANNON, Units.ZERG_SPINE_CRAWLER, Units.TERRAN_BUNKER};
+	
 	public static void on_frame(HjaxUnit u2) {
+		
 		HjaxUnit best = null;
 		
-		for (HjaxUnit u : GameInfoCache.get_units(Units.NEUTRAL_FORCE_FIELD)) {
-			if (u.distance(u2) < 9) {
-				if (!ff_biles.containsKey(u.location()) || ff_biles.get(u.location()) < Game.get_frame() - (3 * Constants.FPS)) {
-					best = u;
-				}
-			}
-		}
-		
-		for (HjaxUnit u : GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_WARP_PRISM_PHASING)) {
-			if (u.distance(u2) < 9) {
-				best = u;
-			}
-		}
-		
-		if (best == null && Wisdom.cannon_rush()) {
-			for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY, Units.PROTOSS_PHOTON_CANNON)) {
-				if (best == null || u.distance(u2.location()) < best.distance(u2.location())) {
-					best = u;
-				}
-			}
-		}
-		
-		if (best == null) {
-			for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
+		for (UnitType target_type : bile_targets) {
+			for (HjaxUnit u : GameInfoCache.get_units(target_type)) {
 				if (u.distance(u2) < 9) {
-					if (best == null || u.distance(u2.location()) < best.distance(u2.location())) {
+					if (!ff_biles.containsKey(u.location()) || ff_biles.get(u.location()) < Game.get_frame() - (3 * Constants.FPS)) {
 						best = u;
 					}
 				}
 			}
+			if (best != null) break;
 		}
 		
 		if (best != null) {
@@ -70,7 +52,7 @@ public class Ravager {
 					return;
 				}
 			}
-			if (best.type() == Units.PROTOSS_PHOTON_CANNON) {
+			if (best.type() == Units.PROTOSS_PHOTON_CANNON || best.type() == Units.TERRAN_BUNKER || best.type() == Units.ZERG_SPINE_CRAWLER) {
 				if (best.distance(BaseManager.main_base().location) < best.distance(Scouting.closest_enemy_spawn())) {
 					Vector2d diff = Utilities.direction_to(Vector2d.of(best.location()), Vector2d.of(u2.location()));
 					u2.move(Point2d.of(best.location().getX() + diff.x * 15, best.location().getY() + diff.y * 15));

@@ -43,7 +43,7 @@ public class Overlord {
 		
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.hits_air(enemy.type())) {
-				negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(enemy.location())).scale((float) (160 / Math.pow(ovie.location().distance(enemy.location()), 1.8))));
+				negative_pressure.add(Utilities.direction_to(Vector2d.of(ovie.location()), Vector2d.of(enemy.location())).scale((float) (300 / Math.pow(ovie.location().distance(enemy.location()), 2))));
 			} 
 		}
 		

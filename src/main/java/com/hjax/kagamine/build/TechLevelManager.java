@@ -24,7 +24,7 @@ public class TechLevelManager {
 	public static void on_frame() {
 
 		if (getTechLevel() == TechLevel.HATCH && GameInfoCache.count(Units.ZERG_LAIR) == 0) {
-			if ((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 35 && EnemyModel.enemyBaseCount() >= 3) && !Wisdom.all_in_detected() || Game.army_supply() > 70) {
+			if (((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 35 && EnemyModel.enemyBaseCount() >= 3) && (!Wisdom.all_in_detected() || Game.army_supply() > 70)) || Game.worker_count() > 60 || Game.army_supply() > 80) {
 				if (Game.can_afford(Units.ZERG_LAIR)) {
 					for (Base b: BaseManager.bases) {
 						if (b.has_friendly_command_structure() && b.command_structure.done() && b.command_structure.idle()) {
@@ -38,7 +38,7 @@ public class TechLevelManager {
 		} 
 		
 		if (getTechLevel() == TechLevel.LAIR && GameInfoCache.count(Units.ZERG_HIVE) == 0) {
-			if ((BaseManager.base_count() >= 4 && GameInfoCache.count(Units.ZERG_DRONE) > 80 && Game.army_supply() >= 60)) {
+			if ((BaseManager.base_count() >= 4 && GameInfoCache.count(Units.ZERG_DRONE) > 70 && Game.army_supply() >= 80)) {
 				if (!Balance.has_tech_requirement(Units.ZERG_HIVE)) {
 					if (Game.can_afford(Units.ZERG_HIVE)) {
 						RaceInterface.make(Units.ZERG_HIVE);

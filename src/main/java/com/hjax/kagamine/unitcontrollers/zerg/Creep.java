@@ -48,7 +48,10 @@ public class Creep {
 		calculate();
 	}
 	
+	private static long last_update = -999;
 	private static void calculate() {
+		if (Game.get_frame() - last_update < 1.0 * Constants.FPS) return;
+		last_update = Game.get_frame();
 		ArrayList<ImmutablePair<Integer, Integer>> to_erase = new ArrayList<>();
 		for (ImmutablePair<Integer, Integer> item : reserved.keySet()) {
 			if (reserved.get(item) < Game.get_frame() - Constants.FPS * 10) {

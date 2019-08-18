@@ -16,6 +16,7 @@ import com.github.ocraft.s2client.protocol.game.Race;
 import com.hjax.kagamine.build.TechLevelManager.TechLevel;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
+import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class Composition {
@@ -29,7 +30,7 @@ public class Composition {
 	static {
 		
 		units = Arrays.asList(Units.ZERG_ZERGLING, Units.PROTOSS_WARP_PRISM, Units.ZERG_BANELING, Units.ZERG_QUEEN, Units.ZERG_ROACH, Units.ZERG_RAVAGER, Units.ZERG_HYDRALISK, Units.ZERG_LURKER_MP, Units.ZERG_SWARM_HOST_MP, Units.ZERG_INFESTOR, Units.ZERG_ULTRALISK, Units.ZERG_MUTALISK, Units.ZERG_VIPER, Units.ZERG_CORRUPTOR, Units.ZERG_BROODLORD,
-				Units.TERRAN_BANSHEE, Units.TERRAN_BATTLECRUISER, Units.TERRAN_GHOST, Units.TERRAN_MARINE, Units.TERRAN_MARAUDER, Units.TERRAN_REAPER, Units.TERRAN_HELLION, Units.TERRAN_HELLION_TANK, Units.TERRAN_SIEGE_TANK, Units.TERRAN_WIDOWMINE, Units.TERRAN_THOR, Units.TERRAN_LIBERATOR, Units.TERRAN_VIKING_FIGHTER, Units.TERRAN_RAVEN, Units.TERRAN_CYCLONE,
+				Units.TERRAN_BANSHEE, Units.TERRAN_BATTLECRUISER, Units.TERRAN_GHOST, Units.TERRAN_MARINE, Units.TERRAN_LIBERATOR_AG, Units.TERRAN_MARAUDER, Units.TERRAN_REAPER, Units.TERRAN_HELLION, Units.TERRAN_HELLION_TANK, Units.TERRAN_SIEGE_TANK, Units.TERRAN_WIDOWMINE, Units.TERRAN_THOR, Units.TERRAN_LIBERATOR, Units.TERRAN_VIKING_FIGHTER, Units.TERRAN_RAVEN, Units.TERRAN_CYCLONE,
 				Units.PROTOSS_ZEALOT, Units.PROTOSS_ADEPT, Units.PROTOSS_STALKER, Units.PROTOSS_DISRUPTOR, Units.PROTOSS_HIGH_TEMPLAR, Units.PROTOSS_DARK_TEMPLAR, Units.PROTOSS_ARCHON, Units.PROTOSS_ORACLE, Units.PROTOSS_SENTRY, Units.PROTOSS_IMMORTAL, Units.PROTOSS_COLOSSUS, Units.PROTOSS_PHOENIX, Units.PROTOSS_VOIDRAY, Units.PROTOSS_CARRIER, Units.PROTOSS_TEMPEST, Units.PROTOSS_MOTHERSHIP);
 	
 		flying = new HashSet<>(Arrays.asList(Units.PROTOSS_CARRIER, Units.PROTOSS_PHOENIX, Units.PROTOSS_ORACLE, Units.PROTOSS_MOTHERSHIP, Units.PROTOSS_TEMPEST,
@@ -68,6 +69,8 @@ public class Composition {
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_ADEPT).put(Units.ZERG_LURKER_MP, 0.20);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_ARCHON).put(Units.ZERG_LURKER_MP, 1.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_IMMORTAL).put(Units.ZERG_LURKER_MP, 1.0);
+		
+		counters.get(TechLevel.LAIR).get(Units.ZERG_ROACH).put(Units.ZERG_LURKER_MP, 0.25);
 		
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_COLOSSUS).put(Units.ZERG_CORRUPTOR, 3.0);
 		
@@ -121,10 +124,14 @@ public class Composition {
 		counters.get(TechLevel.HATCH).get(Units.TERRAN_HELLION_TANK).put(Units.ZERG_ROACH, 1.0);
 		
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.ZERG_HYDRALISK, 4.0);
+		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.TERRAN_LIBERATOR, 3.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BANSHEE).put(Units.ZERG_HYDRALISK, 2.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BANSHEE).put(Units.ZERG_MUTALISK, 1.5);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_HYDRALISK, 4.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_CORRUPTOR, 3.0);
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_LIBERATOR).put(Units.ZERG_CORRUPTOR, 2.0);
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_LIBERATOR_AG).put(Units.ZERG_CORRUPTOR, 2.0);
+		
 	}
 	
 	
@@ -220,7 +227,17 @@ public class Composition {
 			if (Wisdom.all_in_detected()) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 			}
-			return Arrays.asList(Units.ZERG_ZERGLING);
+			switch(GameInfoCache.get_opponent_race()) {
+			case PROTOSS:
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH);
+			case TERRAN:
+				return Arrays.asList(Units.ZERG_ZERGLING);
+			case ZERG:
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH);
+			default:
+				return Arrays.asList(Units.ZERG_ZERGLING);
+			
+			}
 		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {
 			if (Wisdom.all_in_detected() && Game.army_supply() < 85) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);

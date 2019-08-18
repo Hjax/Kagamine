@@ -18,10 +18,12 @@ import com.hjax.kagamine.army.UnitRoleManager.UnitRole;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.enemymodel.EnemyBaseDefense;
+import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
+import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.unitcontrollers.zerg.Queen;
 
 public class UnitMovementManager {
@@ -84,7 +86,7 @@ public class UnitMovementManager {
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			try {
 				if (BaseManager.closest_base(average).has_friendly_command_structure() &&
-						my_strength > enemy_strength * 1.2) {
+						my_strength > enemy_strength * 1.5) {
 							
 					assign_defense(enemy_squad);
 					assigned.put(enemy_squad, true);
@@ -106,7 +108,7 @@ public class UnitMovementManager {
 			
 			try {
 				if ((Game.closest_invisible(average).distance(average) > 7 && 
-						my_strength > enemy_strength * 1.4 && 
+						my_strength > enemy_strength * 1.5 && 
 						!BaseManager.closest_base(average).has_enemy_command_structure())) {
 							
 					assign_defense(enemy_squad);
@@ -127,6 +129,20 @@ public class UnitMovementManager {
 		for (Base b : BaseManager.bases) {
 			if (b.has_enemy_command_structure() && EnemyBaseDefense.get_defense(b) < Game.army_supply() && EnemyBaseDefense.get_defense(b) < 10 && Scouting.closest_enemy_spawn(b.location).distance(b.location) > dist) {
 				assign_runby(b.location, Math.max(EnemyBaseDefense.get_defense(b) + 2, 6));
+			}
+		}
+		
+		if (Wisdom.proxy_detected() && GameInfoCache.attacking_army_supply() > EnemyModel.enemySupply() * 2) {
+			HjaxUnit best = null;
+			for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (Game.is_structure(enemy.type())) {
+					if (best == null || best.distance(BaseManager.main_base()) > enemy.distance(BaseManager.main_base())) {
+						best = enemy;
+					}
+				}
+			}
+			if (best != null) {
+				assign_runby(best.location(), 50);
 			}
 		}
 	}
