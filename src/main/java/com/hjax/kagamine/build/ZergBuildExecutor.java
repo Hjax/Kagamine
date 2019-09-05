@@ -126,7 +126,7 @@ public class ZergBuildExecutor {
 			if (GameInfoCache.count(Units.ZERG_DRONE) >= 20) {
 				boolean needs_spores = false;
 				for (UnitType u : EnemyModel.counts.keySet()) {
-					if (u == Units.TERRAN_BATTLECRUISER || u == Units.TERRAN_STARPORT_TECHLAB || u == Units.ZERG_MUTALISK || u == Units.PROTOSS_DARK_TEMPLAR || u == Units.TERRAN_BANSHEE || u == Units.PROTOSS_ORACLE) {
+					if (u == Units.TERRAN_BATTLECRUISER || u == Units.TERRAN_STARPORT_TECHLAB ||  u == Units.PROTOSS_DARK_SHRINE || u == Units.ZERG_MUTALISK || u == Units.PROTOSS_DARK_TEMPLAR || u == Units.TERRAN_BANSHEE || u == Units.PROTOSS_ORACLE) {
 						if (EnemyModel.counts.get(u) > 0) {
 							needs_spores = true;
 						}
