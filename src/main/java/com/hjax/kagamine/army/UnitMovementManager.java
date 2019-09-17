@@ -132,7 +132,7 @@ public class UnitMovementManager {
 			}
 		}
 		
-		if (Wisdom.proxy_detected() && GameInfoCache.attacking_army_supply() > EnemyModel.enemySupply() * 2) {
+		if (Wisdom.proxy_detected() && GameInfoCache.attacking_army_supply() > EnemyModel.enemySupply() * 1.5) {
 			HjaxUnit best = null;
 			for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (Game.is_structure(enemy.type())) {
@@ -262,6 +262,7 @@ public class UnitMovementManager {
 			if (Game.is_spellcaster(ally.type())) continue;
 			if (ally.type() == Units.ZERG_QUEEN) continue;
 			if (ally.flying()) continue;
+			if (Game.get_unit_type_data().get(ally.type()).getMovementSpeed().orElse(0.0f) < 4) continue;
 			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
 				if (!used.contains(ally.tag())) {
 					if (best == null || 

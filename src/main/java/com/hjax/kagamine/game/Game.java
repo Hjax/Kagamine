@@ -590,6 +590,7 @@ public class Game {
 			if (u == Units.ZERG_INFESTOR || u == Units.ZERG_VIPER) return true;
 			if (u == Units.TERRAN_MEDIVAC || u == Units.PROTOSS_WARP_PRISM || u == Units.PROTOSS_WARP_PRISM_PHASING) return true;
 			if (u == Units.TERRAN_WIDOWMINE || u == Units.TERRAN_WIDOWMINE_BURROWED) return true;
+			if (u == Units.TERRAN_BATTLECRUISER || u == Units.PROTOSS_ORACLE) return true;
 			return (get_unit_type_data().get(u).getWeapons().size() > 0 && !is_worker(u)) || u == Units.ZERG_BANELING;
 		});
 	}

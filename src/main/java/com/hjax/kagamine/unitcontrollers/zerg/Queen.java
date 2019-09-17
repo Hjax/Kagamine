@@ -63,7 +63,7 @@ public class Queen {
 		
 		if (inject) return;
 		
-		if (tumors > 4 && Composition.full_comp().contains(Units.ZERG_QUEEN) && !inject) {
+		if (tumors > 4 && Composition.full_comp().contains(Units.ZERG_QUEEN) && !inject && GameInfoCache.count_friendly(Units.ZERG_QUEEN) < 8) {
 			GenericUnit.on_frame(u, true);
 			return;
 		}

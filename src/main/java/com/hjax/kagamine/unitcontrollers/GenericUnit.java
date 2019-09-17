@@ -48,16 +48,14 @@ public class GenericUnit {
 				if (e.type() == Units.PROTOSS_INTERCEPTOR) continue;
 				if (Game.is_changeling(e.type())) continue;
 				if (Game.get_unit_type_data().get(e.type()).getWeapons().size() > 0) {
-					float range = new ArrayList<>(Game.get_unit_type_data().get(u.type()).getWeapons()).get(0).getRange();
-					if (u.type() == Units.ZERG_HYDRALISK && Game.has_upgrade(Upgrades.EVOLVE_GROOVED_SPINES)) range++;
-					if (u.location().distance(e.location()) < range) {
-						Weapon best = null;
-						for (Weapon w: Game.get_unit_type_data().get(u.type()).getWeapons()) {
-							if (w.getTargetType() == TargetType.ANY || (w.getTargetType() == TargetType.AIR && e.flying()) || ( (w.getTargetType() == TargetType.GROUND && !e.flying()))) {
-								best = w;
-							}
+					Weapon best = null;
+					for (Weapon w: Game.get_unit_type_data().get(u.type()).getWeapons()) {
+						if (w.getTargetType() == TargetType.ANY || (w.getTargetType() == TargetType.AIR && e.flying()) || ( (w.getTargetType() == TargetType.GROUND && !e.flying()))) {
+							best = w;
 						}
-						if (best != null) {
+					}
+					if (best != null) {
+						if (u.location().distance(e.location()) < best.getRange()) {
 							if (new ArrayList<>(Game.get_unit_type_data().get(e.type()).getWeapons()).get(0).getRange() < best.getRange()) {
 								Vector2d offset = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(e.location()));
 								Point2d target = Point2d.of(u.location().getX() - offset.x, u.location().getY() - offset.y);

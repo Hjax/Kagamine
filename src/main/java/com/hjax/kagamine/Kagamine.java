@@ -67,7 +67,7 @@ class Kagamine extends S2Agent {
 
 	public void onStep() {
 		long startTime = System.nanoTime();
-
+		
 		if (Game.get_true_frame() % Constants.FRAME_SKIP == 0) {
 			Game.start_frame(observation(), actions(), query(), debug());
 			GameInfoCache.start_frame();
