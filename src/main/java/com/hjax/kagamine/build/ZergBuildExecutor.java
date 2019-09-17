@@ -316,6 +316,7 @@ public class ZergBuildExecutor {
 		boolean save_gas = false;
 		
 		for (UnitType u: Composition.comp().keySet()) {
+			if (u == Units.ZERG_QUEEN) continue;
 			UnitType current = u;
 			int limit = Composition.comp().getOrDefault(current, 0);
 			if (Balance.is_morph(u)) {
