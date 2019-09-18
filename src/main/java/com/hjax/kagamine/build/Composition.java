@@ -158,12 +158,22 @@ public class Composition {
 									
 									if (comp.getOrDefault(possible_counter, 0) >= limits.get(possible_counter)) continue;
 									
-									if (best == Units.INVALID || 
-											counters.get(best_tech).get(unit).get(best) * Game.get_unit_type_data().get(best).getFoodRequired().orElse(0.0f) > 
-											counters.get(tech).get(unit).get(possible_counter) * Game.get_unit_type_data().get(possible_counter).getFoodRequired().orElse(0.0f)) {
-										
+									if (best == Units.INVALID) {
 										best = possible_counter;
 										best_tech = tech;
+									} else {
+
+										double best_supply = counters.get(best_tech).get(unit).get(best) * Game.get_unit_type_data().get(best).getFoodRequired().orElse(0.0f);
+										double current_supply = counters.get(tech).get(unit).get(possible_counter) * Game.get_unit_type_data().get(possible_counter).getFoodRequired().orElse(0.0f);
+
+										if ((best_supply > current_supply) || 
+										   ((best_supply == current_supply) && best_tech.ordinal() > tech.ordinal())) {
+											
+											best = possible_counter;
+											best_tech = tech;
+											
+										}
+
 									}
 								}
 							}

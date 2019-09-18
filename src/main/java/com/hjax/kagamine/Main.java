@@ -47,7 +47,7 @@ public class Main {
 					.setParticipants(
 							//S2Coordinator.createParticipant(choice, bot2),
 							S2Coordinator.createParticipant(Race.ZERG, bot),
-							S2Coordinator.createComputer(choice, Difficulty.CHEAT_INSANE, AiBuild.TIMING))
+							S2Coordinator.createComputer(choice, Difficulty.CHEAT_INSANE, AiBuild.AIR))
 					.launchStarcraft()
 					.startGame(LocalMap.of(Paths.get("Acropolis.SC2Map")));
 			while (s2Coordinator.update()) {

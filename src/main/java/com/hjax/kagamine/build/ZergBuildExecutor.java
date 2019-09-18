@@ -82,7 +82,7 @@ public class ZergBuildExecutor {
 				pulled_off_gas = true;
 				for (HjaxUnit drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 					if (drone.ability() == Abilities.HARVEST_GATHER && 
-							drone.orders().get(0).getTargetedUnitTag().isPresent() && GameInfoCache.get_unit((drone.orders().get(0).getTargetedUnitTag()).get()).type() == Units.ZERG_EXTRACTOR) {
+							drone.orders().get(0).getTargetedUnitTag().isPresent() && GameInfoCache.get_unit((drone.orders().get(0).getTargetedUnitTag()).get()) != null && GameInfoCache.get_unit((drone.orders().get(0).getTargetedUnitTag()).get()).type() == Units.ZERG_EXTRACTOR) {
 						drone.stop();
 					}
 				}

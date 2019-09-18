@@ -6,7 +6,7 @@ public class Constants {
 	public static boolean CHAT = true;
 	public static final double FPS = 22.4;
 	public static final double DONE = 0.999;
-	public static final int FRAME_SKIP = 3;
+	public static final int FRAME_SKIP = 4;
 	public static final int CREEP_RESOLUTION = 2;
 	public static final int ENEMY_SQUAD_DISTANCE = 6;
 	public static final int RESOURCE_UPDATE_TIMER = 224;

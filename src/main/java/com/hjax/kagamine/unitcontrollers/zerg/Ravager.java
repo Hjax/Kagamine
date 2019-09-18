@@ -31,7 +31,7 @@ public class Ravager {
 		
 		for (UnitType target_type : bile_targets) {
 			for (HjaxUnit u : GameInfoCache.get_units(target_type)) {
-				if (u.distance(u2) < 9) {
+				if (u.alliance() == Alliance.ENEMY && u.distance(u2) < 9) {
 					if (!ff_biles.containsKey(u.location()) || ff_biles.get(u.location()) < Game.get_frame() - (3 * Constants.FPS)) {
 						best = u;
 					}

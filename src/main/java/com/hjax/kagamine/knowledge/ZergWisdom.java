@@ -30,6 +30,11 @@ public class ZergWisdom {
 	}
 
 	public static boolean should_build_army() {
+		
+		if (ZergBuildExecutor.next_army_unit() == Units.INVALID) {
+			return false;
+		}
+		
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.full_comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}
@@ -103,7 +108,7 @@ public class ZergWisdom {
 				minerals += 16;
 			}
 		}
-		if (Wisdom.all_in_detected() && EnemyModel.enemyWorkers() + 12 < GameInfoCache.count(RaceInterface.get_race_worker())) {
+		if (Wisdom.all_in_detected() && EnemyModel.enemyWorkers() + 12 < GameInfoCache.count(RaceInterface.get_race_worker()) && Game.worker_count() > 30) {
 			return false;
 		}
 		minerals += GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) * 3 + BaseManager.active_gases() * 3;
