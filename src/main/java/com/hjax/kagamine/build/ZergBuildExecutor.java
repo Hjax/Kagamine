@@ -326,7 +326,7 @@ public class ZergBuildExecutor {
 					if (!(GameInfoCache.count(Balance.get_tech_structure(u)) > 0)) continue;
 				}
 			}
-			if (GameInfoCache.count_friendly(Balance.get_tech_structure(current)) > 0) {
+			if (!Balance.has_tech_requirement(current)) {
 				if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
 					if (GameInfoCache.count(current) >= limit) continue;
 					if (best == Units.INVALID || Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
@@ -343,7 +343,7 @@ public class ZergBuildExecutor {
 			if (Balance.is_morph(u)) {
 				current = Balance.get_morph_source(u);
 			}
-			if (GameInfoCache.count_friendly(Balance.get_tech_structure(current)) > 0) {
+			if (!Balance.has_tech_requirement(current)) {
 				if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
 					if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < 1 || !save_gas) {
 	 					if (best == Units.INVALID || Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
