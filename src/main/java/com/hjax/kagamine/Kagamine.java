@@ -124,6 +124,9 @@ class Kagamine extends S2Agent {
 			Game.write_text("Spending: " + Game.minerals() + " " + Game.gas());
 			Game.write_text("Comp: " + Composition.comp().toString());
 			Game.write_text("Saving up for: " + Game.saving_up.toString());
+			Game.write_text("Attack threshold: " + UnitMovementManager.attack_threshold);
+			Game.write_text("Army ratio: " + Game.army_supply() / EnemyModel.enemyArmy());
+			
 			
 		}
 		

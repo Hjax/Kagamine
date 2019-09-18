@@ -6,11 +6,12 @@ import com.github.ocraft.s2client.protocol.game.Race;
 public class LadderMain {
     public static void main(String[] args) {
     	Constants.CHAT = true;
-    	Constants.DEBUG = true;
+    	Constants.DEBUG = false;
         Kagamine bot = new Kagamine();
         S2Coordinator s2Coordinator;
             System.out.println("Starting ladder game");
             s2Coordinator = S2Coordinator.setup()
+            		.setRawAffectsSelection(true)
                     .loadLadderSettings(args)
                     .setParticipants(S2Coordinator.createParticipant(Race.ZERG, bot))
                     .connectToLadder()

@@ -38,7 +38,18 @@ public class UnitMovementManager {
 	public static int unassigned_ground = 0;
 	public static int unassigned_air = 0;
 	
+	public static double attack_threshold = 1.1;
+	
 	public static void on_frame() {
+		
+		if (Game.army_supply() >= EnemyModel.enemyArmy() * 1.5) {
+			attack_threshold = 1.1;
+		}
+		
+		if (Game.army_supply() <= EnemyModel.enemyArmy() * 1.1) {
+			attack_threshold = 1.5;
+		}
+		
 		defense_point = null;
 		used.clear();
 		assignments.clear();
@@ -86,7 +97,7 @@ public class UnitMovementManager {
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			try {
 				if (BaseManager.closest_base(average).has_friendly_command_structure() &&
-						my_strength > enemy_strength * 1.5) {
+						my_strength > enemy_strength * attack_threshold) {
 							
 					assign_defense(enemy_squad);
 					assigned.put(enemy_squad, true);
@@ -108,7 +119,7 @@ public class UnitMovementManager {
 			
 			try {
 				if ((Game.closest_invisible(average).distance(average) > 7 && 
-						my_strength > enemy_strength * 1.5 && 
+						my_strength > enemy_strength * attack_threshold && 
 						!BaseManager.closest_base(average).has_enemy_command_structure())) {
 							
 					assign_defense(enemy_squad);
@@ -132,7 +143,7 @@ public class UnitMovementManager {
 			}
 		}
 		
-		if (Wisdom.proxy_detected() && GameInfoCache.attacking_army_supply() > EnemyModel.enemySupply() * 1.5) {
+		if (Wisdom.proxy_detected() && GameInfoCache.attacking_army_supply() > EnemyModel.enemySupply() * attack_threshold) {
 			HjaxUnit best = null;
 			for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (Game.is_structure(enemy.type())) {
