@@ -153,6 +153,9 @@ public class UnitMovementManager {
 				}
 			}
 			if (best != null) {
+				for (HjaxUnit u : UnitRoleManager.get(UnitRole.ARMY)) {
+					assignments.put(u.tag(), best.location());
+				}
 				assign_runby(best.location(), 50);
 			}
 		}

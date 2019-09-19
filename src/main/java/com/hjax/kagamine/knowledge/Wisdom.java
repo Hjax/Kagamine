@@ -19,7 +19,6 @@ public class Wisdom {
 	private static boolean early_cheese = false;
 	
 	public static boolean proxy_detected() {
-		if (Game.army_supply() >= 30) return false;
 		if (EnemyModel.enemyBaseCount() > 1) return false;
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (Game.is_structure(u.type()) && u.type() != Units.PROTOSS_PYLON) {
@@ -88,6 +87,12 @@ public class Wisdom {
 				shouldAttack = true;
 				return true;
 			}
+			
+			if (((Game.army_supply() / EnemyModel.enemyArmy()) > 1.4 && shouldAttack) || ((Game.army_supply() / EnemyModel.enemyArmy()) > 1.8)) {
+				shouldAttack = true;
+				return true;
+			}
+			
 			if (all_in_detected() && GameInfoCache.attacking_army_supply() < (2.4 * EnemyModel.enemyArmy())) {
 				shouldAttack = false;
 				return false;
