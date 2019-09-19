@@ -26,6 +26,10 @@ public class ThreatManager {
 		threat = 0;
 		attacking_threat = 0;
 		
+		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
+			threat = 10;
+		}
+		
 		for (Set<HjaxUnit> squad : EnemySquadManager.enemy_squads) {
 			center = EnemySquadManager.average_point(new ArrayList<>(squad));
 			Base closest = null;
@@ -53,7 +57,7 @@ public class ThreatManager {
 				attacking_threat += supply;
 			} else if (closest.has_enemy_command_structure()) {
 				if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-					threat += supply;
+					threat += supply * 1.2;
 				} else {
 					threat += supply * 0.7;
 				}

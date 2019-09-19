@@ -23,7 +23,7 @@ public class ZergWisdom {
 		int target = Math.max((int) (ThreatManager.threat() - Math.min(EconomyManager.larva_rate(), 6)), 3);
 		
 		if (target < 10) {
-			if (Wisdom.all_in_detected()) target = 10;
+			if (Wisdom.all_in_detected()) target = 20;
 			if (Wisdom.proxy_detected() && !Wisdom.cannon_rush()) target = 30;
 		}
 		return target;
@@ -58,6 +58,9 @@ public class ZergWisdom {
 	
 	public static int queen_target() {
 		int target = 0;
+		
+		if (Wisdom.all_in_detected()) return BaseManager.base_count();
+		
 		if (BaseManager.base_count() < 3) {
 			target = BaseManager.base_count() - 1;
 		} else {
@@ -102,6 +105,14 @@ public class ZergWisdom {
 	}
 	
 	public static boolean should_build_workers() {
+		
+		/*
+		 * Save larva for zvz cheese defense
+		 */
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && EnemyModel.enemyBaseCount() == 1 && Game.worker_count() >= 14 && Game.army_supply() < 10 && Wisdom.all_in_detected()) {
+			return false;
+		}
+		
 		int minerals = EconomyManager.total_minerals();
 		for (HjaxUnit in_progress : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_HATCHERY)) {
 			if (!in_progress.done() && in_progress.progress() > 0.6) {
