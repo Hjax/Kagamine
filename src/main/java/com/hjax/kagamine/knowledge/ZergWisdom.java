@@ -115,7 +115,7 @@ public class ZergWisdom {
 				minerals += 16;
 			}
 		}
-		if (Wisdom.all_in_detected() && EnemyModel.enemyWorkers() + 12 < GameInfoCache.count(RaceInterface.get_race_worker()) && Game.worker_count() > 30) {
+		if (Wisdom.all_in_detected() && EnemyModel.enemyWorkers() + 12 < GameInfoCache.count(RaceInterface.get_race_worker()) && Game.worker_count() > 30 && Composition.full_comp().contains(Units.ZERG_ZERGLING) && (Game.army_supply() < 30 * EnemyModel.enemyBaseCount())) {
 			return false;
 		}
 		minerals += GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) * 3 + BaseManager.active_gases() * 3;
@@ -124,7 +124,7 @@ public class ZergWisdom {
 	}
 	public static boolean should_expand() {
 		if (Game.minerals() > 800) return true;
-		if (GameInfoCache.in_progress(Units.ZERG_HATCHERY) > 1) return false;
+		//if (GameInfoCache.in_progress(Units.ZERG_HATCHERY) > 1) return false;
 		if ((Wisdom.cannon_rush() || Wisdom.proxy_detected() && BaseManager.base_count() >= EnemyModel.enemyBaseCount())) return false;
 		if (Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
