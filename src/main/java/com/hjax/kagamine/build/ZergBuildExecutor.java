@@ -105,8 +105,8 @@ public class ZergBuildExecutor {
 								}
 							}
 						}
-					} else if (BaseManager.base_count() == 2) {
-						if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < Math.min(Math.max((EnemyModel.enemyArmy() / 2.0), 3), 7) && !Wisdom.cannon_rush() && Game.worker_count() > 20) {
+					} else if (BaseManager.base_count() >= 2 && EnemyModel.enemyBaseCount() == 1) {
+						if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < Math.min(Math.max((EnemyModel.enemyArmy() / 3.0), 3), 7) && !Wisdom.cannon_rush() && Game.worker_count() > 20) {
 							if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
 								if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
 									if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {

@@ -249,7 +249,14 @@ public class BaseManager {
 				}
 			}
 		} else if (structure == Units.ZERG_SPINE_CRAWLER) {
-			Point2d location = get_spine_placement_location(get_forward_base());
+			Base nat = get_natural();
+			Point2d location;
+			if (nat == null) {
+				location = get_spine_placement_location(get_forward_base());
+			} else {
+				location = get_spine_placement_location(nat);
+			}
+			
 			HjaxUnit worker = get_free_worker(location);
 			if (worker != null) {
 				worker.use_ability(Abilities.BUILD_SPINE_CRAWLER, location);
@@ -504,76 +511,23 @@ public class BaseManager {
 		return results;
 	}
 	
-	static void calculate_expansions() {
-		expos.clear();
-		ArrayList<Set<HjaxUnit>> mineral_lines = new ArrayList<>();
-		outer: for (HjaxUnit unit: GameInfoCache.get_units(Alliance.NEUTRAL)) {
-			if (unit.type().toString().toLowerCase().contains("mineral") || unit.type().toString().toLowerCase().contains("geyser")) {
-				for (Set<HjaxUnit> lines : mineral_lines) {
-					for (HjaxUnit patch : lines) {
-						if (patch.distance(unit) < 14 && Math.abs(Game.height(patch.location()) - Game.height(unit.location())) < .1) {
-							lines.add(unit);
-							continue outer;
-						}
-					}
-				}
-				Set<HjaxUnit> adder = new HashSet<>();
-				adder.add(unit);
-				mineral_lines.add(adder);
-			}
-		}
-		for (Set<HjaxUnit> line : mineral_lines) {
-			HjaxUnit first = line.iterator().next();
-			for (HjaxUnit u : line) {
-				Game.draw_line(first.location(), u.location(), Color.GREEN);
-			}
-		}
-		
-		for (Set<HjaxUnit> line : mineral_lines) {
-			float x = 0;
-			float y = 0;
-			int count = 0;
-			for (HjaxUnit patch : new ArrayList<>(line)) {
-				x += patch.location().getX();
-				y += patch.location().getY();
-				count++;
-			}
-			x = x/count;
-			y = y/count;
-			Vector2d average = new Vector2d(x, y);
-			
-			Point2d best = null;
-			
-			List<Point2d> points = new ArrayList<>();
-			for (int x_offset = -10; x_offset < 11; x_offset++) {
-				for (int y_offset = -10; y_offset < 11; y_offset++) {
-					if ((average.x + x_offset) > 0 && (average.y + y_offset) > 0) {
-						Point2d current = Point2d.of(average.x + x_offset, average.y + y_offset);
-						points.add(current);
+	
+	/*
+	 * Our natural base is the closest base to our main, that isnt our main, that is also closer to our opponent
+	 */
+	public static Base get_natural() {
+		Base best = null;
+		for (Base b : bases) {
+			if (b.has_friendly_command_structure() && b != main_base()) {
+				if (get_distance(b, closest_base(Scouting.closest_enemy_spawn())) < get_distance(main_base(), closest_base(Scouting.closest_enemy_spawn()))) {
+					if (best == null || get_distance(main_base, best) > get_distance(main_base, b)) {
+						best = b;
 					}
 				}
 			}
-			List<Boolean> results = Game.can_place(Abilities.BUILD_HATCHERY, points);
-			int skipped = 0;
-			for (int x_offset = -10; x_offset < 11; x_offset++) {
-				for (int y_offset = -10; y_offset < 11; y_offset++) {
-					if ((average.x + x_offset) > 0 && (average.y + y_offset) > 0) {
-						Point2d current = Point2d.of(average.x + x_offset, average.y + y_offset);
-						if (best == null || average.toPoint2d().distance(current) < average.toPoint2d().distance(best)) {
-							if (results.get((x_offset + 10) * 21 + (y_offset + 10) - skipped)) {
-								best = current;
-							}
-						}
-					} else {
-						skipped++;
-					}
-				}
-			}
-
-			if (best != null) {
-				expos.add(best);
-			}
 		}
+		return best;
 	}
+	
 
 }
