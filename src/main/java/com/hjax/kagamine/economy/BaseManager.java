@@ -365,7 +365,7 @@ public class BaseManager {
 			}
 			for (Base b: bases) {
 				if (b.has_friendly_command_structure() && b.command_structure.done()) {
-					if (best == null || b.location.distance(target) < best.location.distance(target)) {
+					if (best == null || get_distance(b, closest_base(target)) < get_distance(best, closest_base(target))) {
 						best = b;
 					}
 				}
