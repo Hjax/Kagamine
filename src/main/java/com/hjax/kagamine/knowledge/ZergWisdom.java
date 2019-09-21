@@ -87,13 +87,9 @@ public class ZergWisdom {
 			if (Game.race() != Race.ZERG) return false;
 			if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) return false;
 
-			if (Composition.full_comp().contains(Units.ZERG_QUEEN) && GameInfoCache.count(Units.ZERG_QUEEN) < 25) return true;
+			if (Composition.full_comp().contains(Units.ZERG_QUEEN) && GameInfoCache.count(Units.ZERG_QUEEN) < Composition.comp().getOrDefault(Units.ZERG_QUEEN, 0)) return true;
 			
-			if (should_build_army() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 30) {
-				return false;
-			}
-			int tumors = GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_BURROWED) + GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR_QUEEN);
-			if (tumors > 30 && GameInfoCache.count(Units.ZERG_QUEEN) >= 3) {
+			if (should_build_army() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 60) {
 				return false;
 			}
 			
@@ -128,6 +124,7 @@ public class ZergWisdom {
 	}
 	public static boolean should_expand() {
 		if (Game.minerals() > 800) return true;
+		if (GameInfoCache.in_progress(Units.ZERG_HATCHERY) > 1) return false;
 		if ((Wisdom.cannon_rush() || Wisdom.proxy_detected() && BaseManager.base_count() >= EnemyModel.enemyBaseCount())) return false;
 		if (Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;

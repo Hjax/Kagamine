@@ -86,7 +86,17 @@ public class Wisdom {
 				return true;
 			}
 			
-			if ((Game.army_killed() - Game.army_lost()) < -5000) {
+			int bonus = 0;
+			for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (enemy.done()) {
+					if (enemy.type() == Units.TERRAN_PLANETARY_FORTRESS) bonus += 20;
+					if (enemy.type() == Units.TERRAN_BUNKER) bonus += 10;
+					if (enemy.type() == Units.PROTOSS_PHOTON_CANNON) bonus += 6;
+				}
+			}
+			
+			
+			if ((Game.army_killed() - Game.army_lost()) < -1000 && EnemyModel.enemyBaseCount() == 1) {
 				shouldAttack = false;
 				return false;
 			}
@@ -96,7 +106,7 @@ public class Wisdom {
 				return shouldAttack;
 			}
 			
-			if (((Game.army_supply() / EnemyModel.enemyArmy()) > 1.4 && shouldAttack) || ((Game.army_supply() / EnemyModel.enemyArmy()) > 1.8)) {
+			if (((Game.army_supply() / (EnemyModel.enemyArmy() + bonus)) > 1.5 && shouldAttack) || ((Game.army_supply() / (EnemyModel.enemyArmy() + bonus)) > 2)) {
 				shouldAttack = true;
 				return true;
 			}
@@ -112,15 +122,6 @@ public class Wisdom {
 			else if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
 				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.3 * EnemyModel.enemyArmy())) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < (EnemyModel.enemyWorkers() - 6)));
 			} else {
-				int bonus = 0;
-				for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (enemy.done()) {
-						if (enemy.type() == Units.TERRAN_PLANETARY_FORTRESS) bonus += 16;
-						if (enemy.type() == Units.TERRAN_BUNKER) bonus += 8;
-						if (enemy.type() == Units.PROTOSS_PHOTON_CANNON) bonus += 5;
-					}
-				}
-				
 				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.3 * EnemyModel.enemyArmy() + bonus) && (GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < (EnemyModel.enemyWorkers() - 10)));
 			}
 		}

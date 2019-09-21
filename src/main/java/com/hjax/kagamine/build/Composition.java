@@ -43,7 +43,7 @@ public class Composition {
 		}
 		
 		limits.put(Units.ZERG_VIPER, 4);
-		limits.put(Units.ZERG_INFESTOR, 10);
+		limits.put(Units.ZERG_INFESTOR, 4);
 		limits.put(Units.ZERG_BROODLORD, 10);
 		limits.put(Units.ZERG_BANELING, 30);
 		limits.put(Units.ZERG_SWARM_HOST_MP, 5);
