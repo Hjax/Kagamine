@@ -92,15 +92,28 @@ public class ZergBuildExecutor {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;
 			}
-			if (Game.army_supply() >= 2 && Game.army_supply() < 30 && BaseManager.base_count() < 3) {
+			if (Game.army_supply() >= 2 && Game.army_supply() < 30) {
 				if (GameInfoCache.get_opponent_race() != Race.ZERG) {
-					if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush()) {
-						if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0 && (BaseManager.base_count() > 1 || Wisdom.proxy_detected())) {
-							if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
-								if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
-									BaseManager.build(Units.ZERG_SPINE_CRAWLER);
+					if (BaseManager.base_count() == 1 && Wisdom.proxy_detected()) {
+						if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < 3 && !Wisdom.cannon_rush()) {
+							if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
+								if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
+									if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
+										BaseManager.build(Units.ZERG_SPINE_CRAWLER);
+									}
+									Game.purchase(Units.ZERG_SPINE_CRAWLER);
 								}
-								Game.purchase(Units.ZERG_SPINE_CRAWLER);
+							}
+						}
+					} else if (BaseManager.base_count() == 2) {
+						if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) < Math.min(Math.max((EnemyModel.enemyArmy() / 2.0), 3), 7) && !Wisdom.cannon_rush() && Game.worker_count() > 20) {
+							if (GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0) {
+								if (Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
+									if (Game.can_afford(Units.ZERG_SPINE_CRAWLER)) {
+										BaseManager.build(Units.ZERG_SPINE_CRAWLER);
+									}
+									Game.purchase(Units.ZERG_SPINE_CRAWLER);
+								}
 							}
 						}
 					}
