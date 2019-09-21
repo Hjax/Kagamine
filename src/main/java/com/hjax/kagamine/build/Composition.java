@@ -14,6 +14,7 @@ import com.github.ocraft.s2client.protocol.data.Weapon;
 import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.hjax.kagamine.build.TechLevelManager.TechLevel;
+import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.enemymodel.EnemyModel;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
@@ -222,6 +223,9 @@ public class Composition {
 			return Arrays.asList(Units.PROTOSS_ZEALOT, Units.PROTOSS_STALKER);
 		}
 		
+		if ((EnemyModel.enemy_floated() || EnemyModel.enemyBaseCount() == 1) && Game.army_supply() > EnemyModel.enemyArmy() * 3 && BaseManager.base_count() >= 4) {
+			return Arrays.asList(Units.ZERG_MUTALISK);
+		}
 		
 		if (Wisdom.proxy_detected() || Wisdom.cannon_rush()) {
 			if (Game.army_supply() < 70) {

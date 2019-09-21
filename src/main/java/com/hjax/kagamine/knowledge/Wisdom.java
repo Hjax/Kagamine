@@ -71,6 +71,7 @@ public class Wisdom {
 	
 	public static boolean ahead() {
 		int[] res = EnemyModel.resourceEstimate();
+		if ((Game.army_killed() - Game.army_lost()) < 5000) return false;
 		return EnemyModel.enemyArmy() + EnemyModel.enemyBaseCount() * 5 + ((Math.max(res[0], 0) + Math.max(res[1], 0) * 2) / 100) < GameInfoCache.attacking_army_supply();
 	}
 	
@@ -79,13 +80,20 @@ public class Wisdom {
 	public static boolean shouldAttack() {
 		if (shouldAttackFrame != Game.get_frame()) {
 			shouldAttackFrame = Game.get_frame();
-			if (EnemyModel.enemyArmy() < 1) {
-				shouldAttack = true;
-				return shouldAttack;
-			}
+			
 			if (Game.supply() >= 190 || (shouldAttack && Game.supply() >= 150)) {
 				shouldAttack = true;
 				return true;
+			}
+			
+			if ((Game.army_killed() - Game.army_lost()) < -5000) {
+				shouldAttack = false;
+				return false;
+			}
+			
+			if (EnemyModel.enemyArmy() < 1) {
+				shouldAttack = true;
+				return shouldAttack;
 			}
 			
 			if (((Game.army_supply() / EnemyModel.enemyArmy()) > 1.4 && shouldAttack) || ((Game.army_supply() / EnemyModel.enemyArmy()) > 1.8)) {
