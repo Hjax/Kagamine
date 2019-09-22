@@ -57,7 +57,7 @@ public class Wisdom {
 	private static int enemy_production() {
 		int production = 0;
 		for (HjaxUnit u: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Balance.is_production_structure(u.type())) {
+			if (Balance.is_production_structure(u.type()) && u.type() != Units.TERRAN_STARPORT) {
 				production++;
 			}
 		}
