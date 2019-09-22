@@ -55,7 +55,7 @@ public class Infestor {
 			for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
 				// TODO dont hardcode this
 				if (neural_targets.contains(enemy.type())) {
-					if (enemy.distance(u) < Game.get_ability_data().get(Abilities.EFFECT_NEURAL_PARASITE).getCastRange().orElse(0.0f)) {
+					if (enemy.distance(u) < Game.get_ability_data().get(Abilities.EFFECT_NEURAL_PARASITE).getCastRange().orElse(0.0f) + 3) {
 						u.use_ability(Abilities.EFFECT_NEURAL_PARASITE, enemy);
 						return;
 					}

@@ -253,7 +253,11 @@ public class GameInfoCache {
 		boolean queens_count = Composition.full_comp().contains(Units.ZERG_QUEEN);
 		for (HjaxUnit unit: get_units(Alliance.SELF)) {
 			if (unit.done() && Game.is_combat(unit.type()) && !(!queens_count && unit.type() == Units.ZERG_QUEEN)) {
-				result += Game.supply(unit.type());
+				if (!Game.is_spellcaster(unit.type()) || unit.energy() > 75) {
+					if (unit.done()) {
+						result += Game.supply(unit.type());
+					}
+				}
 			}
 		}
 		aas_frame = Game.get_frame();

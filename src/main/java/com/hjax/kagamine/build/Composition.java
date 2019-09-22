@@ -42,8 +42,8 @@ public class Composition {
 			limits.put(u, 999);
 		}
 		
-		limits.put(Units.ZERG_VIPER, 4);
-		limits.put(Units.ZERG_INFESTOR, 4);
+		limits.put(Units.ZERG_VIPER, 2);
+		limits.put(Units.ZERG_INFESTOR, 10);
 		limits.put(Units.ZERG_BROODLORD, 10);
 		limits.put(Units.ZERG_BANELING, 30);
 		limits.put(Units.ZERG_SWARM_HOST_MP, 5);
@@ -80,34 +80,24 @@ public class Composition {
 		
 		counters.get(TechLevel.HIVE).get(Units.PROTOSS_CARRIER).put(Units.ZERG_VIPER, 0.5);
 		
-		counters.get(TechLevel.HIVE).get(Units.TERRAN_MARINE).put(Units.ZERG_INFESTOR, 0.1);
+		counters.get(TechLevel.HIVE).get(Units.TERRAN_MARINE).put(Units.ZERG_INFESTOR, 0.15);
 		
 		counters.get(TechLevel.HIVE).get(Units.TERRAN_THOR).put(Units.ZERG_INFESTOR, 1.0);
 
-		counters.get(TechLevel.HIVE).get(Units.TERRAN_SIEGE_TANK).put(Units.ZERG_VIPER, 0.4);
+		counters.get(TechLevel.HIVE).get(Units.TERRAN_SIEGE_TANK).put(Units.ZERG_VIPER, 0.6);
 		
 		counters.get(TechLevel.HIVE).get(Units.PROTOSS_COLOSSUS).put(Units.ZERG_VIPER, 0.5);
 		counters.get(TechLevel.HIVE).get(Units.PROTOSS_DISRUPTOR).put(Units.ZERG_VIPER, 0.5);
 		
 		for (UnitType unit : units) {
 			if (!flying.contains(unit)) {
-				double supply_handled = 7;
+				double supply_handled = 6;
 				for (Weapon w: Game.get_unit_type_data().get(unit).getWeapons()) {
 					if (w.getTargetType() == TargetType.ANY || w.getTargetType() == TargetType.AIR) {
-						supply_handled -= 2;
+						supply_handled -= 1;
 					}
 				}
 				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_BROODLORD, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / supply_handled);
-			}
-		}
-		
-		for (UnitType unit : units) {
-			if (unit == Units.TERRAN_BATTLECRUISER) continue;
-			if (unit == Units.PROTOSS_TEMPEST) continue;
-			if (flying.contains(unit)) {
-				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_INFESTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 4.0);
-			} else {
-				counters.get(TechLevel.HIVE).get(unit).put(Units.ZERG_INFESTOR, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 2.1);
 			}
 		}
 		
@@ -183,7 +173,7 @@ public class Composition {
 					
 					if (best != Units.INVALID) {
 						
-						double num_add = EnemyModel.counts.getOrDefault(unit, 0) * counters.get(best_tech).get(unit).get(best);
+						double num_add = EnemyModel.counts.getOrDefault(unit, 0) * counters.get(best_tech).get(unit).get(best) * 2;
 						if (num_add + comp.getOrDefault(best, 0) > limits.get(best)) {
 							num_add = limits.get(best) - comp.getOrDefault(best, 0);
 						}
@@ -200,7 +190,7 @@ public class Composition {
 		
 		for (UnitType u : comp.keySet()) {
 			if (comp.get(u) > 0.1) {
-				comp.put(u, (int) Math.ceil(Math.min(comp.get(u) * 2, limits.getOrDefault(u, 999))));
+				comp.put(u, (int) Math.ceil(Math.min(comp.get(u), limits.getOrDefault(u, 999))));
 			}
 		}
 		

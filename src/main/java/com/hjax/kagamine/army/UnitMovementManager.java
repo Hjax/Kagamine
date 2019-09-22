@@ -40,13 +40,17 @@ public class UnitMovementManager {
 	
 	public static double attack_threshold = 1.1;
 	
+	public static boolean chase_aggressively = false;
+	
 	public static void on_frame() {
 		
+		boolean new_chase_aggressively = false;
+		
 		if (GameInfoCache.attacking_army_supply() >= EnemyModel.enemyArmy() * 1.5) {
-			attack_threshold = 0.9;
+			attack_threshold = 1.0;
 		}
 		
-		if (GameInfoCache.attacking_army_supply() <= EnemyModel.enemyArmy() * 0.9) {
+		if (GameInfoCache.attacking_army_supply() <= EnemyModel.enemyArmy() * 1.0) {
 			attack_threshold = 1.5;
 		}
 		
@@ -75,10 +79,19 @@ public class UnitMovementManager {
 			
 			for (Base b : BaseManager.bases) {
 				try {
+					
+					int engage_distance = Constants.THREAT_DISTANCE;
+					
+					if (chase_aggressively) {
+						engage_distance *= 3;
+					}
+					
 					if (((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 
-						 b.location.distance(average) < Constants.THREAT_DISTANCE)) {
+						 b.location.distance(average) < engage_distance) && !BaseManager.closest_base(average).has_enemy_command_structure()) {
 						assign_defense(enemy_squad);
 						assigned.put(enemy_squad, true);
+						Game.write_text("Chasing away", EnemySquadManager.average_point(new ArrayList<>(enemy_squad)));
+						new_chase_aggressively = true;
 
 					} 
 				} catch (Exception ignored) {
@@ -87,6 +100,8 @@ public class UnitMovementManager {
 				}
 			}
 		}
+		
+		chase_aggressively = new_chase_aggressively;
 		
 		for (Set<HjaxUnit> enemy_squad : EnemySquadManager.enemy_squads) {
 			if (assigned.get(enemy_squad)) continue;
@@ -99,6 +114,8 @@ public class UnitMovementManager {
 				if (BaseManager.closest_base(average).has_friendly_command_structure() &&
 						my_strength > enemy_strength * attack_threshold) {
 							
+					
+					Game.write_text("Defending " + my_strength + " " + enemy_strength, EnemySquadManager.average_point(new ArrayList<>(enemy_squad)));
 					assign_defense(enemy_squad);
 					assigned.put(enemy_squad, true);
 					
@@ -122,6 +139,7 @@ public class UnitMovementManager {
 						my_strength > enemy_strength * attack_threshold && 
 						!BaseManager.closest_base(average).has_enemy_command_structure())) {
 							
+					Game.write_text("Crushing " + my_strength + " " + enemy_strength, EnemySquadManager.average_point(new ArrayList<>(enemy_squad)));
 					assign_defense(enemy_squad);
 					assigned.put(enemy_squad, true);
 					
@@ -138,7 +156,7 @@ public class UnitMovementManager {
 			dist = 45;
 		}
 		for (Base b : BaseManager.bases) {
-			if (b.has_enemy_command_structure() && EnemyBaseDefense.get_defense(b) < GameInfoCache.attacking_army_supply() && EnemyBaseDefense.get_defense(b) < 10 && Scouting.closest_enemy_spawn(b.location).distance(b.location) > dist) {
+			if (Wisdom.army_ratio() > 1.0 && b.has_enemy_command_structure() && EnemyBaseDefense.get_defense(b) < GameInfoCache.attacking_army_supply() && EnemyBaseDefense.get_defense(b) < 10 && Scouting.closest_enemy_spawn(b.location).distance(b.location) > dist) {
 				assign_runby(b.location, Math.max(EnemyBaseDefense.get_defense(b) + 2, 6));
 			}
 		}
@@ -276,7 +294,6 @@ public class UnitMovementManager {
 			if (Game.is_spellcaster(ally.type())) continue;
 			if (ally.type() == Units.ZERG_QUEEN) continue;
 			if (ally.flying()) continue;
-			if (Game.get_unit_type_data().get(ally.type()).getMovementSpeed().orElse(0.0f) < 4) continue;
 			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
 				if (!used.contains(ally.tag())) {
 					if (best == null || 

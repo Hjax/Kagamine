@@ -37,6 +37,20 @@ public class TechLevelManager {
 			}
 		} 
 		
+		if ((GameInfoCache.count(Units.ZERG_HIVE) > 0) || 
+		   (getTechLevel().ordinal() >= TechLevel.LAIR.ordinal() && (EnemyModel.counts.getOrDefault(Units.PROTOSS_ROBOTICS_BAY, 0) > 0 || 
+																	 EnemyModel.counts.getOrDefault(Units.PROTOSS_FLEET_BEACON, 0) > 0 || 													 
+																	 EnemyModel.counts.getOrDefault(Units.TERRAN_FUSION_CORE, 0) > 0))) {
+			if (GameInfoCache.count(Units.ZERG_SPIRE) == 0) {
+				if (Game.can_afford(Units.ZERG_SPIRE)) {
+					BaseManager.build(Units.ZERG_SPIRE);
+				}
+				Game.purchase(Units.ZERG_SPIRE);
+			}
+			
+			
+		}
+		
 		if (getTechLevel() == TechLevel.LAIR && GameInfoCache.count(Units.ZERG_HIVE) == 0) {
 			if ((BaseManager.base_count() >= 4 && GameInfoCache.count(Units.ZERG_DRONE) > 70 && Game.army_supply() >= 80)) {
 				if (!Balance.has_tech_requirement(Units.ZERG_HIVE)) {

@@ -75,28 +75,41 @@ public class Wisdom {
 		return EnemyModel.enemyArmy() + EnemyModel.enemyBaseCount() * 5 + ((Math.max(res[0], 0) + Math.max(res[1], 0) * 2) / 100) < GameInfoCache.attacking_army_supply();
 	}
 	
+	public static double army_ratio() {
+		
+		double my_army = GameInfoCache.attacking_army_supply();
+		double enemy_army = EnemyModel.enemyArmy();
+		
+		int bonus = 0;
+		for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (enemy.done()) {
+				if (enemy.type() == Units.TERRAN_PLANETARY_FORTRESS) bonus += 20;
+				if (enemy.type() == Units.TERRAN_BUNKER) bonus += 10;
+				if (enemy.type() == Units.PROTOSS_PHOTON_CANNON) bonus += 6;
+			}
+		}
+		
+		bonus = Math.min(bonus, 25);
+		
+		return (my_army / (enemy_army + bonus));
+		
+	}
+	
 	private static long shouldAttackFrame = -1;
 	private static boolean shouldAttack = false;
 	public static boolean shouldAttack() {
 		if (shouldAttackFrame != Game.get_frame()) {
 			shouldAttackFrame = Game.get_frame();
 			
-			if (Game.supply() >= 190 || (shouldAttack && Game.supply() >= 150)) {
+			if (all_in_detected() && army_ratio() < 2.0) {
+				shouldAttack = false;
+				return false;
+			}
+			
+			if (Game.supply() >= 190 || (shouldAttack && Game.supply() >= 150 && army_ratio() > 0.8)) {
 				shouldAttack = true;
 				return true;
 			}
-			
-			int bonus = 0;
-			for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (enemy.done()) {
-					if (enemy.type() == Units.TERRAN_PLANETARY_FORTRESS) bonus += 20;
-					if (enemy.type() == Units.TERRAN_BUNKER) bonus += 10;
-					if (enemy.type() == Units.PROTOSS_PHOTON_CANNON) bonus += 6;
-				}
-			}
-			
-			bonus = Math.min(bonus, 25);
-			
 			
 			if ((Game.army_killed() - Game.army_lost()) < -1000 && EnemyModel.enemyBaseCount() == 1) {
 				shouldAttack = false;
@@ -108,24 +121,19 @@ public class Wisdom {
 				return shouldAttack;
 			}
 			
-			if (((GameInfoCache.attacking_army_supply() / (EnemyModel.enemyArmy() + bonus)) > 1.2 && shouldAttack) || ((GameInfoCache.attacking_army_supply() / (EnemyModel.enemyArmy() + bonus)) > 1.6)) {
+			if ((army_ratio() > 1.2 && shouldAttack) || (army_ratio() > 1.6)) {
 				shouldAttack = true;
 				return true;
 			}
 			
-			if (all_in_detected() && GameInfoCache.attacking_army_supply() < (2.4 * EnemyModel.enemyArmy())) {
+			if (EnemyModel.enemyWorkers() < GameInfoCache.count(RaceInterface.get_race_worker()) - 20 && army_ratio() < 2.0) {
 				shouldAttack = false;
 				return false;
 			}
-			if (EnemyModel.enemyWorkers() < GameInfoCache.count(RaceInterface.get_race_worker()) - 20 && Game.army_supply() < EnemyModel.enemyArmy() * 2.4) {
-				shouldAttack = false;
-				return false;
-			}
-			else if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 25 && (Game.army_supply() - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2) > 5) {
-				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.3 * EnemyModel.enemyArmy())) || ((GameInfoCache.attacking_army_supply() > (EnemyModel.enemyArmy())) && (GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < (EnemyModel.enemyWorkers() - 6)));
-			} else {
-				shouldAttack = ahead() || (GameInfoCache.attacking_army_supply() > (1.3 * EnemyModel.enemyArmy() + bonus) && (GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < (EnemyModel.enemyWorkers() - 10)));
-			}
+			
+			shouldAttack = false;
+			return false;
+			
 		}
 		return shouldAttack;
 	}
