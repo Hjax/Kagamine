@@ -42,11 +42,11 @@ public class UnitMovementManager {
 	
 	public static void on_frame() {
 		
-		if (Game.army_supply() >= EnemyModel.enemyArmy() * 1.5) {
-			attack_threshold = 1.1;
+		if (GameInfoCache.attacking_army_supply() >= EnemyModel.enemyArmy() * 1.5) {
+			attack_threshold = 0.9;
 		}
 		
-		if (Game.army_supply() <= EnemyModel.enemyArmy() * 1.1) {
+		if (GameInfoCache.attacking_army_supply() <= EnemyModel.enemyArmy() * 0.9) {
 			attack_threshold = 1.5;
 		}
 		
@@ -138,7 +138,7 @@ public class UnitMovementManager {
 			dist = 45;
 		}
 		for (Base b : BaseManager.bases) {
-			if (b.has_enemy_command_structure() && EnemyBaseDefense.get_defense(b) < Game.army_supply() && EnemyBaseDefense.get_defense(b) < 10 && Scouting.closest_enemy_spawn(b.location).distance(b.location) > dist) {
+			if (b.has_enemy_command_structure() && EnemyBaseDefense.get_defense(b) < GameInfoCache.attacking_army_supply() && EnemyBaseDefense.get_defense(b) < 10 && Scouting.closest_enemy_spawn(b.location).distance(b.location) > dist) {
 				assign_runby(b.location, Math.max(EnemyBaseDefense.get_defense(b) + 2, 6));
 			}
 		}

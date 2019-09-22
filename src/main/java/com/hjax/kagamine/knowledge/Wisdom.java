@@ -95,6 +95,8 @@ public class Wisdom {
 				}
 			}
 			
+			bonus = Math.min(bonus, 25);
+			
 			
 			if ((Game.army_killed() - Game.army_lost()) < -1000 && EnemyModel.enemyBaseCount() == 1) {
 				shouldAttack = false;
@@ -106,7 +108,7 @@ public class Wisdom {
 				return shouldAttack;
 			}
 			
-			if (((Game.army_supply() / (EnemyModel.enemyArmy() + bonus)) > 1.5 && shouldAttack) || ((Game.army_supply() / (EnemyModel.enemyArmy() + bonus)) > 2)) {
+			if (((GameInfoCache.attacking_army_supply() / (EnemyModel.enemyArmy() + bonus)) > 1.2 && shouldAttack) || ((GameInfoCache.attacking_army_supply() / (EnemyModel.enemyArmy() + bonus)) > 1.6)) {
 				shouldAttack = true;
 				return true;
 			}
