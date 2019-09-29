@@ -35,7 +35,7 @@ public class Wisdom {
 		if (EnemyModel.counts.getOrDefault(Units.ZERG_ZERGLING, 0) > 0 && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) {
 			early_cheese = true;
 		}
-		if (Game.get_frame() < 2.5 * 60 * Constants.FPS) {
+		if (Game.get_frame() < 4.0 * 60 * Constants.FPS) {
 			if (early_cheese) {
 				return true;
 			}

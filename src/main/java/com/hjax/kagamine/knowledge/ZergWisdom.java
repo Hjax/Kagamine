@@ -35,6 +35,10 @@ public class ZergWisdom {
 			return false;
 		}
 		
+		if (Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 15) {
+			return true;
+		}
+		
 		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
 			if (GameInfoCache.count(Units.ZERG_BANELING) == 0 && Composition.full_comp().contains(Units.ZERG_BANELING) && GameInfoCache.count_friendly(Units.ZERG_BANELING_NEST) > 0) return true;
 		}

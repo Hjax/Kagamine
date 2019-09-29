@@ -38,7 +38,7 @@ public class UnitMovementManager {
 	public static int unassigned_ground = 0;
 	public static int unassigned_air = 0;
 	
-	public static double attack_threshold = 1.1;
+	public static double attack_threshold = 1.2;
 	
 	public static boolean chase_aggressively = false;
 	
@@ -46,12 +46,12 @@ public class UnitMovementManager {
 		
 		boolean new_chase_aggressively = false;
 		
-		if (GameInfoCache.attacking_army_supply() >= EnemyModel.enemyArmy() * 1.5) {
-			attack_threshold = 1.0;
+		if (GameInfoCache.attacking_army_supply() >= EnemyModel.enemyArmy() * 1.7) {
+			attack_threshold = 1.2;
 		}
 		
-		if (GameInfoCache.attacking_army_supply() <= EnemyModel.enemyArmy() * 1.0) {
-			attack_threshold = 1.5;
+		if (GameInfoCache.attacking_army_supply() <= EnemyModel.enemyArmy() * 1.2) {
+			attack_threshold = 1.7;
 		}
 		
 		defense_point = null;
@@ -82,7 +82,7 @@ public class UnitMovementManager {
 					
 					int engage_distance = Constants.THREAT_DISTANCE;
 					
-					if (chase_aggressively) {
+					if (chase_aggressively && !Wisdom.all_in_detected()) {
 						engage_distance *= 3;
 					}
 					
@@ -132,7 +132,7 @@ public class UnitMovementManager {
 			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			
 			double enemy_strength = ThreatManager.total_supply(new ArrayList<>(enemy_squad));
-			double my_strength = ThreatManager.total_supply(UnitRoleManager.get(UnitRole.ARMY));
+			double my_strength = ThreatManager.total_supply(UnitRoleManager.get(UnitRole.ARMY)) - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2;
 			
 			try {
 				if ((Game.closest_invisible(average).distance(average) > 7 && 

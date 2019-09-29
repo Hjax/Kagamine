@@ -107,10 +107,6 @@ public class Composition {
 			}
 		}
 		
-		for (UnitType unit : units) {
-			counters.get(TechLevel.LAIR).get(unit).put(Units.ZERG_HYDRALISK, 1.0 * Game.get_unit_type_data().get(unit).getFoodRequired().orElse(6.0f) / 2);
-		}
-		
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.ZERG_HYDRALISK, 4.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.TERRAN_LIBERATOR, 3.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BANSHEE).put(Units.ZERG_HYDRALISK, 2.0);
@@ -239,7 +235,7 @@ public class Composition {
 			
 			}
 		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {
-			if (Wisdom.all_in_detected() && Game.army_supply() < 85) {
+			if (Wisdom.all_in_detected() && Game.army_supply() < 85 && GameInfoCache.get_opponent_race() == Race.PROTOSS) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);

@@ -78,7 +78,17 @@ public class ZergBuildExecutor {
 			}
 			
 			// TODO make this less of a hack
-			if ((GameInfoCache.count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || (Build.pull_off_gas && Game.gas() > 200) || ((GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED) || Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) && (GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED)) && Build.pull_off_gas)) {
+			int total_gas = Game.gas();
+			if (GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED) || Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) {
+				total_gas += 100;
+			}
+			if ((GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED))) {
+				total_gas += 75;
+			}
+			if (Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG) {
+				total_gas += 75;
+			}
+			if ((GameInfoCache.count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || (Build.pull_off_gas && total_gas > 175)) {
 				pulled_off_gas = true;
 				for (HjaxUnit drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 					if (drone.ability() == Abilities.HARVEST_GATHER && 

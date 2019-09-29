@@ -1,6 +1,5 @@
 package com.hjax.kagamine.army;
 
-import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.game.Game;

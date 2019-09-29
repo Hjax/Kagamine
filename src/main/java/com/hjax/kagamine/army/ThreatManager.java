@@ -11,6 +11,7 @@ import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.enemymodel.EnemyModel;
+import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
@@ -71,6 +72,16 @@ public class ThreatManager {
 		threat += (Math.max(res[0], 0) / 100) * 0.4;
 		
 		threat -= Math.min(5 * (EnemyModel.enemyBaseCount() - BaseManager.base_count()), 12);
+		
+		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+			if (Game.is_worker(enemy.type())) {
+				for (Base b : BaseManager.bases) {
+					if (b.has_friendly_command_structure() && enemy.distance(b) < 15) {
+						attacking_threat += 1;
+					}
+				}
+			}
+		}
 		
 	}
 	
