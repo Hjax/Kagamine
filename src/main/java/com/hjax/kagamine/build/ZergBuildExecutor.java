@@ -79,16 +79,19 @@ public class ZergBuildExecutor {
 			
 			// TODO make this less of a hack
 			int total_gas = Game.gas();
+			
+			int total_needed = Game.get_upgrade_data().get(Upgrades.OVERLORD_SPEED).getVespeneCost().orElse(0) + Game.get_upgrade_data().get(Upgrades.ZERGLING_MOVEMENT_SPEED).getVespeneCost().orElse(0);
+			
 			if (GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED) || Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) {
-				total_gas += 100;
+				total_gas += Game.get_upgrade_data().get(Upgrades.ZERGLING_MOVEMENT_SPEED).getVespeneCost().orElse(0);
 			}
 			if ((GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED))) {
-				total_gas += 75;
+				total_gas += Game.get_upgrade_data().get(Upgrades.OVERLORD_SPEED).getVespeneCost().orElse(0);
 			}
 			if (Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG) {
-				total_gas += 75;
+				total_gas += Game.get_upgrade_data().get(Upgrades.OVERLORD_SPEED).getVespeneCost().orElse(0);
 			}
-			if ((GameInfoCache.count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || (Build.pull_off_gas && total_gas > 175)) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || (Build.pull_off_gas && total_gas > total_needed)) {
 				pulled_off_gas = true;
 				for (HjaxUnit drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
 					if (drone.ability() == Abilities.HARVEST_GATHER && 
