@@ -82,7 +82,7 @@ public class UnitMovementManager {
 					
 					int engage_distance = Constants.THREAT_DISTANCE;
 					
-					if (chase_aggressively && !Wisdom.all_in_detected()) {
+					if (chase_aggressively && !(Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 30)) {
 						engage_distance *= 3;
 					}
 					
