@@ -31,6 +31,8 @@ public class ZergWisdom {
 
 	public static boolean should_build_army() {
 		
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.worker_count() >= EnemyModel.enemyWorkers() && Game.army_supply() < 30) return true; 
+		
 		if (ZergBuildExecutor.next_army_unit() == Units.INVALID) {
 			return false;
 		}
@@ -65,8 +67,12 @@ public class ZergWisdom {
 		
 		if (Wisdom.all_in_detected()) return BaseManager.base_count();
 		
+		if (GameInfoCache.get_opponent_race() == Race.ZERG) {
+			return Math.min(BaseManager.base_count() + 4, 6);
+		}
+		
 		if (BaseManager.base_count() < 3) {
-			target = BaseManager.base_count() - 1;
+			target = BaseManager.base_count();
 		} else {
 			target = Math.min(BaseManager.base_count() + 5, 10);
 		}
@@ -93,11 +99,11 @@ public class ZergWisdom {
 
 			if (Composition.full_comp().contains(Units.ZERG_QUEEN) && GameInfoCache.count(Units.ZERG_QUEEN) < Composition.comp().getOrDefault(Units.ZERG_QUEEN, 0)) return true;
 			
-			if (should_build_army() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 60) {
+			if (should_build_army() && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 10) {
 				return false;
 			}
 			
-			if ((ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply()) && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 40) return false; 
+			if ((ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply()) && GameInfoCache.count(Units.ZERG_LARVA) > 0 && Game.army_supply() < 15) return false; 
 			if (GameInfoCache.count(RaceInterface.get_race_worker()) < 35 && GameInfoCache.count(Units.ZERG_LARVA) > 0 && GameInfoCache.count(Units.ZERG_QUEEN) < 2 && GameInfoCache.count(RaceInterface.get_race_worker()) > 15) return false;
 
 			return GameInfoCache.count(Units.ZERG_QUEEN) < queen_target() && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) > 0;
@@ -129,10 +135,11 @@ public class ZergWisdom {
 	public static boolean should_expand() {
 		if (Game.minerals() > 800) return true;
 		if (GameInfoCache.in_progress(Units.ZERG_HATCHERY) > 1) return false;
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 10) return false;
 		if ((Wisdom.cannon_rush() || Wisdom.proxy_detected() && BaseManager.base_count() >= EnemyModel.enemyBaseCount())) return false;
 		if (Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() > EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
-		if (BaseManager.base_count() < 3 && GameInfoCache.count(RaceInterface.get_race_worker()) > 23) return true;
+		if (BaseManager.base_count() < 3 && GameInfoCache.count(RaceInterface.get_race_worker()) > 23 && !should_build_army()) return true;
 		//if (EconomyManager.total_minerals() + GameInfoCache.in_progress(Units.ZERG_HATCHERY) * 16 + BaseManager.active_gases() * 3 + 16 < GameInfoCache.count(Units.ZERG_DRONE)) return true;
 		return EconomyManager.free_minerals() <= 6;
 	}

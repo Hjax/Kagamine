@@ -56,10 +56,6 @@ public class Composition {
 			}
 		}
 		
-		counters.get(TechLevel.HATCH).get(Units.PROTOSS_VOIDRAY).put(Units.ZERG_QUEEN, 1.5);
-		counters.get(TechLevel.HATCH).get(Units.PROTOSS_ORACLE).put(Units.ZERG_QUEEN, 1.5);
-		counters.get(TechLevel.HATCH).get(Units.TERRAN_BANSHEE).put(Units.ZERG_QUEEN, 1.8);
-		
 		counters.get(TechLevel.HATCH).get(Units.PROTOSS_SENTRY).put(Units.ZERG_RAVAGER, 0.9);
 		counters.get(TechLevel.HATCH).get(Units.PROTOSS_WARP_PRISM).put(Units.ZERG_RAVAGER, 4.0);
 		
@@ -109,7 +105,6 @@ public class Composition {
 		
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.ZERG_HYDRALISK, 4.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.TERRAN_LIBERATOR, 3.0);
-		counters.get(TechLevel.LAIR).get(Units.TERRAN_BANSHEE).put(Units.ZERG_HYDRALISK, 2.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_HYDRALISK, 4.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_CORRUPTOR, 3.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_LIBERATOR).put(Units.ZERG_CORRUPTOR, 2.0);

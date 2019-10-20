@@ -1,6 +1,7 @@
 package com.hjax.kagamine.knowledge;
 
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Constants;
@@ -32,6 +33,7 @@ public class Wisdom {
 
 	public static boolean all_in_detected() {
 		if (EnemyModel.enemyBaseCount() > 2) return false;
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && EnemyModel.enemyBaseCount() == 1) return true;
 		if (EnemyModel.counts.getOrDefault(Units.ZERG_ZERGLING, 0) > 0 && GameInfoCache.count_friendly(Units.ZERG_SPAWNING_POOL) == 0) {
 			early_cheese = true;
 		}
@@ -105,6 +107,8 @@ public class Wisdom {
 				shouldAttack = false;
 				return false;
 			}
+			
+			if (!Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) return false;
 			
 			if (Game.supply() >= 190 || (shouldAttack && Game.supply() >= 150 && army_ratio() > 0.8)) {
 				shouldAttack = true;

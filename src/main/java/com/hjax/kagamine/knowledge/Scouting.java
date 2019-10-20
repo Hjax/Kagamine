@@ -56,7 +56,7 @@ public class Scouting {
 				}
 			}
 		}
-		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 16) {
+		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 14) {
 			assign_scout();
 		}
 		if (scout == null && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) > 12 && spawns.size() >= 3) {

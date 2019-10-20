@@ -80,17 +80,17 @@ public class ZergBuildExecutor {
 			// TODO make this less of a hack
 			int total_gas = Game.gas();
 			
-			int total_needed = Game.get_upgrade_data().get(Upgrades.OVERLORD_SPEED).getVespeneCost().orElse(0) + Game.get_upgrade_data().get(Upgrades.ZERGLING_MOVEMENT_SPEED).getVespeneCost().orElse(0);
+			int total_needed = Game.get_upgrade_data().get(Upgrades.ZERGLING_MOVEMENT_SPEED).getVespeneCost().orElse(0);
 			
 			if (GameInfoCache.is_researching(Upgrades.ZERGLING_MOVEMENT_SPEED) || Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) {
 				total_gas += Game.get_upgrade_data().get(Upgrades.ZERGLING_MOVEMENT_SPEED).getVespeneCost().orElse(0);
 			}
-			if ((GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED))) {
-				total_gas += Game.get_upgrade_data().get(Upgrades.OVERLORD_SPEED).getVespeneCost().orElse(0);
-			}
-			if (Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG) {
-				total_gas += Game.get_upgrade_data().get(Upgrades.OVERLORD_SPEED).getVespeneCost().orElse(0);
-			}
+//			if ((GameInfoCache.is_researching(Upgrades.OVERLORD_SPEED) || Game.has_upgrade(Upgrades.OVERLORD_SPEED))) {
+//				total_gas += Game.get_upgrade_data().get(Upgrades.OVERLORD_SPEED).getVespeneCost().orElse(0);
+//			}
+//			if (Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG) {
+//				total_gas += Game.get_upgrade_data().get(Upgrades.OVERLORD_SPEED).getVespeneCost().orElse(0);
+//			}
 			if ((GameInfoCache.count(Units.ZERG_DRONE) <= 12 && !Build.pull_off_gas) || (Build.pull_off_gas && total_gas > total_needed)) {
 				pulled_off_gas = true;
 				for (HjaxUnit drone: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_DRONE)) {
@@ -101,7 +101,7 @@ public class ZergBuildExecutor {
 				}
 			}
 			
-			if ((GameInfoCache.count(Units.ZERG_DRONE) > 35 && pulled_off_gas) || !Build.pull_off_gas) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) > 24 && pulled_off_gas) || !Build.pull_off_gas) {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;
 			}
@@ -173,7 +173,7 @@ public class ZergBuildExecutor {
 				}
 			}
 			
-			if (Game.minerals() > 50 && Game.gas() > 50 && GameInfoCache.count_friendly(Units.ZERG_LAIR) > 0 && GameInfoCache.count(Units.ZERG_OVERSEER) + GameInfoCache.count(Units.ZERG_OVERLORD_COCOON) < Math.max(UnitMovementManager.detection_points, 2)) {
+			if (Game.minerals() > 50 && Game.gas() > 50 && GameInfoCache.count_friendly(Units.ZERG_LAIR) > 0 && (GameInfoCache.count(Units.ZERG_OVERSEER) + GameInfoCache.count(Units.ZERG_OVERLORD_COCOON)) < Math.min(Math.max(UnitMovementManager.detection_points, 1), 4)) {
 				for (HjaxUnit ovie: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
 					Game.spend(50, 50);
 					ovie.use_ability(Abilities.MORPH_OVERSEER);
@@ -219,7 +219,7 @@ public class ZergBuildExecutor {
 								break;
 							}
 						}
-					} else if (GameInfoCache.count(Units.ZERG_QUEEN) < BaseManager.base_count()) {
+					} else if (GameInfoCache.count(Units.ZERG_QUEEN) < BaseManager.base_count() || GameInfoCache.in_progress(Units.ZERG_QUEEN) == 0) {
 						Game.purchase(Units.ZERG_QUEEN);
 					}
 				}

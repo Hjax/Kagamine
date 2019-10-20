@@ -121,6 +121,7 @@ class Kagamine extends S2Agent {
 				Game.write_text("Army target: " + ZergWisdom.army_target());
 				Game.write_text("Should make units: " + ZergWisdom.should_build_army());
 				Game.write_text("Should make drones: " + ZergWisdom.should_build_workers());
+				Game.write_text("Should make queens: " + ZergWisdom.should_build_queens());
 				Game.write_text("Should make expand (and defense it): " + ZergWisdom.should_expand());
 				Game.write_text("Queens " + GameInfoCache.count(Units.ZERG_QUEEN) + "/" + ZergWisdom.queen_target());
 				Game.write_text("Tech Level " + TechLevelManager.getTechLevel().toString());
@@ -131,6 +132,10 @@ class Kagamine extends S2Agent {
 				Game.write_text("Chasing: " + UnitMovementManager.chase_aggressively);
 				Game.write_text("Army ratio: " + Wisdom.army_ratio());
 				Game.write_text("Resource difference: " + (Game.army_killed() - Game.army_lost()));
+				
+				Game.write_text("Barracks: " + (EnemyModel.counts.getOrDefault(Units.TERRAN_BARRACKS, 0)));
+				Game.write_text("Facts: " + (EnemyModel.counts.getOrDefault(Units.TERRAN_FACTORY, 0)));
+				Game.write_text("Starports: " + (EnemyModel.counts.getOrDefault(Units.TERRAN_STARPORT, 0)));
 				
 				
 			}

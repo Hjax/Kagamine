@@ -24,7 +24,7 @@ public class TechLevelManager {
 	public static void on_frame() {
 
 		if (getTechLevel() == TechLevel.HATCH && GameInfoCache.count(Units.ZERG_LAIR) == 0) {
-			if (((BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 35) && (!Wisdom.all_in_detected() || Game.army_supply() > 70)) || Game.worker_count() > 60 || Game.army_supply() > 80) {
+			if (BaseManager.base_count() >= 2 && GameInfoCache.count(Units.ZERG_DRONE) > 30 && (Game.gas() > 100 || GameInfoCache.count(Units.ZERG_DRONE) > 45)) {
 				if (Game.can_afford(Units.ZERG_LAIR)) {
 					for (Base b: BaseManager.bases) {
 						if (b.has_friendly_command_structure() && b.command_structure.done() && b.command_structure.idle()) {
