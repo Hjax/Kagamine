@@ -2,6 +2,7 @@ package com.hjax.kagamine.unitcontrollers.zerg;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
+import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.UnitMovementManager;
@@ -37,7 +38,7 @@ public class Queen {
 		boolean inject = false;
 		
 		
-		if (tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) > 3 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) < 2 || Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
+		if (GameInfoCache.get_opponent_race() == Race.ZERG || tumors != 0 || GameInfoCache.count_friendly(Units.ZERG_QUEEN) > 3 || GameInfoCache.count_friendly(Units.ZERG_HATCHERY) < 2 || Wisdom.all_in_detected() || Wisdom.proxy_detected()) {
 			for (Base b : BaseManager.bases) {
 				if (GameInfoCache.count_friendly(Units.ZERG_LARVA) < BaseManager.base_count() * 3) {
 					if (b.has_queen() && b.queen == u && b.has_friendly_command_structure() && b.command_structure.done()) {
