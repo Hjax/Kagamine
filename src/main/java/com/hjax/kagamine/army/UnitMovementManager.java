@@ -24,6 +24,7 @@ import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
+import com.hjax.kagamine.knowledge.ZergWisdom;
 import com.hjax.kagamine.unitcontrollers.zerg.Queen;
 
 public class UnitMovementManager {
@@ -47,11 +48,11 @@ public class UnitMovementManager {
 		boolean new_chase_aggressively = false;
 		
 		if (GameInfoCache.attacking_army_supply() >= EnemyModel.enemyArmy() * 1.7) {
-			attack_threshold = 1.2;
+			attack_threshold = 1.3;
 		}
 		
 		if (GameInfoCache.attacking_army_supply() <= EnemyModel.enemyArmy() * 1.2) {
-			attack_threshold = 1.7;
+			attack_threshold = 1.9;
 		}
 		
 		defense_point = null;
@@ -82,8 +83,14 @@ public class UnitMovementManager {
 					
 					int engage_distance = Constants.THREAT_DISTANCE;
 					
+					if (ZergWisdom.needed_spine_count() > 0) {
+						engage_distance = 10;
+					}
+					
 					if (chase_aggressively && !(Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 30 && EnemyModel.counts.getOrDefault(Units.ZERG_ROACH, 0) == 0)) {
-						engage_distance *= 3;
+						if (ZergWisdom.needed_spine_count() == 0) {
+							engage_distance *= 3;
+						}
 					}
 					
 					if (((b.has_friendly_command_structure() || b.equals(BaseManager.get_next_base())) && 

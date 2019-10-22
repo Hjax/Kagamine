@@ -574,6 +574,7 @@ public class Game {
 	
 	public static boolean hits_ground(UnitType u) {
 		if (u == Units.TERRAN_BUNKER) return true;
+		if (u == Units.ZERG_LURKER_MP || u == Units.ZERG_LURKER_MP_BURROWED) return true;
 		for (Weapon w : get_unit_type_data().get(u).getWeapons()) {
 			if (w.getTargetType() == TargetType.ANY || w.getTargetType() == TargetType.GROUND) {
 				return true;

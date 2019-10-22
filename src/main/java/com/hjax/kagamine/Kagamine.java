@@ -73,6 +73,7 @@ class Kagamine extends S2Agent {
 			
 			if (Game.get_true_frame() % Constants.FRAME_SKIP == 0) {
 				Game.start_frame(observation(), actions(), query(), debug());
+				
 				GameInfoCache.start_frame();
 				UnitRoleManager.on_frame();
 				ResourceTracking.on_frame();
@@ -133,9 +134,7 @@ class Kagamine extends S2Agent {
 				Game.write_text("Army ratio: " + Wisdom.army_ratio());
 				Game.write_text("Resource difference: " + (Game.army_killed() - Game.army_lost()));
 				
-				Game.write_text("Barracks: " + (EnemyModel.counts.getOrDefault(Units.TERRAN_BARRACKS, 0)));
-				Game.write_text("Facts: " + (EnemyModel.counts.getOrDefault(Units.TERRAN_FACTORY, 0)));
-				Game.write_text("Starports: " + (EnemyModel.counts.getOrDefault(Units.TERRAN_STARPORT, 0)));
+				Game.write_text("Needed spines: " + ZergWisdom.needed_spine_count());
 				
 				
 			}

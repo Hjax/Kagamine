@@ -91,41 +91,43 @@ public class ArmyManager {
 			}
 		}
 
-		if (Game.completed_army_supply() < (ThreatManager.attacking_supply()) && ThreatManager.attacking_supply() < 15) {
-			if (!Wisdom.worker_rush()) {
-				if (GameInfoCache.get_opponent_race() == Race.ZERG || (!Wisdom.cannon_rush() && !Wisdom.proxy_detected())) {
-					enemy_loop: for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-						for (Base b : BaseManager.bases) {
-							if (b.has_friendly_command_structure() && enemy.distance(b.location) < 12) {
-								int attackers = 0;
-								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
-									if (ally.ability() == Abilities.ATTACK || ally.ability() == Abilities.ATTACK_ATTACK) {
-										
-										if (ally.orders().get(0).getTargetedUnitTag().orElse(Tag.of((long) 0)).equals(enemy.tag())) {
-											attackers++;
+		if (GameInfoCache.count(Units.ZERG_SPINE_CRAWLER) == 0) {
+			if (Game.completed_army_supply() < (ThreatManager.attacking_supply()) && ThreatManager.attacking_supply() < 15) {
+				if (!Wisdom.worker_rush()) {
+					if (GameInfoCache.get_opponent_race() == Race.ZERG || (!Wisdom.cannon_rush() && !Wisdom.proxy_detected())) {
+						enemy_loop: for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+							for (Base b : BaseManager.bases) {
+								if (b.has_friendly_command_structure() && enemy.distance(b.location) < 12) {
+									int attackers = 0;
+									for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
+										if (ally.ability() == Abilities.ATTACK || ally.ability() == Abilities.ATTACK_ATTACK) {
+
+											if (ally.orders().get(0).getTargetedUnitTag().orElse(Tag.of((long) 0)).equals(enemy.tag())) {
+												attackers++;
+											}
 										}
 									}
-								}
-								if (Game.is_structure(enemy.type()) && attackers >= 4) continue enemy_loop;
-								else if (attackers >= 2) continue enemy_loop;
-								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
-									if (Worker.can_build(ally) && ally.health() > 15) {
-										ally.attack(enemy);
-										continue enemy_loop;
+									if (Game.is_structure(enemy.type()) && attackers >= 4) continue enemy_loop;
+									else if (attackers >= 2) continue enemy_loop;
+									for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
+										if (Worker.can_build(ally) && ally.health() > 15) {
+											ally.attack(enemy);
+											continue enemy_loop;
+										}
 									}
 								}
 							}
 						}
 					}
-				}
-			} else {
-				for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-					if (enemy.is_worker()) {
-						if (enemy.distance(BaseManager.main_base().location) <= 20) {
-							for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
-								if (ally.health() > 10) {
-									if (Worker.can_build(ally)) {
-										ally.attack(enemy.location());
+				} else {
+					for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+						if (enemy.is_worker()) {
+							if (enemy.distance(BaseManager.main_base().location) <= 20) {
+								for (HjaxUnit ally: GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
+									if (ally.health() > 10) {
+										if (Worker.can_build(ally)) {
+											ally.attack(enemy.location());
+										}
 									}
 								}
 							}
