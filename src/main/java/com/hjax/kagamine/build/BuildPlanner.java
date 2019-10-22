@@ -18,7 +18,7 @@ import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.knowledge.Wisdom;
 
 public class BuildPlanner {
-	private static boolean worker_rush = false;
+	public static boolean worker_rush = false;
 	public static boolean is_all_in;
 	public static void on_frame() {
 		if (Wisdom.worker_rush() && !worker_rush) {

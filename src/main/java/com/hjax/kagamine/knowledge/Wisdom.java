@@ -108,6 +108,11 @@ public class Wisdom {
 				return false;
 			}
 			
+			if (army_ratio() > 5.0) {
+				shouldAttack = true;
+				return true;
+			}
+			
 			if (!Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) return false;
 			
 			if (Game.supply() >= 190 || (shouldAttack && Game.supply() >= 150 && army_ratio() > 0.8)) {
@@ -144,13 +149,16 @@ public class Wisdom {
 	
 	public static boolean worker_rush() {
 		int total = 0;
-		outer: for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (Game.is_worker(enemy.type())) {
-				for (Base b: BaseManager.bases) {
-					if (b.has_friendly_command_structure() && b.command_structure.done()) {
-						if (enemy.distance(b.location) < 15) {
-							total++;
-							continue outer;
+		
+		if (Game.army_supply() < 10 && BaseManager.base_count() == 1) {
+			outer: for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
+				if (Game.is_worker(enemy.type())) {
+					for (Base b: BaseManager.bases) {
+						if (b.has_friendly_command_structure() && b.command_structure.done()) {
+							if (enemy.distance(b.location) < 30) {
+								total++;
+								continue outer;
+							}
 						}
 					}
 				}

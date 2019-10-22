@@ -8,6 +8,7 @@ import com.github.ocraft.s2client.protocol.game.Race;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.build.ZergBuildExecutor;
+import com.hjax.kagamine.build.BuildPlanner;
 import com.hjax.kagamine.build.Composition;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
@@ -32,6 +33,10 @@ public class ZergWisdom {
 	public static boolean should_build_army() {
 		
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.worker_count() >= EnemyModel.enemyWorkers() && Game.army_supply() < 30) return true; 
+		
+		if (BuildPlanner.worker_rush && Game.army_supply() < 15) {
+			return true;
+		}
 		
 		if (ZergBuildExecutor.next_army_unit() == Units.INVALID) {
 			return false;

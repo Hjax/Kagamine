@@ -55,7 +55,7 @@ public class ZergBuildExecutor {
 				Game.purchase(Units.ZERG_DRONE);
 			}
 			
-			if (Wisdom.should_build_army() && EnemyModel.enemyArmy() > Game.army_supply() * 1.5) {
+			if (Wisdom.should_build_army() && (EnemyModel.enemyArmy() > Game.army_supply() * 1.5 || Wisdom.worker_rush())) {
 				if (Larva.has_larva() && Game.can_afford(next_army_unit())) {
 					if (next_army_unit() != Units.INVALID) {
 						Game.purchase(next_army_unit());
@@ -168,7 +168,10 @@ public class ZergBuildExecutor {
 				}
 			}
 
-			UpgradeManager.on_frame();
+			// TODO replace this with better logic
+			if (!Wisdom.worker_rush()) {
+				UpgradeManager.on_frame();
+			}
 
 			for (UnitType u: Composition.full_comp()) {
 				if (!pulled_off_gas && ((GameInfoCache.count(Units.ZERG_DRONE) > 25 || Wisdom.proxy_detected() || Wisdom.worker_rush() || Wisdom.cannon_rush() || (Wisdom.all_in_detected() && GameInfoCache.count(Units.ZERG_DRONE) > 25)) || (u == Units.ZERG_BANELING && GameInfoCache.get_opponent_race() == Race.ZERG && GameInfoCache.count(Units.ZERG_DRONE) >= 16))) {
