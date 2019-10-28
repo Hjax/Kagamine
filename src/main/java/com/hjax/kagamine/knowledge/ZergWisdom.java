@@ -52,14 +52,10 @@ public class ZergWisdom {
 		if (Wisdom.ahead() && Wisdom.shouldAttack()) return true;
 
 		
-		if ((Game.army_supply() - GameInfoCache.count(Units.ZERG_QUEEN) * 2 + Math.min(GameInfoCache.count(Units.ZERG_QUEEN), 3) * 2) < army_target() || (ThreatManager.attacking_supply() > GameInfoCache.attacking_army_supply())) {
+		if (Game.army_supply() - GameInfoCache.count(Units.ZERG_QUEEN) < army_target() || (ThreatManager.attacking_supply() > GameInfoCache.attacking_army_supply())) {
 			if (ZergBuildExecutor.next_army_unit() != Units.INVALID) {
 				return true;
 			}
-		}
-		
-		if (GameInfoCache.attacking_army_supply() * Math.max(EnemyModel.enemyBaseCount(), 1) < GameInfoCache.count(RaceInterface.get_race_worker()) && GameInfoCache.count(RaceInterface.get_race_worker()) > (10 + 20 * Math.max(EnemyModel.enemyBaseCount(), 1))) {
-			return true;
 		}
 		
 		if (Wisdom.all_in_detected() && GameInfoCache.count(RaceInterface.get_race_worker()) > 25 * EnemyModel.enemyBaseCount() && Game.army_supply() < GameInfoCache.count(RaceInterface.get_race_worker()) + 15 * EnemyModel.enemyBaseCount() && GameInfoCache.count(RaceInterface.get_race_worker()) > 30) return true;
@@ -84,7 +80,12 @@ public class ZergWisdom {
 		if (Game.minerals() > 400) {
 			target += 1;
 		}
-		if (Game.supply() > 120) target = Math.min(BaseManager.base_count() + 2, 7);
+		
+		if (Game.army_supply() < 60 && EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) >= 2) {
+			target += 4;
+		}
+		
+		if (Game.supply() > 120) target = Math.min(BaseManager.base_count() + 2, 4);
 		if (Wisdom.proxy_detected()) {
 			target = 1;
 			if (Game.minerals() > 200) {
@@ -176,7 +177,7 @@ public class ZergWisdom {
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Wisdom.all_in_detected() && BaseManager.base_count() < 4 && BaseManager.base_count() >= EnemyModel.enemyBaseCount() && EconomyManager.total_minerals() >= EnemyModel.enemyBaseCount() * 8) return false;
 		if (BaseManager.base_count() < 3 && GameInfoCache.count(RaceInterface.get_race_worker()) > 23 && !should_build_army()) return true;
 		//if (EconomyManager.total_minerals() + GameInfoCache.in_progress(Units.ZERG_HATCHERY) * 16 + BaseManager.active_gases() * 3 + 16 < GameInfoCache.count(Units.ZERG_DRONE)) return true;
-		return EconomyManager.free_minerals() <= 6;
+		return EconomyManager.free_minerals() <= 9;
 	}
 
 }

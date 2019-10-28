@@ -22,7 +22,7 @@ public class Queen {
 		if (u.energy() > 50) {
 			for (HjaxUnit a: GameInfoCache.get_units(Alliance.SELF)) {
 				if (a.distance(u) <= 7) {
-					if (a.health_max() - a.health() >= 125) {
+					if (a.health_max() - a.health() >= 75) {
 						u.use_ability(Abilities.EFFECT_TRANSFUSION, a);
 					}
 				}

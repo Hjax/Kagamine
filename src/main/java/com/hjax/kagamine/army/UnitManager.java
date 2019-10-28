@@ -8,6 +8,7 @@ import com.hjax.kagamine.game.HjaxUnit;
 import com.hjax.kagamine.unitcontrollers.*;
 import com.hjax.kagamine.unitcontrollers.protoss.Nexus;
 import com.hjax.kagamine.unitcontrollers.protoss.Stalker;
+import com.hjax.kagamine.unitcontrollers.terran.Battlecruiser;
 import com.hjax.kagamine.unitcontrollers.zerg.*;
 
 public class UnitManager {
@@ -47,6 +48,8 @@ public class UnitManager {
 				Stalker.on_frame(u);
 			} else if (u.type() == Units.PROTOSS_NEXUS) {
 				Nexus.on_frame(u);
+			} else if (u.type() == Units.TERRAN_BATTLECRUISER) {
+				Battlecruiser.on_frame(u);
 			} else if (!Game.is_structure(u.type())) {
 				GenericUnit.on_frame(u, true);
 			}

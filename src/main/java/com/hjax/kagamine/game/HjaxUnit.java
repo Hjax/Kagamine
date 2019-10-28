@@ -232,6 +232,10 @@ public class HjaxUnit {
 		return get_unit().getBuffs().contains(Buffs.CHRONOBOOST_ENERGY_COST);
 	}
 	
+	public boolean is_neuraled() {
+		return get_unit().getBuffs().contains(Buffs.NEURAL_PARASITE);
+	}
+	
 	public boolean is_burrowed() {
 		return get_unit().getBurrowed().orElse(false);
 	}

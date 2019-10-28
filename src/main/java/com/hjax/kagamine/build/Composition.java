@@ -43,7 +43,7 @@ public class Composition {
 		}
 		
 		limits.put(Units.ZERG_VIPER, 2);
-		limits.put(Units.ZERG_INFESTOR, 10);
+		limits.put(Units.ZERG_INFESTOR, 6);
 		limits.put(Units.ZERG_BROODLORD, 10);
 		limits.put(Units.ZERG_BANELING, 30);
 		limits.put(Units.ZERG_SWARM_HOST_MP, 5);
@@ -74,6 +74,8 @@ public class Composition {
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_CARRIER).put(Units.ZERG_INFESTOR, 1.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_MOTHERSHIP).put(Units.ZERG_INFESTOR, 1.0);
 		
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_INFESTOR, 1.0);
+		
 		counters.get(TechLevel.HIVE).get(Units.PROTOSS_CARRIER).put(Units.ZERG_VIPER, 0.5);
 		
 		counters.get(TechLevel.HIVE).get(Units.TERRAN_MARINE).put(Units.ZERG_INFESTOR, 0.15);
@@ -99,8 +101,8 @@ public class Composition {
 		
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.ZERG_HYDRALISK, 4.0);
 		counters.get(TechLevel.LAIR).get(Units.PROTOSS_HIGH_TEMPLAR).put(Units.TERRAN_LIBERATOR, 3.0);
-		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_HYDRALISK, 4.0);
-		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_CORRUPTOR, 3.0);
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_HYDRALISK, 5.0);
+		counters.get(TechLevel.LAIR).get(Units.TERRAN_BATTLECRUISER).put(Units.ZERG_CORRUPTOR, 4.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_LIBERATOR).put(Units.ZERG_CORRUPTOR, 2.0);
 		counters.get(TechLevel.LAIR).get(Units.TERRAN_LIBERATOR_AG).put(Units.ZERG_CORRUPTOR, 2.0);
 		
@@ -132,6 +134,7 @@ public class Composition {
 							if (counters.get(tech).containsKey(unit)) {
 								for (UnitType possible_counter : counters.get(tech).get(unit).keySet()) {
 									if (possible_counter == Units.ZERG_CORRUPTOR && Game.army_supply() < 40) continue;
+									if (possible_counter == Units.ZERG_INFESTOR && Game.supply() < 140) continue;
 									if (comp.getOrDefault(possible_counter, 0) >= limits.get(possible_counter)) continue;
 									
 									if (best == Units.INVALID) {

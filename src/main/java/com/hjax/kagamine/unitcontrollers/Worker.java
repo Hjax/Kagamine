@@ -34,6 +34,14 @@ public class Worker {
 				}
 			}
 		}
+		
+		if (threat > 0 && !u.is_burrowed() && u.health() <= 26) {
+			if (Game.has_upgrade(Upgrades.BURROW) && u.type() == Units.ZERG_DRONE) {
+				u.use_ability(Abilities.BURROW_DOWN);
+				return;
+			}
+		}
+		
 		if (threat > 5 && !u.is_burrowed()) {
 			if (Game.has_upgrade(Upgrades.BURROW) && u.type() == Units.ZERG_DRONE) {
 				u.use_ability(Abilities.BURROW_DOWN);

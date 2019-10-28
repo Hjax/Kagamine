@@ -1,12 +1,9 @@
 package com.hjax.kagamine.unitcontrollers.zerg;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
@@ -14,10 +11,8 @@ import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Constants;
-import com.hjax.kagamine.Utilities;
-import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.ArmyManager;
-import com.hjax.kagamine.army.EnemySquadManager;
+import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
@@ -51,13 +46,22 @@ public class Infestor {
 		}
 		for (Point2d p : to_remove) fungal_frames.remove(p);
 		
+		if (u.energy() <= 90) {
+			if (u.distance(BaseManager.get_forward_base().location) > 10) {
+				u.move(BaseManager.get_forward_base().location);
+				return;
+			}
+		}
+		
 		if (Game.has_upgrade(Upgrades.NEURAL_PARASITE) && u.energy() > 100) {
 			for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
 				// TODO dont hardcode this
-				if (neural_targets.contains(enemy.type())) {
-					if (enemy.distance(u) < Game.get_ability_data().get(Abilities.EFFECT_NEURAL_PARASITE).getCastRange().orElse(0.0f) + 3) {
-						u.use_ability(Abilities.EFFECT_NEURAL_PARASITE, enemy);
-						return;
+				if (!enemy.is_neuraled()) {
+					if (neural_targets.contains(enemy.type())) {
+						if (enemy.distance(u) < Game.get_ability_data().get(Abilities.EFFECT_NEURAL_PARASITE).getCastRange().orElse(0.0f) + 5) {
+							u.use_ability(Abilities.EFFECT_NEURAL_PARASITE, enemy);
+							return;
+						}
 					}
 				}
 			}
@@ -89,35 +93,6 @@ public class Infestor {
 				fungal_frames.put(best_target.location(), Game.get_frame());
 			}
 			u.use_ability(Abilities.EFFECT_FUNGAL_GROWTH, best_target.location());
-		}
-		
-
-		if (u.energy() > 25) {
-			int ally_count = 0;
-			boolean pf = false;
-			List<HjaxUnit> enemies = new ArrayList<>();
-			for (HjaxUnit enemy : GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (enemy.distance(u) < 9) {
-					enemies.add(enemy);
-					if (enemy.type() == Units.TERRAN_PLANETARY_FORTRESS) pf = true;
-				}
-			}
-			for (HjaxUnit ally : GameInfoCache.get_units(Alliance.SELF)) {
-				if (Game.is_combat(ally.type()) && ally.type() != Units.ZERG_INFESTOR) {
-					if (ally.distance(u) < 12) {
-						ally_count++;
-					}
-				}
-			}
-			
-			if (enemies.size() > ally_count * 1.2 || enemies.size() > 20 || pf) {
-				for (double i = 0; i < u.energy() / 25; i++) {
-					u.use_ability(Abilities.EFFECT_INFESTED_TERRANS, 
-							Vector2d.of(u.location()).add(
-									Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(EnemySquadManager.average_point(enemies))).scale(5)).toPoint2d());
-
-				}
-			}
 		}
 		
 		if (ArmyManager.army_center.distance(Point2d.of(0, 0)) > 1) {

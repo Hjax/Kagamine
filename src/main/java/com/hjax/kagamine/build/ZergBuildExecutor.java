@@ -108,7 +108,7 @@ public class ZergBuildExecutor {
 				}
 			}
 			
-			if ((GameInfoCache.count(Units.ZERG_DRONE) > 24 && pulled_off_gas) || !Build.pull_off_gas) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) >= 24 && pulled_off_gas) || !Build.pull_off_gas) {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;
 			}
@@ -160,7 +160,7 @@ public class ZergBuildExecutor {
 				}
 			}
 			
-			if (Game.minerals() > 50 && Game.gas() > 50 && GameInfoCache.count_friendly(Units.ZERG_LAIR) > 0 && (GameInfoCache.count(Units.ZERG_OVERSEER) + GameInfoCache.count(Units.ZERG_OVERLORD_COCOON)) < Math.min(Math.max(UnitMovementManager.detection_points, 1), 4)) {
+			if (Game.minerals() > 50 && Game.gas() > 50 && GameInfoCache.count_friendly(Units.ZERG_LAIR) + GameInfoCache.count_friendly(Units.ZERG_HIVE) > 0 && (GameInfoCache.count(Units.ZERG_OVERSEER) + GameInfoCache.count(Units.ZERG_OVERLORD_COCOON)) < Math.min(Math.max(UnitMovementManager.detection_points, 1), 4)) {
 				for (HjaxUnit ovie: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERLORD)) {
 					Game.spend(50, 50);
 					ovie.use_ability(Abilities.MORPH_OVERSEER);
@@ -201,19 +201,23 @@ public class ZergBuildExecutor {
 
 			if (ZergWisdom.should_build_queens()) {
 				if (Game.supply_cap() - Game.supply() >= 2) {
-					if (Game.can_afford(Units.ZERG_QUEEN)) {
-						for (HjaxUnit u: GameInfoCache.get_units(Alliance.SELF)) {
-							if (u.is_command() && u.done() && u.idle()) {
+					for (HjaxUnit u: GameInfoCache.get_units(Alliance.SELF)) {
+						if (u.is_command() && u.done() && u.idle()) {
+							if (Game.can_afford(Units.ZERG_QUEEN)) {
 								Game.purchase(Units.ZERG_QUEEN);
 								u.use_ability(Abilities.TRAIN_QUEEN);
 								break;
 							}
+							else if (GameInfoCache.count(Units.ZERG_QUEEN) < BaseManager.base_count() || 
+									GameInfoCache.in_progress(Units.ZERG_QUEEN) == 0 || 
+									(EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) >= 2 && GameInfoCache.count(Units.ZERG_DRONE) >= 35)) {
+								Game.purchase(Units.ZERG_QUEEN);
+							}
 						}
-					} else if (GameInfoCache.count(Units.ZERG_QUEEN) < BaseManager.base_count() || GameInfoCache.in_progress(Units.ZERG_QUEEN) == 0) {
-						Game.purchase(Units.ZERG_QUEEN);
 					}
 				}
 			}
+
 
 			if ((ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply()) || Wisdom.cannon_rush() || Wisdom.proxy_detected() || GameInfoCache.attacking_army_supply() > 20) {
 				if (GameInfoCache.count_friendly(Units.ZERG_ROACH) > 0 && Composition.full_comp().contains(Units.ZERG_RAVAGER)) {

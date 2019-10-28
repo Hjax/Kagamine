@@ -75,7 +75,13 @@ public class EconomyManager {
 		int result = 0;
 		for (Base b: BaseManager.bases) {
 			if (b.has_friendly_command_structure())  {
-				result += Math.max(b.minerals.size() * 2 - b.command_structure.assigned_workers(), 0);
+				int total_minerals = 0;
+				for (HjaxUnit mineral : b.minerals) {
+					if (mineral.minerals() > 150) {
+						total_minerals++;
+					}
+				}
+				result += total_minerals * 2 - b.command_structure.assigned_workers();
 			}
 		}
 		return result;

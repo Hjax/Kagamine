@@ -54,17 +54,17 @@ public class ThreatManager {
 			if (only_medivacs) supply *= 10;
 			
 			if (closest.has_friendly_command_structure()) {
-				threat += supply * 2;
+				threat += supply * 1.3;
 				attacking_threat += supply;
 			} else if (closest.has_enemy_command_structure()) {
 				if (GameInfoCache.get_opponent_race() == Race.ZERG) {
-					threat += supply * 1.2;
+					threat += supply * 1.3;
 				} else {
-					threat += supply * 0.7;
+					threat += supply * 0.8;
 				}
 				
 			} else {
-				threat += Math.max(supply * (1 - (BaseManager.main_base().location.distance(center) / BaseManager.main_base().location.distance(Scouting.closest_enemy_spawn()))) * 1.8, supply * 0.7);
+				threat += supply;
 			}
 		}
 		

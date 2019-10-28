@@ -218,6 +218,7 @@ public class UnitMovementManager {
 			if (current == null) current = closest_free(average, true);
 			if (current == null) break;
 			assigned_supply += Game.supply(current.type()) * (current.health() / current.health_max());
+			if (current.type() == Units.ZERG_QUEEN) assigned_supply -= 1;
 			assigned.add(current);
 		}
 		assigned_supply = 0;
@@ -225,6 +226,7 @@ public class UnitMovementManager {
 			HjaxUnit current = closest_free(average, true);
 			if (current == null) break;
 			assigned_supply += Game.supply(current.type()) * (current.health() / current.health_max());
+			if (current.type() == Units.ZERG_QUEEN) assigned_supply -= 1;
 			assigned.add(current);
 		}
 		if (needs_detection) {
