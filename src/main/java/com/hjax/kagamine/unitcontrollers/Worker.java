@@ -20,6 +20,7 @@ public class Worker {
 			EconomyManager.assign_worker(u);
 		}
 		int threat = 0;
+		int burrow_threat = 0;
 		boolean nearby_spore = false;
 		for (HjaxUnit spore: GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
 			if (spore.distance(u) < 6) {
@@ -28,14 +29,15 @@ public class Worker {
 		}
 		
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
-			if (enemy.is_combat() && (!enemy.flying() || !nearby_spore)) {
-				if (enemy.distance(u.location()) < 10) {
+			if (enemy.distance(u.location()) < 10) {
+				if (enemy.is_combat() && (!enemy.flying() || !nearby_spore)) {
 					threat += Game.get_unit_type_data().get(enemy.type()).getFoodRequired().orElse(0f);
 				}
+				burrow_threat += Game.get_unit_type_data().get(enemy.type()).getFoodRequired().orElse(0f);;
 			}
 		}
 		
-		if (threat > 0 && !u.is_burrowed() && u.health() <= 26) {
+		if (burrow_threat > 0 && !u.is_burrowed() && u.health() <= 26) {
 			if (Game.has_upgrade(Upgrades.BURROW) && u.type() == Units.ZERG_DRONE) {
 				u.use_ability(Abilities.BURROW_DOWN);
 				return;

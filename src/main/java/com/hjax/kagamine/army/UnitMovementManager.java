@@ -89,7 +89,7 @@ public class UnitMovementManager {
 					
 					if (chase_aggressively && !(Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 30 && EnemyModel.counts.getOrDefault(Units.ZERG_ROACH, 0) == 0)) {
 						if (ZergWisdom.needed_spine_count() == 0) {
-							engage_distance *= 3;
+							engage_distance *= 2;
 						}
 					}
 					
@@ -184,6 +184,8 @@ public class UnitMovementManager {
 				assign_runby(best.location(), 50);
 			}
 		}
+		
+		
 	}
 
 	

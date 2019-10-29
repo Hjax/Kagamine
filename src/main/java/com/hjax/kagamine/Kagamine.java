@@ -50,7 +50,7 @@ class Kagamine extends S2Agent {
 		BaseManager.start_game();
 		BuildPlanner.decide_build();
 		UpgradeManager.start_game();
-		Chat.sendMessage("Hey I'm Kagamine! Good luck and have fun :)");
+		Chat.sendMessage("Hey I'm Kagamine! But now that we know each other a bit better you can call me Rin");
 
 		try {
 			InputStream is = this.getClass().getResourceAsStream("commit.txt");
@@ -115,7 +115,7 @@ class Kagamine extends S2Agent {
 				Game.write_text("Enemy Bases: " + EnemyModel.enemyBaseCount());
 				Game.write_text("Enemy resources : " + resources[0] + " " + resources[1]);
 				
-				Game.write_text("My army: " + GameInfoCache.attacking_army_supply());
+				Game.write_text("My army: " + (Game.army_supply() - GameInfoCache.count(Units.ZERG_QUEEN)));
 				Game.write_text("Ahead: " + Wisdom.ahead());
 				Game.write_text("Should Attack: " + Wisdom.shouldAttack());
 				Game.write_text("Next Army Unit: " + ZergBuildExecutor.next_army_unit());

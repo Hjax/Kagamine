@@ -133,7 +133,7 @@ public class Composition {
 						if (tech.ordinal() <= TechLevelManager.getTechLevel().ordinal()) {
 							if (counters.get(tech).containsKey(unit)) {
 								for (UnitType possible_counter : counters.get(tech).get(unit).keySet()) {
-									if (possible_counter == Units.ZERG_CORRUPTOR && Game.army_supply() < 40) continue;
+									if (possible_counter == Units.ZERG_CORRUPTOR && Game.army_supply() < 30) continue;
 									if (possible_counter == Units.ZERG_INFESTOR && Game.supply() < 140) continue;
 									if (comp.getOrDefault(possible_counter, 0) >= limits.get(possible_counter)) continue;
 									
@@ -161,7 +161,7 @@ public class Composition {
 					
 					if (best != Units.INVALID) {
 						
-						double num_add = EnemyModel.counts.getOrDefault(unit, 0) * counters.get(best_tech).get(unit).get(best) * 2;
+						double num_add = EnemyModel.counts.getOrDefault(unit, 0) * counters.get(best_tech).get(unit).get(best) * 1.5;
 						if (num_add + comp.getOrDefault(best, 0) > limits.get(best)) {
 							num_add = limits.get(best) - comp.getOrDefault(best, 0);
 						}
@@ -230,8 +230,11 @@ public class Composition {
 			
 			}
 		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {
-			if (Wisdom.all_in_detected() && Game.army_supply() < 85 && GameInfoCache.get_opponent_race() == Race.PROTOSS) {
+			if (Wisdom.all_in_detected() && Game.army_supply() < 85 && GameInfoCache.get_opponent_race() == Race.PROTOSS) {	
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
+			}
+			if (Game.worker_count() < 85 && GameInfoCache.count(Units.ZERG_MUTALISK) < 10 && EnemyModel.counts.getOrDefault(Units.TERRAN_FACTORY, 0) + EnemyModel.counts.getOrDefault(Units.TERRAN_STARPORT, 0) > EnemyModel.counts.getOrDefault(Units.TERRAN_BARRACKS, 0)) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 		} else {

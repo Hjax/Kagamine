@@ -210,7 +210,7 @@ public class ZergBuildExecutor {
 							}
 							else if (GameInfoCache.count(Units.ZERG_QUEEN) < BaseManager.base_count() || 
 									GameInfoCache.in_progress(Units.ZERG_QUEEN) == 0 || 
-									(EnemyModel.counts.getOrDefault(Units.TERRAN_BANSHEE, 0) >= 2 && GameInfoCache.count(Units.ZERG_DRONE) >= 35)) {
+									(GameInfoCache.count(Units.ZERG_QUEEN) < 4 && Game.worker_count() > 40)) {
 								Game.purchase(Units.ZERG_QUEEN);
 							}
 						}
