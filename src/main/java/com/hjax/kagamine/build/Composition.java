@@ -118,6 +118,8 @@ public class Composition {
 			return comp;
 		}
 		
+		if (Game.army_supply() < 60) return comp;
+		
 		Map<UnitType, Double> enemy_units = new HashMap<>();
 		
 		for (UnitType u : EnemyModel.counts.keySet()) {
@@ -212,7 +214,7 @@ public class Composition {
 		}
 		
 		if (TechLevelManager.getTechLevel() == TechLevel.HATCH) {
-			if (GameInfoCache.count(Units.ZERG_DRONE) < 35) {
+			if (GameInfoCache.count(Units.ZERG_DRONE) < 40) {
 				return Arrays.asList(Units.ZERG_ZERGLING);
 			}
 			if (Wisdom.all_in_detected()) {
@@ -230,13 +232,13 @@ public class Composition {
 			
 			}
 		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {
-			if (Wisdom.all_in_detected() && Game.army_supply() < 85 && GameInfoCache.get_opponent_race() == Race.PROTOSS) {	
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
-			}
 			if (Game.worker_count() < 85 && GameInfoCache.count(Units.ZERG_MUTALISK) < 10 && EnemyModel.counts.getOrDefault(Units.TERRAN_FACTORY, 0) + EnemyModel.counts.getOrDefault(Units.TERRAN_STARPORT, 0) > EnemyModel.counts.getOrDefault(Units.TERRAN_BARRACKS, 0)) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 			}
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+			if (GameInfoCache.get_opponent_race() == Race.TERRAN) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+			}
+			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 		} else {
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 		}

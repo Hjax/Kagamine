@@ -40,7 +40,8 @@ public class TechLevelManager {
 		if ((GameInfoCache.count(Units.ZERG_HIVE) > 0) || 
 		   (getTechLevel().ordinal() >= TechLevel.LAIR.ordinal() && (EnemyModel.counts.getOrDefault(Units.PROTOSS_ROBOTICS_BAY, 0) > 0 || 
 																	 EnemyModel.counts.getOrDefault(Units.PROTOSS_FLEET_BEACON, 0) > 0 || 													 
-																	 EnemyModel.counts.getOrDefault(Units.TERRAN_FUSION_CORE, 0) > 0))) {
+																	 EnemyModel.counts.getOrDefault(Units.TERRAN_FUSION_CORE, 0) > 0) &&
+		   															 Game.worker_count() > 50)) {
 			if (GameInfoCache.count(Units.ZERG_SPIRE) == 0) {
 				if (Game.can_afford(Units.ZERG_SPIRE)) {
 					BaseManager.build(Units.ZERG_SPIRE);

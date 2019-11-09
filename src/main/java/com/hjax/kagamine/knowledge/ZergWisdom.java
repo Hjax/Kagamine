@@ -32,7 +32,7 @@ public class ZergWisdom {
 
 	public static boolean should_build_army() {
 		
-		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.worker_count() >= EnemyModel.enemyWorkers() && Game.army_supply() < 30) return true; 
+		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.worker_count() >= EnemyModel.enemyWorkers() && Game.army_supply() < 20) return true; 
 		
 		if (BuildPlanner.worker_rush && Game.army_supply() < 15) {
 			return true;
@@ -169,7 +169,7 @@ public class ZergWisdom {
 		return (GameInfoCache.count(RaceInterface.get_race_worker()) < Wisdom.worker_cap() && GameInfoCache.count_friendly(RaceInterface.get_race_worker()) < minerals);
 	}
 	public static boolean should_expand() {
-		if (Game.minerals() > 800) return true;
+		if (Game.minerals() > 800 && GameInfoCache.in_progress(Units.ZERG_HATCHERY) < 3) return true;
 		if (GameInfoCache.in_progress(Units.ZERG_HATCHERY) > 1) return false;
 		if (GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 10) return false;
 		if ((Wisdom.cannon_rush() || Wisdom.proxy_detected() && BaseManager.base_count() >= EnemyModel.enemyBaseCount())) return false;
