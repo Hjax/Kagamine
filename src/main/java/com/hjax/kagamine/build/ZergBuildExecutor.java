@@ -108,7 +108,7 @@ public class ZergBuildExecutor {
 				}
 			}
 			
-			if ((GameInfoCache.count(Units.ZERG_DRONE) >= 24 && pulled_off_gas) || !Build.pull_off_gas) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) >= 28 && pulled_off_gas) || !Build.pull_off_gas) {
 				pulled_off_gas = false;
 				Build.pull_off_gas = false;
 			}

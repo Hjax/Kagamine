@@ -118,7 +118,7 @@ public class Composition {
 			return comp;
 		}
 		
-		if (Game.army_supply() < 60) return comp;
+		if (Game.army_supply() < 60 && EnemyModel.counts.getOrDefault(Units.PROTOSS_CARRIER, 0) + EnemyModel.counts.getOrDefault(Units.PROTOSS_TEMPEST, 0) == 0) return comp;
 		
 		Map<UnitType, Double> enemy_units = new HashMap<>();
 		
@@ -137,6 +137,7 @@ public class Composition {
 								for (UnitType possible_counter : counters.get(tech).get(unit).keySet()) {
 									if (possible_counter == Units.ZERG_CORRUPTOR && Game.army_supply() < 30) continue;
 									if (possible_counter == Units.ZERG_INFESTOR && Game.supply() < 140) continue;
+									if (possible_counter == Units.ZERG_LURKER_MP && EnemyModel.counts.getOrDefault(Units.PROTOSS_CARRIER, 0) + EnemyModel.counts.getOrDefault(Units.PROTOSS_TEMPEST, 0) > 0) continue;
 									if (comp.getOrDefault(possible_counter, 0) >= limits.get(possible_counter)) continue;
 									
 									if (best == Units.INVALID) {

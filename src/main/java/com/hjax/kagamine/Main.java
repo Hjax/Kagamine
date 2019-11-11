@@ -49,7 +49,7 @@ public class Main {
 							S2Coordinator.createParticipant(Race.ZERG, bot),
 							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD, AiBuild.AIR))
 					.launchStarcraft()
-					.startGame(LocalMap.of(Paths.get("ThunderbirdLE.SC2Map")));
+					.startGame(LocalMap.of(Paths.get("KingsCoveLE.SC2Map")));
 			while (s2Coordinator.update()) {
 			}
 			s2Coordinator.quit();

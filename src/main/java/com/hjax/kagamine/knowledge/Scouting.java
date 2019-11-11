@@ -27,6 +27,8 @@ public class Scouting {
 	private static int patrol_base = 2;
 	public static int overlord_count = 0;
 	
+	static boolean first_ovie = true;
+	
 	public static boolean scared = false;
 	private static boolean has_pulled_back = false;
 	
@@ -136,11 +138,20 @@ public class Scouting {
 			}
 		} else {
 			Base best_base = null;
-			for (Base b : BaseManager.bases) {
-				if (Game.get_frame() - b.last_seen_frame > Constants.FPS * 20) {
-					if (!overlords.containsValue(b)) {
-						if (best_base == null || best_base.location.distance(BaseManager.main_base().location) > b.location.distance(BaseManager.main_base().location)) {
-							best_base = b;
+			if (first_ovie) {
+				for (Base b : BaseManager.bases) {
+					if (b.location.distance(BaseManager.get_base(BaseManager.bases.size() - 1)) < 5) {
+						best_base = b;
+					}
+				}
+				first_ovie = false;
+			} else {
+				for (Base b : BaseManager.bases) {
+					if (Game.get_frame() - b.last_seen_frame > Constants.FPS * 20) {
+						if (!overlords.containsValue(b)) {
+							if (best_base == null || best_base.location.distance(BaseManager.main_base().location) > b.location.distance(BaseManager.main_base().location)) {
+								best_base = b;
+							}
 						}
 					}
 				}

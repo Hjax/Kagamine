@@ -21,6 +21,13 @@ public class BuildPlanner {
 	public static boolean worker_rush = false;
 	public static boolean is_all_in;
 	public static void on_frame() {
+		
+		if (Game.worker_count() > 30 || BaseManager.base_count() >= 3) {
+			if (Build.ideal_gases < 5) {
+				Build.ideal_gases = 9;
+			}
+		}
+		
 		if (Wisdom.worker_rush() && !worker_rush) {
 			worker_rush = true;
 			Build.build = new ArrayList<>(Arrays.asList(new ImmutablePair<>(13, Units.ZERG_OVERLORD),
