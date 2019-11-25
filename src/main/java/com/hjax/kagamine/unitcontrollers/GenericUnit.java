@@ -22,6 +22,13 @@ import com.hjax.kagamine.knowledge.Wisdom;
 
 public class GenericUnit {
 	public static void on_frame(HjaxUnit u, boolean moveOut) {
+
+		for (HjaxUnit disruptor_shot : GameInfoCache.get_units(Units.PROTOSS_DISRUPTOR_PHASED)) {
+			if (disruptor_shot.distance(u) < 4) {
+				u.move(Utilities.direction_to(Vector2d.of(disruptor_shot.location()), Vector2d.of(u.location())).scale(2).add(Vector2d.of(u.location())).toPoint2d());
+				return;
+			}
+		}
 		
 		if (!u.is_melee() && u.ability() == Abilities.ATTACK && u.orders().get(0).getTargetedUnitTag().isPresent() && Game.army_supply() < 100) {
 			HjaxUnit target = GameInfoCache.get_unit(u.orders().get(0).getTargetedUnitTag().get());
