@@ -141,6 +141,10 @@ public class HjaxUnit {
 		Game.unit_command(get_unit(), ability);
 	}
 	
+	public void use_ability_queued(Ability ability) {
+		Game.unit_command(get_unit(), ability, true);
+	}
+	
 	public void use_ability(Ability ability, Point2d point) {
 		Game.unit_command(get_unit(), ability, point);
 	}
@@ -252,6 +256,14 @@ public class HjaxUnit {
 	public double supply() {
 		if (type() == Units.PROTOSS_ADEPT_PHASE_SHIFT) return 1;
 		return Game.get_unit_type_data().get(type()).getFoodRequired().orElse(0f);
+	}
+	
+	public double cargo() {
+		return get_unit().getCargoSpaceTaken().orElse(0);
+	}
+	
+	public double cargo_max() {
+		return get_unit().getCargoSpaceMax().orElse(0);
 	}
 }
 

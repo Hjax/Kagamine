@@ -64,9 +64,9 @@ public class ZergBuildExecutor {
 				}
 			}
 			
-			if (GameInfoCache.count(Units.ZERG_DRONE) > 45 || GameInfoCache.count(Units.ZERG_EXTRACTOR) == 0) {
+			if (Game.worker_count() > 45 || BaseManager.active_gases() == 0) {
 				if ((Game.gas() < 400 && GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) == 0) || Game.gas() < 150) {
-					if ((BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) && ((BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < ((GameInfoCache.count(Units.ZERG_DRONE) - 15) / 8))) {
+					if ((BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR)) < needed_gas_count()) {
 						if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
 							BaseManager.build(Units.ZERG_EXTRACTOR);
 							Game.purchase(Units.ZERG_EXTRACTOR);
@@ -74,7 +74,7 @@ public class ZergBuildExecutor {
 					}
 				}
 			}
-			
+
 			if (BaseManager.base_count() == 1 && Wisdom.cannon_rush() || Wisdom.proxy_detected()) {
 				if (GameInfoCache.count(Units.ZERG_EXTRACTOR) < 2) {
 					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
@@ -282,7 +282,7 @@ public class ZergBuildExecutor {
 				}
 			}
 
-			if ((GameInfoCache.count(Units.ZERG_DRONE) >= Wisdom.worker_cap()) && !Wisdom.should_build_workers() && BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < Build.ideal_gases) {
+			if ((GameInfoCache.count(Units.ZERG_DRONE) >= Wisdom.worker_cap()) && !Wisdom.should_build_workers() && BaseManager.active_gases() + GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) < needed_gas_count()) {
 				if ((Game.gas() < 400 && GameInfoCache.in_progress(Units.ZERG_EXTRACTOR) == 0) || Game.gas() < 150) {
 					if (Game.can_afford(Units.ZERG_EXTRACTOR)) {
 						BaseManager.build(Units.ZERG_EXTRACTOR);
@@ -373,6 +373,21 @@ public class ZergBuildExecutor {
 			}
 		}
 		return best;
+	}
+	
+	public static int needed_gas_count() {
+		
+		int result = 0;
+		if (TechLevelManager.getTechLevel() == TechLevel.HATCH) {
+			result = (GameInfoCache.count(Units.ZERG_DRONE) - 15) / 13;
+		} else if (TechLevelManager.getTechLevel() == TechLevel.LAIR) {
+			result = (GameInfoCache.count(Units.ZERG_DRONE) - 15) / 10;
+		} else {
+			result = (GameInfoCache.count(Units.ZERG_DRONE) - 15) / 8;
+		}
+		
+		return Math.min(result, Build.ideal_gases);
+		
 	}
 	
 }

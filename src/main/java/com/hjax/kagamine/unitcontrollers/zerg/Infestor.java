@@ -76,7 +76,7 @@ public class Infestor {
 						count++;
 					}
 				}
-				if (count > 5) {
+				if (count > 10) {
 					for (Point2d p : fungal_frames.keySet()) { 
 						if (enemy.distance(p) < 2.25) {
 							continue fungal_target;

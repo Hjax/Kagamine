@@ -52,7 +52,7 @@ public class ZergWisdom {
 		if (Wisdom.ahead() && Wisdom.shouldAttack()) return true;
 
 		
-		if (Game.army_supply() < army_target() || (ThreatManager.attacking_supply() > GameInfoCache.attacking_army_supply())) {
+		if (Game.army_supply() < army_target()) {
 			if (ZergBuildExecutor.next_army_unit() != Units.INVALID) {
 				return true;
 			}

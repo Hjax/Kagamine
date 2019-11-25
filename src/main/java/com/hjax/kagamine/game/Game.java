@@ -231,7 +231,7 @@ public class Game {
 		
 	}
 	
-	private static void unit_command(Unit u, Ability a, boolean queued) {
+	public static void unit_command(Unit u, Ability a, boolean queued) {
 		Counter.increment(u.getType().toString());
 		
 		if (!queued) {
@@ -574,6 +574,7 @@ public class Game {
 	
 	public static boolean hits_ground(UnitType u) {
 		if (u == Units.TERRAN_BUNKER) return true;
+		if (u == Units.ZERG_BANELING) return true;
 		if (u == Units.ZERG_LURKER_MP || u == Units.ZERG_LURKER_MP_BURROWED) return true;
 		for (Weapon w : get_unit_type_data().get(u).getWeapons()) {
 			if (w.getTargetType() == TargetType.ANY || w.getTargetType() == TargetType.GROUND) {
@@ -586,7 +587,7 @@ public class Game {
 	private static final Map<UnitType, Boolean> is_combat_cache = new HashMap<>();
 	public static boolean is_combat(UnitType ut) {
 		return is_combat_cache.computeIfAbsent(ut, u -> {
-			if (u == Units.ZERG_BANELING_COCOON || u == Units.ZERG_LURKER_MP_EGG || u == Units.ZERG_BROODLORD_COCOON) return true;
+			if (u == Units.ZERG_BANELING_COCOON || u == Units.ZERG_BANELING || u == Units.ZERG_LURKER_MP_EGG || u == Units.ZERG_BROODLORD_COCOON) return true;
 			if (u == Units.ZERG_LURKER_MP || u == Units.ZERG_LURKER_MP_BURROWED) return true;
 			if (u == Units.ZERG_INFESTOR || u == Units.ZERG_VIPER) return true;
 			if (u == Units.TERRAN_MEDIVAC || u == Units.PROTOSS_WARP_PRISM || u == Units.PROTOSS_WARP_PRISM_PHASING || u == Units.PROTOSS_CARRIER) return true;

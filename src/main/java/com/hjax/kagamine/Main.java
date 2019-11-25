@@ -47,7 +47,7 @@ public class Main {
 					.setParticipants(
 							//S2Coordinator.createParticipant(choice, bot2),
 							S2Coordinator.createParticipant(Race.ZERG, bot),
-							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD, AiBuild.AIR))
+							S2Coordinator.createComputer(choice, Difficulty.VERY_HARD, AiBuild.MACRO))
 					.launchStarcraft()
 					.startGame(LocalMap.of(Paths.get("KingsCoveLE.SC2Map")));
 			while (s2Coordinator.update()) {

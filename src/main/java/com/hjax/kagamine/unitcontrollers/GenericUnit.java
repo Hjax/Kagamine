@@ -22,14 +22,6 @@ import com.hjax.kagamine.knowledge.Wisdom;
 
 public class GenericUnit {
 	public static void on_frame(HjaxUnit u, boolean moveOut) {
-		if (Game.hits_air(u.type())) {
-			for (HjaxUnit medi: GameInfoCache.get_units(Alliance.ENEMY)) {
-				if (medi.flying() && medi.distance(u) < Game.get_aa_weapon(u.type()).getRange() + 1) {
-					u.attack(medi);
-					return;
-				}
-			}
-		}
 		
 		if (!u.is_melee() && u.ability() == Abilities.ATTACK && u.orders().get(0).getTargetedUnitTag().isPresent() && Game.army_supply() < 100) {
 			HjaxUnit target = GameInfoCache.get_unit(u.orders().get(0).getTargetedUnitTag().get());

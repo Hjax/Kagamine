@@ -78,8 +78,6 @@ public class Composition {
 		
 		counters.get(TechLevel.HIVE).get(Units.PROTOSS_CARRIER).put(Units.ZERG_VIPER, 0.5);
 		
-		counters.get(TechLevel.HIVE).get(Units.TERRAN_MARINE).put(Units.ZERG_INFESTOR, 0.15);
-		
 		counters.get(TechLevel.HIVE).get(Units.TERRAN_THOR).put(Units.ZERG_INFESTOR, 1.0);
 
 		counters.get(TechLevel.HIVE).get(Units.TERRAN_SIEGE_TANK).put(Units.ZERG_VIPER, 0.6);
@@ -112,6 +110,12 @@ public class Composition {
 	
 	public static Map<UnitType, Integer> comp() {
 
+		if (GameInfoCache.get_opponent_race() == Race.TERRAN && !limits.containsKey(Units.ZERG_MUTALISK)) {
+			limits.put(Units.ZERG_MUTALISK, 14);
+		} else if (GameInfoCache.get_opponent_race() != Race.TERRAN && !limits.containsKey(Units.ZERG_MUTALISK)) {
+			limits.remove(Units.ZERG_MUTALISK);
+		}
+		
 		Map<UnitType, Integer> comp = new HashMap<>();
 		
 		if (Game.race() != Race.ZERG) {
@@ -136,7 +140,8 @@ public class Composition {
 							if (counters.get(tech).containsKey(unit)) {
 								for (UnitType possible_counter : counters.get(tech).get(unit).keySet()) {
 									if (possible_counter == Units.ZERG_CORRUPTOR && Game.army_supply() < 30) continue;
-									if (possible_counter == Units.ZERG_INFESTOR && Game.supply() < 140) continue;
+									if (possible_counter == Units.ZERG_BROODLORD && EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) > 1) continue;
+									if (possible_counter == Units.ZERG_INFESTOR && Game.supply() < 150) continue;
 									if (possible_counter == Units.ZERG_LURKER_MP && EnemyModel.counts.getOrDefault(Units.PROTOSS_CARRIER, 0) + EnemyModel.counts.getOrDefault(Units.PROTOSS_TEMPEST, 0) > 0) continue;
 									if (comp.getOrDefault(possible_counter, 0) >= limits.get(possible_counter)) continue;
 									
@@ -237,11 +242,21 @@ public class Composition {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 			}
 			if (GameInfoCache.get_opponent_race() == Race.TERRAN) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING);
+			}
+			if (EnemyModel.counts.getOrDefault(Units.PROTOSS_TEMPEST, 0) > 0) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_CORRUPTOR);
+			}
+			if (EnemyModel.counts.getOrDefault(Units.PROTOSS_DISRUPTOR, 0) > 0) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 		} else {
-			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) == 0) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ULTRALISK);
+			} else {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
+			}
 		}
 	}
 }

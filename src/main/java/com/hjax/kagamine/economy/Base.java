@@ -18,6 +18,8 @@ public class Base {
 	public HjaxUnit queen = null;
 	public HjaxUnit command_structure = null;
 	
+	public HjaxUnit ling = null;
+	
 	public long last_seen_frame = (long) (Constants.FPS * -60);
 	
 	public Base(Point2d l) {
@@ -75,5 +77,9 @@ public class Base {
 	
 	public boolean has_walking_drone() {
 		return walking_drone != null;
+	}
+	
+	public boolean has_ling() {
+		return ling != null && ling.alive();
 	}
 }

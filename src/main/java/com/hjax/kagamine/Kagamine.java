@@ -29,7 +29,6 @@ import com.hjax.kagamine.enemymodel.ResourceTracking;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
-import com.hjax.kagamine.game.MapAnalysis;
 import com.hjax.kagamine.knowledge.Scouting;
 import com.hjax.kagamine.knowledge.Wisdom;
 import com.hjax.kagamine.knowledge.ZergWisdom;
@@ -84,7 +83,7 @@ class Kagamine extends S2Agent {
 				MiningOptimizer.on_frame();
 				BanelingAvoidance.on_frame();
 				EnemyBaseDefense.on_frame();
-				//Mutalisk.on_frame();
+				Mutalisk.on_frame();
 				Larva.start_frame();
 				Scouting.on_frame();
 				ArmyManager.on_frame();

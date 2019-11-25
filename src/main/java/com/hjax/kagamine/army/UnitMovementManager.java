@@ -39,7 +39,7 @@ public class UnitMovementManager {
 	public static int unassigned_ground = 0;
 	public static int unassigned_air = 0;
 	
-	public static double attack_threshold = 1.2;
+	public static double attack_threshold = 1.1;
 	
 	public static boolean chase_aggressively = false;
 	
@@ -47,11 +47,11 @@ public class UnitMovementManager {
 		
 		boolean new_chase_aggressively = false;
 		
-		if (GameInfoCache.attacking_army_supply() >= EnemyModel.enemyArmy() * 1.7) {
-			attack_threshold = 1.3;
+		if (GameInfoCache.attacking_army_supply() >= EnemyModel.enemyArmy() * 1.9) {
+			attack_threshold = 1.1;
 		}
 		
-		if (GameInfoCache.attacking_army_supply() <= EnemyModel.enemyArmy() * 1.2) {
+		if (GameInfoCache.attacking_army_supply() <= EnemyModel.enemyArmy() * 1.1) {
 			attack_threshold = 1.9;
 		}
 		
@@ -89,7 +89,7 @@ public class UnitMovementManager {
 					
 					if (chase_aggressively && !(Wisdom.all_in_detected() && GameInfoCache.get_opponent_race() == Race.ZERG && Game.army_supply() < 30 && EnemyModel.counts.getOrDefault(Units.ZERG_ROACH, 0) == 0)) {
 						if (ZergWisdom.needed_spine_count() == 0) {
-							engage_distance *= 2;
+							engage_distance *= 2.5;
 						}
 					}
 					
@@ -196,7 +196,13 @@ public class UnitMovementManager {
 		
 		Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 		
+		boolean lib = false;
+		
 		for (HjaxUnit enemy : enemy_squad) {
+			if (enemy.type() == Units.TERRAN_LIBERATOR) {
+				lib = true;
+				flyer_supply += 1;
+			}
 			if (enemy.type() == Units.PROTOSS_ADEPT_PHASE_SHIFT) ground_supply += 1;
 			if (enemy.flying()) {
 				flyer_supply += Game.supply(enemy.type());
@@ -216,18 +222,20 @@ public class UnitMovementManager {
 		
 		float assigned_supply = 0;
 		while (assigned_supply < ground_supply * 1.3) {
-			HjaxUnit current = closest_free(average, false);
-			if (current == null) current = closest_free(average, true);
+			HjaxUnit current = closest_free(average, false, false);
+			if (current == null) current = closest_free(average, true, false);
 			if (current == null) break;
 			assigned_supply += Game.supply(current.type()) * (current.health() / current.health_max());
+			if (current.type() == Units.ZERG_MUTALISK) assigned_supply--;
 			if (current.type() == Units.ZERG_QUEEN) assigned_supply -= 1;
 			assigned.add(current);
 		}
 		assigned_supply = 0;
 		while (assigned_supply < flyer_supply) {
-			HjaxUnit current = closest_free(average, true);
+			HjaxUnit current = closest_free(average, true, lib);
 			if (current == null) break;
 			assigned_supply += Game.supply(current.type()) * (current.health() / current.health_max());
+			if (current.type() == Units.ZERG_MUTALISK) assigned_supply--;
 			if (current.type() == Units.ZERG_QUEEN) assigned_supply -= 1;
 			assigned.add(current);
 		}
@@ -275,13 +283,14 @@ public class UnitMovementManager {
 		return best;
 	}
 	
-	private static HjaxUnit closest_free(Point2d p, boolean aa) {
+	private static HjaxUnit closest_free(Point2d p, boolean aa, boolean lib) {
 		HjaxUnit best = null;
 		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (aa && !Game.hits_air(ally.type())) continue;
 			if (!aa && !Game.hits_ground(ally.type())) continue;
 			if (Game.is_spellcaster(ally.type())) continue;
-			if (ally.type() == Units.ZERG_QUEEN && Queen.get_base(ally) != null && p.distance(Queen.get_base(ally).location) > 15) continue;
+			if (ally.type() == Units.ZERG_QUEEN && Queen.get_base(ally) != null && p.distance(Queen.get_base(ally).location) > 15 && !lib) continue;
+			if (!Game.on_creep(p) && Game.pathable(p) && ally.type() == Units.ZERG_QUEEN) continue;
 			if (!Game.is_structure(ally.type()) && Game.is_combat(ally.type())) {
 				if (!used.contains(ally.tag())) {
 					if (best == null || 
