@@ -39,6 +39,7 @@ import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.Unit;
 import com.hjax.kagamine.Constants;
 import com.hjax.kagamine.Counter;
+import com.hjax.kagamine.Vector2d;
 
 public class Game {
 	
@@ -54,7 +55,7 @@ public class Game {
 	private static Map<Effect, EffectData> effect_data = null;
 	
 	private static final Map<Ability, Set<Tag>> normal_abilities = new HashMap<>();
-	private static final Map<Ability, Map<Point2d, Set<Tag>>> point_target_abilities = new HashMap<>();
+	private static final Map<Ability, Map<Vector2d, Set<Tag>>> point_target_abilities = new HashMap<>();
 	private static final Map<Ability, Map<Unit, Set<Tag>>> unit_target_abilities = new HashMap<>();
 	
 	private static boolean[][] visibility = new boolean[1000][1000];
@@ -91,8 +92,8 @@ public class Game {
 		if (pathable == null) {
 			pathable = new boolean[1000][1000];
 			
-			Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
-			Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
+			Vector2d min = Vector2d.of(Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d());
+			Vector2d max = Vector2d.of(Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d());
 			
 			for (int x = (int) min.getX(); x < max.getX(); x += 1) {
 				for (int y = (int) min.getY(); y < max.getY(); y += 1) {
@@ -132,10 +133,10 @@ public class Game {
 		
 	}
 	
-	public static Point2d closest_invisible(Point2d p) {
-		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
-		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
-		Point2d best = null;
+	public static Vector2d closest_invisible(Vector2d p) {
+		Vector2d min = Vector2d.of(Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d());
+		Vector2d max = Vector2d.of(Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d());
+		Vector2d best = null;
 		
 		for (int offset = 1; offset < 500; offset += 1) {
 			for (int x = (int) p.getX() - offset; x <= p.getX() + offset; x += offset * 2) {
@@ -144,8 +145,8 @@ public class Game {
 				for (int y = (int) p.getY() - offset; y <= p.getY() + offset; y += offset * 2) {
 					if (y < min.getY()) continue;
 					if (y > max.getY()) continue;
-					if (!visibility[x][y] && (best == null || p.distance(Point2d.of(x, y)) < best.distance(p))) {
-						best = Point2d.of(x, y);
+					if (!visibility[x][y] && (best == null || p.distance(Vector2d.of(x, y)) < best.distance(p))) {
+						best = Vector2d.of(x, y);
 					}
 				}
 			}
@@ -165,8 +166,8 @@ public class Game {
 		}
 		
 		for (Ability a : point_target_abilities.keySet()) {
-			for (Point2d p : point_target_abilities.get(a).keySet()) {
-				action.unitCommand(point_target_abilities.get(a).get(p), a, p, false);
+			for (Vector2d p : point_target_abilities.get(a).keySet()) {
+				action.unitCommand(point_target_abilities.get(a).get(p), a, p.toPoint2d(), false);
 			}
 		}
 		
@@ -205,11 +206,11 @@ public class Game {
 
 	}
 	
-	private static void unit_command(Unit u, Ability a, Point2d p, boolean queued) {
+	private static void unit_command(Unit u, Ability a, Vector2d p, boolean queued) {
 		if (u.getOrders().size() > 0 && !queued) {
 			if (u.getOrders().get(0).getAbility() == a) {
 				if (u.getOrders().get(0).getTargetedWorldSpacePosition().isPresent()) {
-					if (p.distance(u.getOrders().get(0).getTargetedWorldSpacePosition().get().toPoint2d()) < 1) {
+					if (p.distance(Vector2d.of(u.getOrders().get(0).getTargetedWorldSpacePosition().get().toPoint2d())) < 1) {
 						return;
 					}
 				}
@@ -226,7 +227,7 @@ public class Game {
 			}
 			point_target_abilities.get(a).get(p).add(u.getTag());
 		} else {
-			action.unitCommand(u, a, p, queued);
+			action.unitCommand(u, a, p.toPoint2d(), queued);
 		}
 		
 	}
@@ -244,6 +245,15 @@ public class Game {
 		}
 	}
 	
+	public static Vector2d min_point() {
+		return Vector2d.of(Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d());
+		
+	}
+	
+	public static Vector2d max_point() {
+		return Vector2d.of(Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d());
+	}
+	
 	
 	public static void unit_command(List<UnitInPool> u, Ability a, Unit target) {
 		List<Unit> list = new ArrayList<>();
@@ -252,10 +262,10 @@ public class Game {
 		
 	}
 	
-	public static void unit_command(List<UnitInPool> u, Ability a, Point2d target) {
+	public static void unit_command(List<UnitInPool> u, Ability a, Vector2d target) {
 		List<Unit> list = new ArrayList<>();
 		for (UnitInPool unit : u) list.add(unit.unit());
-		action.unitCommand(list, a, target, false);
+		action.unitCommand(list, a, target.toPoint2d(), false);
 		
 	}
 	
@@ -275,7 +285,7 @@ public class Game {
 		unit_command(u, a, t, false);
 	}
 	
-	public static void unit_command(Unit u, Ability a, Point2d p) {
+	public static void unit_command(Unit u, Ability a, Vector2d p) {
 		unit_command(u, a, p, false);
 	}
 	
@@ -287,7 +297,7 @@ public class Game {
 		unit_command(u.unit(), a, t, queued);
 	}
 	
-	public static void unit_command(UnitInPool u, Ability a, Point2d p, boolean queued) {
+	public static void unit_command(UnitInPool u, Ability a, Vector2d p, boolean queued) {
 		unit_command(u.unit(), a, p, queued);
 	}
 	
@@ -299,7 +309,7 @@ public class Game {
 		unit_command(u.unit(), a, t, false);
 	}
 	
-	public static void unit_command(UnitInPool u, Ability a, Point2d p) {
+	public static void unit_command(UnitInPool u, Ability a, Vector2d p) {
 		unit_command(u.unit(), a, p, false);
 	}
 	
@@ -311,8 +321,8 @@ public class Game {
 		return observation.getUpgrades().contains(u);
 	}
 	
-	public static boolean on_creep(Point2d p ) {
-		return observation.hasCreep(p);
+	public static boolean on_creep(Vector2d p) {
+		return observation.hasCreep(p.toPoint2d());
 	}
 	
 	public static List<UnitInPool> get_units() {
@@ -329,12 +339,12 @@ public class Game {
 		}
 	}
 	
-	public static boolean is_near_ally(Point2d p) {
+	public static boolean is_near_ally(Vector2d p) {
 		return visibility[(int) p.getX()][(int) p.getY()];
 	}
 	
-	public static boolean is_visible(Point2d p) {
-		return observation.getVisibility(p) == Visibility.VISIBLE;
+	public static boolean is_visible(Vector2d p) {
+		return observation.getVisibility(p.toPoint2d()) == Visibility.VISIBLE;
 	}
 	
 	public static double get_game_time() {
@@ -349,13 +359,13 @@ public class Game {
 		return observation.getGameLoop();
 	}
 	
-	public static boolean can_place(Ability a, Point2d p) {
-		return query.placement(a, p);
+	public static boolean can_place(Ability a, Vector2d p) {
+		return query.placement(a, p.toPoint2d());
 	}
 	
-	public static List<Boolean> can_place(Ability a, List<Point2d> p) {
+	public static List<Boolean> can_place(Ability a, List<Vector2d> p) {
 		List<QueryBuildingPlacement> queries = new ArrayList<>();
-		for (Point2d point : p) queries.add(QueryBuildingPlacement.placeBuilding().useAbility(a).on(point).build());
+		for (Vector2d point : p) queries.add(QueryBuildingPlacement.placeBuilding().useAbility(a).on(point.toPoint2d()).build());
 		return query.placement(queries);
 	}
 	
@@ -445,16 +455,16 @@ public class Game {
 		return observation.getPlayerId();
 	}
 	
-	public static boolean pathable(Point2d p) {
+	public static boolean pathable(Vector2d p) {
 		return pathable[Math.round(p.getX())][Math.round(p.getY())];
 	}
 	
-	public static float height(Point2d p) {
-		return observation.terrainHeight(p);
+	public static float height(Vector2d p) {
+		return observation.terrainHeight(p.toPoint2d());
 	}
 	
-	public static float pathing_distance(Point2d a, Point2d b) {
-		return query.pathingDistance(a, b);
+	public static float pathing_distance(Vector2d a, Vector2d b) {
+		return query.pathingDistance(a.toPoint2d(), b.toPoint2d());
 	}
 	
 	public static boolean can_afford(UnitType u) {
@@ -509,8 +519,8 @@ public class Game {
 				(get_unit_type_data().get(u).getRace().orElse(Race.NO_RACE) != Race.ZERG && get_unit_type_data().get(u).getFoodProvided().orElse((float) 0) > 0);
 	}
 
-	public static boolean is_placeable(Point2d p) {
-		return Game.observation.isPlacable(p);
+	public static boolean is_placeable(Vector2d p) {
+		return Game.observation.isPlacable(p.toPoint2d());
 	}
 	
 	public static AvailableAbilities availible_abilities(UnitInPool u) {
@@ -535,14 +545,14 @@ public class Game {
 		return query.getAbilitiesForUnits(parsed, false);
 	}
 	
-	public static void draw_box(Point2d current, Color c) {
+	public static void draw_box(Vector2d current, Color c) {
 		if (Constants.DEBUG) {
 			debug.debugBoxOut(Point.of(current.getX(), current.getY(), (float) (Math.max(Game.height(current) + .5, 0))), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) (Math.max(Game.height(current) + .5, 0))), c);
 			//debug.debugBoxOut(Point.of(current.getX(), current.getY(), 15), Point.of((float) (current.getX() + .5), (float) (current.getY() + .5), (float) 15), c);
 		}
 	}
 	
-	public static void draw_line(Point2d a, Point2d b, Color c) {
+	public static void draw_line(Vector2d a, Vector2d b, Color c) {
 		if (Constants.DEBUG) {
 			debug.debugLineOut(Point.of(a.getX(), a.getY(), Game.height(a) + 1), Point.of(b.getX(), b.getY(), Game.height(b) + 1), c);
 		}
@@ -613,15 +623,19 @@ public class Game {
 		return is_mineral(u) || is_gas(u);
 	}
 	
-	public static List<Point> expansions() {
-		return query.calculateExpansionLocations(observation);
+	public static List<Vector2d> expansions() {
+		ArrayList<Vector2d> results = new ArrayList<>();
+		for (Point p : query.calculateExpansionLocations(observation)) {
+			results.add(Vector2d.of(p.toPoint2d()));
+		}
+		return results;
 	}
 	
 	public static void write_text(String text) {
 		debug.debugTextOut(text, Point2d.of((float) 0.1, (float) ((100.0 + 20.0 * lines++) / 1080.0)), Color.WHITE, 15);
 	}
 	
-	public static void write_text(String text, Point2d location) {
+	public static void write_text(String text, Vector2d location) {
 		debug.debugTextOut(text, Point.of(location.getX(), location.getY(), height(location) + 1), Color.WHITE, 15);
 	}
 	

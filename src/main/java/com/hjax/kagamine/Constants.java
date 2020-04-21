@@ -2,8 +2,8 @@ package com.hjax.kagamine;
 
 public class Constants {
 	
-	public static boolean DEBUG = true;
-	public static boolean CHAT = true;
+	public static boolean DEBUG = false;
+	public static boolean CHAT = false;
 	public static final double FPS = 22.4;
 	public static final double DONE = 0.999;
 	public static final int FRAME_SKIP = 4;

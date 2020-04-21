@@ -242,7 +242,7 @@ public class Composition {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_MUTALISK);
 			}
 			if (GameInfoCache.get_opponent_race() == Race.TERRAN) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_BANELING);
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			}
 			if (EnemyModel.counts.getOrDefault(Units.PROTOSS_TEMPEST, 0) > 0) {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_CORRUPTOR);
@@ -252,8 +252,8 @@ public class Composition {
 			}
 			return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ROACH, Units.ZERG_RAVAGER);
 		} else {
-			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) == 0) {
-				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_ULTRALISK);
+			if (EnemyModel.counts.getOrDefault(Units.TERRAN_BATTLECRUISER, 0) == 0 && GameInfoCache.get_opponent_race() == Race.TERRAN) {
+				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			} else {
 				return Arrays.asList(Units.ZERG_ZERGLING, Units.ZERG_HYDRALISK);
 			}

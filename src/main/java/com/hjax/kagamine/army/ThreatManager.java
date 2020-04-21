@@ -6,8 +6,8 @@ import java.util.Set;
 
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.Race;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.enemymodel.EnemyModel;
@@ -22,7 +22,7 @@ public class ThreatManager {
 	public static double attacking_threat = 0;
 	
 	public static void on_frame() {
-		Point2d center;
+		Vector2d center;
 		
 		threat = 0;
 		attacking_threat = 0;
@@ -101,7 +101,7 @@ public class ThreatManager {
 		return attacking_threat;
 	}
 	
-	public static boolean is_safe(Point2d p) {
+	public static boolean is_safe(Vector2d p) {
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (enemy.is_combat()) {
 				if (enemy.distance(p) < 10) {

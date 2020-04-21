@@ -10,7 +10,6 @@ import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
-import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.EnemySquadManager;
 import com.hjax.kagamine.game.Game;
@@ -33,7 +32,7 @@ public class Stalker {
 				}
 				if (result.size() > 0) {
 					last_blink_frame.put(u.tag(), Game.get_frame());
-					u.use_ability(Abilities.EFFECT_BLINK, Vector2d.of(u.location()).add(Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(EnemySquadManager.average_point(result))).scale(-8)).toPoint2d());
+					u.use_ability(Abilities.EFFECT_BLINK, u.location().add(u.location().directionTo(EnemySquadManager.average_point(result)).scale(-8)));
 					return;
 				}
 			}

@@ -3,9 +3,9 @@ package com.hjax.kagamine.unitcontrollers.zerg;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.game.Race;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.army.UnitMovementManager;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.ThreatManager;
 import com.hjax.kagamine.build.Composition;
 import com.hjax.kagamine.economy.Base;
@@ -72,7 +72,7 @@ public class Queen {
 		if (tumors == 0 || GameInfoCache.count_enemy(Units.TERRAN_REAPER) < 4 || Game.army_supply() > 30) {
 			if (!Wisdom.cannon_rush() && (ThreatManager.attacking_supply() < GameInfoCache.attacking_army_supply())) {
 				if (u.idle() && ((u.energy() >= 25 && GameInfoCache.count_friendly(Units.ZERG_CREEP_TUMOR) < 25) || u.energy() >= 75)) {
-					Point2d p = Creep.get_creep_point();
+					Vector2d p = Creep.get_creep_point();
 					if (p != null) {
 						u.use_ability(Abilities.BUILD_CREEP_TUMOR, p);
 						return;

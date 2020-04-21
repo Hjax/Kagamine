@@ -5,10 +5,10 @@ import java.util.List;
 
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.economy.EconomyManager;
@@ -22,9 +22,9 @@ import com.hjax.kagamine.unitcontrollers.Worker;
 import com.github.ocraft.s2client.protocol.game.Race;
 
 public class ArmyManager {
-	private static Point2d target;
+	private static Vector2d target;
 	
-	public static Point2d army_center = Point2d.of(0, 0);
+	public static Vector2d army_center = Vector2d.of(0, 0);
 	private static final List<HjaxUnit> main_army = new ArrayList<>();
 	public static boolean has_target;
 	static {
@@ -157,7 +157,7 @@ public class ArmyManager {
 
 	}
 	
-	public static Point2d get_target() {
+	public static Vector2d get_target() {
 		return target;
 	}
 }

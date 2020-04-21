@@ -15,9 +15,7 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.spatial.Point;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.EnemySquadManager;
 import com.hjax.kagamine.army.ThreatManager;
@@ -31,14 +29,14 @@ import com.hjax.kagamine.unitcontrollers.Worker;
 public class BaseManager {
 	// the index of bases must never change
 	public static final ArrayList<Base> bases = new ArrayList<>();
-	private static final ArrayList<Point2d> expos = new ArrayList<>();
+	private static final ArrayList<Vector2d> expos = new ArrayList<>();
 	private static final Map<Pair<Integer, Integer>, Float> distances = new HashMap<>();
 	
 	public static void start_game() {
 		bases.clear();
 		
-		for (Point p : Game.expansions()) {
-			bases.add(new Base(p.toPoint2d()));
+		for (Vector2d p : Game.expansions()) {
+			bases.add(new Base(p));
 		}
 		
 		HjaxUnit main = GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_command_structure()).get(0);
@@ -54,13 +52,13 @@ public class BaseManager {
 		
 		for (int i = 0; i < bases.size(); i++) {
 			for (int j = 0; j < bases.size(); j++) {
-				Point2d first = bases.get(i).location;
-				Point2d second = bases.get(j).location;
+				Vector2d first = bases.get(i).location;
+				Vector2d second = bases.get(j).location;
 				float dist = Game.pathing_distance(first, second);
 				if (i != j) {
 					while (Math.abs(dist) < 0.1) {
-						first = Point2d.of(first.getX() + 1, first.getY());
-						second = Point2d.of(second.getX() + 1, second.getY());
+						first = Vector2d.of(first.getX() + 1, first.getY());
+						second = Vector2d.of(second.getX() + 1, second.getY());
 						dist = Game.pathing_distance(first, second);
 					}
 				}
@@ -193,13 +191,13 @@ public class BaseManager {
 		return result;
 	}
 	
-	public static Point2d get_placement_location(UnitType structure, Point2d base, int min_dist, int max_dist) {
-		Point2d result = Point2d.of(0, 0);
+	public static Vector2d get_placement_location(UnitType structure, Vector2d base, int min_dist, int max_dist) {
+		Vector2d result = Vector2d.of(0, 0);
 		int limit = 0;
 		while (!Game.can_place(Game.get_unit_type_data().get(structure).getAbility().orElse(Abilities.INVALID), result) || base.distance(result) < min_dist) {
 			float rx = (float) Math.random() * 2 - 1;
 			float ry = (float) Math.random() * 2 - 1;
-			result = Point2d.of(base.getX() + rx * max_dist, base.getY() + ry * max_dist);
+			result = Vector2d.of(base.getX() + rx * max_dist, base.getY() + ry * max_dist);
 			if (++limit == 100) break;
 		}
 		return result;	
@@ -250,7 +248,7 @@ public class BaseManager {
 			}
 		} else if (structure == Units.ZERG_SPINE_CRAWLER) {
 			Base nat = get_natural();
-			Point2d location;
+			Vector2d location;
 			if (nat == null) {
 				location = get_spine_placement_location(get_forward_base());
 			} else {
@@ -263,7 +261,7 @@ public class BaseManager {
 				return;
 			}
 		} else {
-			Point2d location = get_placement_location(structure, main_base().location, 6, 15);
+			Vector2d location = get_placement_location(structure, main_base().location, 6, 15);
 			HjaxUnit worker = get_free_worker(location);
 			if (worker != null) {
 				worker.use_ability(Game.production_ability(structure), location);
@@ -272,7 +270,7 @@ public class BaseManager {
 		}
 	}
 	
-	public static HjaxUnit get_free_worker(Point2d location) {
+	public static HjaxUnit get_free_worker(Vector2d location) {
 		HjaxUnit best = null;
 		unitloop: for (HjaxUnit unit : GameInfoCache.get_units(Alliance.SELF, RaceInterface.get_race_worker())) {
 			for (Base b: bases) {
@@ -297,10 +295,10 @@ public class BaseManager {
 		return total;
 	}
 	
-	private static final Map<Integer, Point2d> get_numbers = new HashMap<>();
-	public static Point2d get_base(int n) {
+	private static final Map<Integer, Vector2d> get_numbers = new HashMap<>();
+	public static Vector2d get_base(int n) {
 		if (!get_numbers.containsKey(n)) {
-			ArrayList<Point2d> found = new ArrayList<>();
+			ArrayList<Vector2d> found = new ArrayList<>();
 			for (int i = 0; i < 20; i++) {
 				Base best = null;
 				for (Base b: bases) {
@@ -318,7 +316,7 @@ public class BaseManager {
 		return get_numbers.get(n);
 	}
 	
-	public static Base closest_base(Point2d p) {
+	public static Base closest_base(Vector2d p) {
 		Base best = null;
 		for (Base b: bases) {
 			if (best == null || p.distance(best.location) > b.location.distance(p)) {
@@ -328,7 +326,7 @@ public class BaseManager {
 		return best;
 	}
 	
-	public static Base closest_friendly_base(Point2d p) {
+	public static Base closest_friendly_base(Vector2d p) {
 		Base best = null;
 		for (Base b: bases) {
 			if (b.has_friendly_command_structure()) {
@@ -340,14 +338,14 @@ public class BaseManager {
 		return best;
 	}
 	
-	private static Point2d get_spine_placement_location(Base b) {
-		Point2d target = Scouting.closest_enemy_spawn();
-		target = Point2d.of(target.getX() + 4, target.getY());
-		Point2d result = null;
+	private static Vector2d get_spine_placement_location(Base b) {
+		Vector2d target = Scouting.closest_enemy_spawn();
+		target = Vector2d.of(target.getX() + 4, target.getY());
+		Vector2d result = null;
 		for (int i = 0; i < 200; i++) {
 			double rx = Math.random() * 2 - 1;
 			double ry = Math.random() * 2 - 1;
-			Point2d test = Point2d.of((float) (b.location.getX() + rx * 10), (float) (b.location.getY() + ry * 10));
+			Vector2d test = Vector2d.of((float) (b.location.getX() + rx * 10), (float) (b.location.getY() + ry * 10));
 			if (Game.can_place(Abilities.MORPH_SPINE_CRAWLER_ROOT, test)) {
 				if (result == null || Game.pathing_distance(result,  target) > Game.pathing_distance(test, target)) {
 					result = test;
@@ -362,7 +360,7 @@ public class BaseManager {
 	public static Base get_forward_base() {
 		if (forward_base_frame != Game.get_frame()) {
 			Base best = null;
-			Point2d target = closest_base(Scouting.closest_enemy_spawn()).location;
+			Vector2d target = closest_base(Scouting.closest_enemy_spawn()).location;
 			int best_size = 0;
 			for (Set<HjaxUnit> squad : EnemySquadManager.enemy_squads) {
 				if (squad.size() > best_size) {
@@ -385,7 +383,7 @@ public class BaseManager {
 		return forward_base;
 	}
 	
-	public static Base closest_occupied_base(Point2d p) {
+	public static Base closest_occupied_base(Vector2d p) {
 		Base best = null;
 		for (Base b : bases) {
 			if (b.has_command_structure()) {
@@ -397,7 +395,7 @@ public class BaseManager {
 		return best;
 	}
 	
-	private static Point2d get_spore_placement_location(Base b) {
+	private static Vector2d get_spore_placement_location(Base b) {
 		float x = 0;
 		float y = 0;
 		int total = 0;
@@ -411,15 +409,15 @@ public class BaseManager {
 		x /= total;
 		y /= total;
 		for (HjaxUnit spore : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
-			if (spore.distance(Point2d.of(x, y)) < 4) {
+			if (spore.distance(Vector2d.of(x, y)) < 4) {
 				return null;
 			}
 		}
 		float new_x = b.location.getX() - x;
 		float new_y = b.location.getY() - y;
-		Vector2d offset = Utilities.normalize(new Vector2d(new_x, new_y));
+		Vector2d offset = new Vector2d(new_x, new_y).normalized();
 		for (int i = 0; i < 20; i++) {
-			Point2d p = Point2d.of((float) (x + (2.5 + 0.1 * i) * offset.x), (float) (y + (2.5 * 0.1 * i) * offset.y));
+			Vector2d p = Vector2d.of((float) (x + (2.5 + 0.1 * i) * offset.getX()), (float) (y + (2.5 * 0.1 * i) * offset.getY()));
 			if (Game.can_place(Abilities.MORPH_SPORE_CRAWLER_ROOT, p)) {
 				return p;
 			}
@@ -427,7 +425,7 @@ public class BaseManager {
 		return null;
 	}
 	
-	private static Point2d get_spore_placement(Base b, Point2d slider) {
+	private static Vector2d get_spore_placement(Base b, Vector2d slider) {
 		
 		for (HjaxUnit spore : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_SPORE_CRAWLER)) {
 			if (spore.distance(slider) < 3) {
@@ -435,9 +433,9 @@ public class BaseManager {
 			}
 		}
 		
-		Vector2d offset = Utilities.normalize(Utilities.direction_to(Vector2d.of(b.location), Vector2d.of(slider)));
+		Vector2d offset = b.location.directionTo(slider);
 		for (int i = 0; i < 20; i++) {
-			Point2d p = Point2d.of((float) (slider.getX() - (2.5 + 0.1 * i) * offset.x), (float) (slider.getY() - (2.5 * 0.1 * i) * offset.y));
+			Vector2d p = Vector2d.of((float) (slider.getX() - (2.5 + 0.1 * i) * offset.getX()), (float) (slider.getY() - (2.5 * 0.1 * i) * offset.getY()));
 			if (Game.can_place(Abilities.MORPH_SPORE_CRAWLER_ROOT, p)) {
 				return p;
 			}
@@ -452,7 +450,7 @@ public class BaseManager {
 				return;
 			}
 			if (b.has_friendly_command_structure() && b.command_structure.done()) {
-				Point2d spore = get_spore_placement_location(b);
+				Vector2d spore = get_spore_placement_location(b);
 				if (spore != null) {
 					HjaxUnit worker = get_free_worker(spore);
 					if (worker != null) {
@@ -471,8 +469,8 @@ public class BaseManager {
 				return;
 			}
 			if (b.has_friendly_command_structure() && b.command_structure.done()) {
-				Point2d[] spore = get_spore_triangle_placement_locations(b);
-				for (Point2d p : spore) {
+				Vector2d[] spore = get_spore_triangle_placement_locations(b);
+				for (Vector2d p : spore) {
 					if (p != null) {
 						HjaxUnit worker = get_free_worker(p);
 						if (worker != null) {
@@ -486,9 +484,9 @@ public class BaseManager {
 		}
 	}
 	
-	private static Point2d[] get_spore_triangle_placement_locations(Base b) {
+	private static Vector2d[] get_spore_triangle_placement_locations(Base b) {
 		
-		Point2d[] results = new Point2d[2];
+		Vector2d[] results = new Vector2d[2];
 		
 		HjaxUnit first = null;
 		HjaxUnit second = null;

@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.Set;
 
 import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
@@ -45,8 +45,8 @@ public class EnemySquadManager {
 		}
 	}
 	
-	public static Point2d average_point(List<HjaxUnit> l) {
-		if (l.size() == 0) return Point2d.of(0, 0);
+	public static Vector2d average_point(List<HjaxUnit> l) {
+		if (l.size() == 0) return Vector2d.of(0, 0);
 		
 		float x = 0;
 		float y = 0;
@@ -56,7 +56,7 @@ public class EnemySquadManager {
 			y += u.location().getY();
 			n++;
 		}
-		return Point2d.of(x / n, y / n);
+		return Vector2d.of(x / n, y / n);
 	}
 	
 }

@@ -11,6 +11,7 @@ import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.build.Build;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
@@ -23,7 +24,7 @@ import com.hjax.kagamine.unitcontrollers.Worker;
 public class Scouting {
 	public static HjaxUnit scout = null;
 	public static HjaxUnit patrol_scout = null;
-	private static ArrayList<Point2d> spawns = new ArrayList<>();
+	private static ArrayList<Vector2d> spawns = new ArrayList<>();
 	private static int patrol_base = 2;
 	public static int overlord_count = 0;
 	
@@ -36,12 +37,16 @@ public class Scouting {
 
 	public static void on_frame() {
 		if (spawns.size() == 0) {
-			Game.get_game_info().getStartRaw().ifPresent(StartRaw -> spawns = new ArrayList<>(StartRaw.getStartLocations()));
+			if (Game.get_game_info().getStartRaw().isPresent()) {
+				for (Point2d p : Game.get_game_info().getStartRaw().get().getStartLocations()) {
+					spawns.add(Vector2d.of(p));
+				}
+			}
 		}
 		if (spawns.size() > 1) {
 			for (HjaxUnit unit: GameInfoCache.get_units(Alliance.ENEMY)) {
 				if (unit.is_structure()) {
-					Point2d spawn = closest_enemy_spawn(unit.location());
+					Vector2d spawn = closest_enemy_spawn(unit.location());
 					spawns = new ArrayList<>();
 					spawns.add(spawn);
 					break;
@@ -50,7 +55,7 @@ public class Scouting {
 		}
 		if (spawns.size() > 1) {
 			outer: for (HjaxUnit unit: GameInfoCache.get_units(Alliance.SELF)) {
-				for (Point2d spawn: spawns) {
+				for (Vector2d spawn: spawns) {
 					if (unit.distance(spawn) < 8) {
 						spawns.remove(spawn);
 						break outer;
@@ -84,7 +89,7 @@ public class Scouting {
 		}
 		
 		if (patrol_scout != null && patrol_scout.alive()) {
-			Point2d target = BaseManager.get_base(patrol_base);
+			Vector2d target = BaseManager.get_base(patrol_base);
 			if (patrol_scout.distance(target) < 4) {
 				patrol_base++;
 			} else if (patrol_scout.idle() || patrol_scout.orders().get(0).getAbility() != Abilities.MOVE) {
@@ -173,9 +178,9 @@ public class Scouting {
 		
 	}
 
-	public static Point2d closest_enemy_spawn(Point2d s) {
-		Point2d best = null;
-		for (Point2d p: spawns) {
+	public static Vector2d closest_enemy_spawn(Vector2d s) {
+		Vector2d best = null;
+		for (Vector2d p: spawns) {
 			if (best == null || s.distance(p) < s.distance(best)) {
 				best = p;
 			}
@@ -183,15 +188,15 @@ public class Scouting {
 		return best;
 	}
 	
-	private static Point2d mclosest_enemy_spawn = null;
+	private static Vector2d mclosest_enemy_spawn = null;
 	private static int mclosest_enemy_spawn_frame = -1;
-	public static Point2d closest_enemy_spawn() {
+	public static Vector2d closest_enemy_spawn() {
 		if (Game.get_frame() != mclosest_enemy_spawn_frame) {
 			mclosest_enemy_spawn_frame = (int) Game.get_frame();
 			if (BaseManager.main_base() != null) {
 				 mclosest_enemy_spawn = closest_enemy_spawn(BaseManager.main_base().location);
 			}
-			 mclosest_enemy_spawn = closest_enemy_spawn(Point2d.of(0, 0));
+			 mclosest_enemy_spawn = closest_enemy_spawn(Vector2d.of(0, 0));
 		}
 		return  mclosest_enemy_spawn;
 	}

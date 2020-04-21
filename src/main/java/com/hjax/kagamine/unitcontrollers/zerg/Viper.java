@@ -6,8 +6,8 @@ import java.util.Set;
 import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
@@ -52,7 +52,7 @@ public class Viper {
 			}
 		}
 		
-		if (ArmyManager.army_center.distance(Point2d.of(0, 0)) > 1) {
+		if (ArmyManager.army_center.distance(Vector2d.of(0, 0)) > 1) {
 			if (u.distance(ArmyManager.army_center) > 5) {
 				u.move(ArmyManager.army_center);
 			}

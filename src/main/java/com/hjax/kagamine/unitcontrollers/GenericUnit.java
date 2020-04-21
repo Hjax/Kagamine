@@ -7,9 +7,7 @@ import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.data.Weapon;
 import com.github.ocraft.s2client.protocol.data.Weapon.TargetType;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.army.UnitMovementManager;
@@ -25,7 +23,7 @@ public class GenericUnit {
 
 		for (HjaxUnit disruptor_shot : GameInfoCache.get_units(Units.PROTOSS_DISRUPTOR_PHASED)) {
 			if (disruptor_shot.distance(u) < 4) {
-				u.move(Utilities.direction_to(Vector2d.of(disruptor_shot.location()), Vector2d.of(u.location())).scale(2).add(Vector2d.of(u.location())).toPoint2d());
+				u.move(disruptor_shot.location().directionTo(u.location()).scale(2).add(u.location()));
 				return;
 			}
 		}
@@ -56,8 +54,8 @@ public class GenericUnit {
 					if (best != null) {
 						if (u.location().distance(e.location()) < best.getRange()) {
 							if (new ArrayList<>(Game.get_unit_type_data().get(e.type()).getWeapons()).get(0).getRange() < best.getRange()) {
-								Vector2d offset = Utilities.direction_to(Vector2d.of(u.location()), Vector2d.of(e.location()));
-								Point2d target = Point2d.of(u.location().getX() - offset.x, u.location().getY() - offset.y);
+								Vector2d offset = u.location().directionTo(e.location());
+								Vector2d target = Vector2d.of(u.location().getX() - offset.getX(), u.location().getY() - offset.getY());
 								u.move(target);
 								return;
 							}
@@ -85,7 +83,7 @@ public class GenericUnit {
 				}
 			} else {
 				if (u.idle()) {
-					u.attack(Game.get_game_info().findRandomLocation());
+					u.attack(Vector2d.of(Game.get_game_info().findRandomLocation()));
 					return;
 				}
 			}

@@ -11,10 +11,8 @@ import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.observation.AvailableAbility;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
-import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
@@ -29,14 +27,14 @@ public class Creep {
 	private static int[][] terrain = new int[1000][1000];
 	private static final int[][] bases = new int[1000][1000];
 	private static final Map<Tag, Integer> used = new HashMap<>();
-	private static List<Point2d> creep_points = new ArrayList<>();
+	private static List<Vector2d> creep_points = new ArrayList<>();
 	static {
-		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
-		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
+		Vector2d min = Game.min_point();
+		Vector2d max = Game.max_point();
 		for (int x = (int) min.getX(); x < max.getX(); x += Constants.CREEP_RESOLUTION) {
 			for (int y = (int) min.getY(); y < max.getY(); y += Constants.CREEP_RESOLUTION) {
 				for (Base b : BaseManager.bases) {
-					if (b.location.distance(Point2d.of(x, y)) < 6) {
+					if (b.location.distance(Vector2d.of(x, y)) < 6) {
 						bases[x][y] = 1;
 					}
 				}
@@ -61,14 +59,14 @@ public class Creep {
 		for (ImmutablePair<Integer, Integer> item : to_erase) reserved.remove(item);
 		terrain = new int[1000][1000];
 		creep_points = new ArrayList<>();
-		List<Point2d> alt = new ArrayList<>();
+		List<Vector2d> alt = new ArrayList<>();
 		
-		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
-		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
+		Vector2d min = Game.min_point();
+		Vector2d max = Game.max_point();
 		for (int x = (int) min.getX(); x <= max.getX(); x += Constants.CREEP_RESOLUTION) {
 			for (int y = (int) min.getY(); y <= max.getY(); y += Constants.CREEP_RESOLUTION) {
-				if (Game.pathable(Point2d.of(x, y)) && bases[x][y] == 0) {
-					if (Game.on_creep(Point2d.of(x, y)) && Game.is_visible(Point2d.of(x, y))) {
+				if (Game.pathable(Vector2d.of(x, y)) && bases[x][y] == 0) {
+					if (Game.on_creep(Vector2d.of(x, y)) && Game.is_visible(Vector2d.of(x, y))) {
 						terrain[x][y] = 1;
 					}
 				} else {
@@ -79,7 +77,7 @@ public class Creep {
 		for (int x = (int) min.getX(); x <= max.getX(); x += Constants.CREEP_RESOLUTION) {
 			for (int y = (int) min.getY(); y <= max.getY(); y += Constants.CREEP_RESOLUTION) {
 				if (terrain[x][y] == 1) {
-					for (Point2d p : around(Point2d.of(x, y))) {
+					for (Vector2d p : around(Vector2d.of(x, y))) {
 						if (terrain[(int) p.getX()][(int) p.getY()] == 0) {
 							Base best = BaseManager.bases.get(0);
 							for (Base b: BaseManager.bases) {
@@ -95,11 +93,11 @@ public class Creep {
 								}
 							}
 							if (!first3 || Scouting.closest_enemy_spawn().distance(best.location) > Scouting.closest_enemy_spawn().distance(p)) {
-								if (Game.height(Point2d.of(x,  y)) == Game.height(BaseManager.main_base().location)) {
-									alt.add(Point2d.of(x, y));
+								if (Game.height(Vector2d.of(x,  y)) == Game.height(BaseManager.main_base().location)) {
+									alt.add(Vector2d.of(x, y));
 								} else {
-									Game.draw_box(Point2d.of(x, y), Color.PURPLE);
-									creep_points.add(Point2d.of(x, y));
+									Game.draw_box(Vector2d.of(x, y), Color.PURPLE);
+									creep_points.add(Vector2d.of(x, y));
 								}
 							}
 						}
@@ -152,10 +150,10 @@ public class Creep {
 		}
 	}
 	
-	private static void spread_towards(HjaxUnit u, Point2d p) {
+	private static void spread_towards(HjaxUnit u, Vector2d p) {
 		
-		Point2d best = null;
-		for (Point2d point: creep_points) {
+		Vector2d best = null;
+		for (Vector2d point: creep_points) {
 			if (point.distance(u.location()) < 10) {
 				if (best == null || best.distance(p) > point.distance(p)) {
 					if (Game.can_place(Abilities.BUILD_CREEP_TUMOR_QUEEN, point)) {
@@ -172,13 +170,13 @@ public class Creep {
 
 	}
 	
-	private static double score(Point2d p) {
+	private static double score(Vector2d p) {
 		return p.distance(BaseManager.main_base().location);
 	}
 	
-	public static Point2d get_creep_point() {
-		Point2d best = null;
-		for (Point2d p : creep_points) {
+	public static Vector2d get_creep_point() {
+		Vector2d best = null;
+		for (Vector2d p : creep_points) {
 			if (!reserved.containsKey(new ImmutablePair<>((int) p.getX(), (int) p.getY()))) {
 				if (best == null || score(best) > score(p)) {
 					best = p;
@@ -191,12 +189,12 @@ public class Creep {
 		return best;
 	}
 	
-	private static Point2d[] around(Point2d p) {
-		Point2d[] result = new Point2d[4];
-		result[0] = Point2d.of(p.getX() + Constants.CREEP_RESOLUTION, p.getY());
-		result[1] = Point2d.of(p.getX() - Constants.CREEP_RESOLUTION, p.getY());
-		result[2] = Point2d.of(p.getX(), p.getY() + Constants.CREEP_RESOLUTION);
-		result[3] = Point2d.of(p.getX(), p.getY() - Constants.CREEP_RESOLUTION);
+	private static Vector2d[] around(Vector2d p) {
+		Vector2d[] result = new Vector2d[4];
+		result[0] = Vector2d.of(p.getX() + Constants.CREEP_RESOLUTION, p.getY());
+		result[1] = Vector2d.of(p.getX() - Constants.CREEP_RESOLUTION, p.getY());
+		result[2] = Vector2d.of(p.getX(), p.getY() + Constants.CREEP_RESOLUTION);
+		result[3] = Vector2d.of(p.getX(), p.getY() - Constants.CREEP_RESOLUTION);
 		return result;
 	}
 }

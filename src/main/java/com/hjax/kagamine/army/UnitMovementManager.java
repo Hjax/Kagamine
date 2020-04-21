@@ -10,10 +10,10 @@ import java.util.Set;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.debug.Color;
 import com.github.ocraft.s2client.protocol.game.Race;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.UnitRoleManager.UnitRole;
 import com.hjax.kagamine.economy.Base;
 import com.hjax.kagamine.economy.BaseManager;
@@ -29,12 +29,12 @@ import com.hjax.kagamine.unitcontrollers.zerg.Queen;
 
 public class UnitMovementManager {
 	private static final Set<Tag> used = new HashSet<>();
-	public static final Map<Tag, Point2d> assignments = new HashMap<>();
-	public static final Map<Tag, Point2d> surroundCenter = new HashMap<>();
+	public static final Map<Tag, Vector2d> assignments = new HashMap<>();
+	public static final Map<Tag, Vector2d> surroundCenter = new HashMap<>();
 	
 	private static Map<Set<HjaxUnit>, Boolean> assigned = new HashMap<>();
 	
-	private static Point2d defense_point;
+	private static Vector2d defense_point;
 	public static int detection_points;
 	public static int unassigned_ground = 0;
 	public static int unassigned_air = 0;
@@ -76,7 +76,7 @@ public class UnitMovementManager {
 			
 			assigned.put(enemy_squad, false);
 			
-			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			Vector2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			
 			for (Base b : BaseManager.bases) {
 				try {
@@ -116,7 +116,7 @@ public class UnitMovementManager {
 			double enemy_strength = ThreatManager.total_supply(new ArrayList<>(enemy_squad));
 			double my_strength = ThreatManager.total_supply(UnitRoleManager.get(UnitRole.ARMY));
 			
-			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			Vector2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			try {
 				if (BaseManager.closest_base(average).has_friendly_command_structure() &&
 						my_strength > enemy_strength * attack_threshold) {
@@ -136,7 +136,7 @@ public class UnitMovementManager {
 		for (Set<HjaxUnit> enemy_squad : EnemySquadManager.enemy_squads) {
 			if (assigned.get(enemy_squad)) continue;
 			
-			Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+			Vector2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 			
 			double enemy_strength = ThreatManager.total_supply(new ArrayList<>(enemy_squad));
 			double my_strength = ThreatManager.total_supply(UnitRoleManager.get(UnitRole.ARMY)) - GameInfoCache.count_friendly(Units.ZERG_QUEEN) * 2;
@@ -194,7 +194,7 @@ public class UnitMovementManager {
 		float flyer_supply = 0;
 		boolean needs_detection = false;
 		
-		Point2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
+		Vector2d average = EnemySquadManager.average_point(new ArrayList<>(enemy_squad));
 		
 		boolean lib = false;
 		
@@ -245,17 +245,17 @@ public class UnitMovementManager {
 				assigned.add(current);
 			}
 		}
-		Point2d center = average_point_zergling(assigned, average);
+		Vector2d center = average_point_zergling(assigned, average);
 		for (HjaxUnit u: assigned) {
 			assignments.put(u.tag(), average);
-			if (center.distance(Point2d.of(0, 0)) > 1 && enemy_squad.size() * 2.5 <= assigned.size()) {
+			if (center.distance(Vector2d.of(0, 0)) > 1 && enemy_squad.size() * 2.5 <= assigned.size()) {
 				surroundCenter.put(u.tag(), center);
 			}
 			Game.draw_line(average, u.location(), Color.GREEN);
 		}
 	}
 	
-	private static void assign_runby(Point2d average, double supply) {
+	private static void assign_runby(Vector2d average, double supply) {
 		ArrayList<HjaxUnit> assigned = new ArrayList<>();
 		float assigned_supply = 0;
 		while (assigned_supply < supply) {
@@ -271,7 +271,7 @@ public class UnitMovementManager {
 		}
 	}
 	
-	private static HjaxUnit closest_free_detection(Point2d p) {
+	private static HjaxUnit closest_free_detection(Vector2d p) {
 		HjaxUnit best = null;
 		for (HjaxUnit ally : GameInfoCache.get_units(Alliance.SELF, Units.ZERG_OVERSEER)) {
 			if (!assignments.containsKey(ally.tag())) {
@@ -283,7 +283,7 @@ public class UnitMovementManager {
 		return best;
 	}
 	
-	private static HjaxUnit closest_free(Point2d p, boolean aa, boolean lib) {
+	private static HjaxUnit closest_free(Vector2d p, boolean aa, boolean lib) {
 		HjaxUnit best = null;
 		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (aa && !Game.hits_air(ally.type())) continue;
@@ -308,7 +308,7 @@ public class UnitMovementManager {
 		return best;
 	}
 	
-	private static HjaxUnit closest_free_aggressor(Point2d p) {
+	private static HjaxUnit closest_free_aggressor(Vector2d p) {
 		HjaxUnit best = null;
 		for (HjaxUnit ally : UnitRoleManager.get(UnitRoleManager.UnitRole.ARMY)) {
 			if (Game.is_spellcaster(ally.type())) continue;
@@ -335,11 +335,11 @@ public class UnitMovementManager {
 		return defense_point != null;
 	}
 	
-	public static Point2d defense_point() {
+	public static Vector2d defense_point() {
 		return defense_point;
 	}
 	
-	private static Point2d average_point_zergling(List<HjaxUnit> l, Point2d target_center) {
+	private static Vector2d average_point_zergling(List<HjaxUnit> l, Vector2d target_center) {
 		float x = 0;
 		float y = 0;
 		int n = 0;
@@ -352,6 +352,6 @@ public class UnitMovementManager {
 				}
 			}
 		}
-		return Point2d.of(x / n, y / n);
+		return Vector2d.of(x / n, y / n);
 	}
 }

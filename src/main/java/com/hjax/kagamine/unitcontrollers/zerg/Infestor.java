@@ -8,9 +8,9 @@ import com.github.ocraft.s2client.protocol.data.Abilities;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.ArmyManager;
 import com.hjax.kagamine.economy.BaseManager;
 import com.hjax.kagamine.game.Game;
@@ -19,7 +19,7 @@ import com.hjax.kagamine.game.HjaxUnit;
 
 public class Infestor {
 	
-	private static final Map<Point2d, Long> fungal_frames = new HashMap<>();
+	private static final Map<Vector2d, Long> fungal_frames = new HashMap<>();
 	
 	private static final Set<UnitType> neural_targets = new HashSet<>();
 	static {
@@ -38,13 +38,13 @@ public class Infestor {
 	
 	public static void on_frame(HjaxUnit u) {
 		
-		Set<Point2d> to_remove = new HashSet<>();
-		for (Point2d p : fungal_frames.keySet()) {
+		Set<Vector2d> to_remove = new HashSet<>();
+		for (Vector2d p : fungal_frames.keySet()) {
 			if (Game.get_frame() - fungal_frames.get(p) > Constants.FPS * 2.6) {
 				to_remove.add(p);
 			}
 		}
-		for (Point2d p : to_remove) fungal_frames.remove(p);
+		for (Vector2d p : to_remove) fungal_frames.remove(p);
 		
 		if (u.energy() <= 90) {
 			if (u.distance(BaseManager.get_forward_base().location) > 10) {
@@ -77,7 +77,7 @@ public class Infestor {
 					}
 				}
 				if (count > 10) {
-					for (Point2d p : fungal_frames.keySet()) { 
+					for (Vector2d p : fungal_frames.keySet()) { 
 						if (enemy.distance(p) < 2.25) {
 							continue fungal_target;
 						}
@@ -95,7 +95,7 @@ public class Infestor {
 			u.use_ability(Abilities.EFFECT_FUNGAL_GROWTH, best_target.location());
 		}
 		
-		if (ArmyManager.army_center.distance(Point2d.of(0, 0)) > 1) {
+		if (ArmyManager.army_center.distance(Vector2d.of(0, 0)) > 1) {
 			if (u.distance(ArmyManager.army_center) > 4) {
 				u.move(ArmyManager.army_center);
 			}

@@ -11,7 +11,6 @@ import com.github.ocraft.s2client.protocol.data.Buffs;
 import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Weapon;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.github.ocraft.s2client.protocol.unit.CloakState;
 import com.github.ocraft.s2client.protocol.unit.DisplayType;
@@ -19,6 +18,7 @@ import com.github.ocraft.s2client.protocol.unit.Tag;
 import com.github.ocraft.s2client.protocol.unit.Unit;
 import com.github.ocraft.s2client.protocol.unit.UnitOrder;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.economy.Base;
 
 public class HjaxUnit {
@@ -37,20 +37,20 @@ public class HjaxUnit {
 		return cache.get(unit.getTag());
 	}
 	
-	public Point2d location() {
-		return get_unit().getPosition().toPoint2d();
+	public Vector2d location() {
+		return Vector2d.of(get_unit().getPosition().toPoint2d());
 	}
 	
 	public double distance(HjaxUnit other) {
 		return location().distance(other.location());
 	}
 	
-	public double distance(Point2d other) {
-		return location().distance(other);
-	}
-	
 	public double distance(Base other) {
 		return location().distance(other.location);
+	}
+	
+	public double distance(Vector2d other) {
+		return location().distance(other);
 	}
 	
 	public Tag tag() {
@@ -125,7 +125,7 @@ public class HjaxUnit {
 		return get_unit().getHealthMax().orElse((float) 0.0);
 	}
 	
-	public void attack(Point2d point) {
+	public void attack(Vector2d point) {
 		Game.unit_command(get_unit(), Abilities.ATTACK, point);
 	}
 	
@@ -133,8 +133,9 @@ public class HjaxUnit {
 		Game.unit_command(get_unit(), Abilities.ATTACK, unit.unit());
 	}
 	
-	public void move(Point2d point) {
+	public void move(Vector2d point) {
 		Game.unit_command(get_unit(), Abilities.MOVE, point);
+		//Game.unit_command(get_unit(), Abilities.MOVE, GameInfoCache.get_enemy_spawn().toVector2d(), true);
 	}
 	
 	public void use_ability(Ability ability) {
@@ -145,7 +146,7 @@ public class HjaxUnit {
 		Game.unit_command(get_unit(), ability, true);
 	}
 	
-	public void use_ability(Ability ability, Point2d point) {
+	public void use_ability(Ability ability, Vector2d point) {
 		Game.unit_command(get_unit(), ability, point);
 	}
 	

@@ -9,9 +9,7 @@ import com.github.ocraft.s2client.protocol.data.UnitType;
 import com.github.ocraft.s2client.protocol.data.Units;
 import com.github.ocraft.s2client.protocol.data.Upgrades;
 import com.github.ocraft.s2client.protocol.debug.Color;
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
-import com.hjax.kagamine.Utilities;
 import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.army.UnitMovementManager;
 import com.hjax.kagamine.army.EnemySquadManager;
@@ -81,8 +79,8 @@ public class Mutalisk {
 		threats.put(Units.PROTOSS_VOIDRAY, 4);
 	}
 	
-	private static Point2d swarm_center = null;
-	private static Point2d swarm_target = null;
+	private static Vector2d swarm_center = null;
+	private static Vector2d swarm_target = null;
 	private static Base target = null;
 	private static final List<HjaxUnit> swarm = new ArrayList<>();
 	public static void on_frame() {
@@ -187,26 +185,26 @@ public class Mutalisk {
 	}
 
 	
-	private static Point2d pressure(Point2d swarm, Point2d target) {
+	private static Vector2d pressure(Vector2d swarm, Vector2d target) {
 
 		List<Vector2d> negative_pressure = new ArrayList<>();
 		List<Vector2d> positive_pressure = new ArrayList<>();
 		
-		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
-		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
+		Vector2d min = Game.min_point();
+		Vector2d max = Game.max_point();
 		
 		negative_pressure.add(new Vector2d(0, (float) (500 / Math.pow(max.getY() - swarm.getY(), 3))));
 		negative_pressure.add(new Vector2d(0, (float) (-500 / Math.pow(swarm.getY() - min.getY(), 3))));
 		negative_pressure.add(new Vector2d((float) (500 / Math.pow(max.getX() - swarm.getX(), 3)), 0));
 		negative_pressure.add(new Vector2d((float) (-500 / Math.pow(swarm.getX() - min.getX(), 3)), 0));
 		
-		positive_pressure.add(Utilities.direction_to(Vector2d.of(swarm), Vector2d.of(target)).scale(20));
+		positive_pressure.add(swarm.directionTo(target).scale(20));
 		
 		for (HjaxUnit enemy: GameInfoCache.get_units(Alliance.ENEMY)) {
 			if (enemy.alive()) {
 				if (enemy.distance(swarm) < 30) {
 					if (Game.hits_air(enemy.type())) {
-						negative_pressure.add(Utilities.direction_to(Vector2d.of(swarm), Vector2d.of(enemy.location())).scale((float) (70 / Math.pow(swarm.distance(enemy.location()), 2))));
+						negative_pressure.add(swarm.directionTo(enemy.location()).scale((float) (70 / Math.pow(swarm.distance(enemy.location()), 2))));
 					} 
 				}
 			}
@@ -217,21 +215,21 @@ public class Mutalisk {
 		
 
 		for (Vector2d v : negative_pressure) {
-			x -= v.x;
-			y -= v.y;
+			x -= v.getX();
+			y -= v.getY();
 		}
 
 		for (Vector2d v : positive_pressure) {
-			x += v.x;
-			y += v.y;
+			x += v.getX();
+			y += v.getY();
 		}
-		Vector2d pressure = Utilities.normalize(new Vector2d(x, y));
+		Vector2d pressure = new Vector2d(x, y).normalized();
 
-		return Point2d.of(swarm.getX() + 7 * pressure.x, swarm.getY() + 7 * pressure.y);
+		return Vector2d.of(swarm.getX() + 7 * pressure.getX(), swarm.getY() + 7 * pressure.getY());
 	}
 
 	public static void on_frame(HjaxUnit u) {
-		
+
 		GenericUnit.on_frame(u, true);
 		
 //		if (EnemyModel.enemyBaseCount() == 0) {

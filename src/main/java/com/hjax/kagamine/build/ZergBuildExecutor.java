@@ -345,9 +345,11 @@ public class ZergBuildExecutor {
 					if (!(GameInfoCache.count(Balance.get_tech_structure(u)) > 0)) continue;
 				}
 			}
+			
+			if (GameInfoCache.count(current) >= limit) continue;
+			
 			if (!Balance.has_tech_requirement(current)) {
 				if (Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) < Math.max(Game.gas(), 1)) {
-					if (GameInfoCache.count(current) >= limit) continue;
 					if (best == Units.INVALID || Game.get_unit_type_data().get(current).getVespeneCost().orElse(0) > Game.get_unit_type_data().get(best).getVespeneCost().orElse(0)) {
 						best = current;
 					}
@@ -355,6 +357,10 @@ public class ZergBuildExecutor {
 					save_gas = true;
 				}
 			}
+		}
+		
+		if (best != Units.INVALID) {
+			return best;
 		}
 		
 		for (UnitType u: Composition.filler_comp()) {

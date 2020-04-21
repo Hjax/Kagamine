@@ -113,7 +113,7 @@ public class Wisdom {
 				return true;
 			}
 			
-			if (!Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED)) return false;
+			if (!Game.has_upgrade(Upgrades.ZERGLING_MOVEMENT_SPEED) && Game.race() == Race.ZERG) return false;
 			
 			if (Game.supply() >= 190 || (shouldAttack && Game.supply() >= 150 && army_ratio() > 0.8)) {
 				shouldAttack = true;

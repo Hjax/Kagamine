@@ -2,20 +2,20 @@ package com.hjax.kagamine.game;
 
 import java.util.ArrayList;
 
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
+import com.hjax.kagamine.Vector2d;
 
 public class MapAnalysis {
 	private static final boolean[][] pathable = new boolean[1000][1000];
 	private static final float[][] height = new float[1000][1000];
 	private static final boolean[][] air_safe = new boolean[1000][1000];
-	private static final ArrayList<Point2d> overlord_spots = new ArrayList<>();
+	private static final ArrayList<Vector2d> overlord_spots = new ArrayList<>();
 	static {
-		Point2d min = Game.get_game_info().getStartRaw().get().getPlayableArea().getP0().toPoint2d();
-		Point2d max = Game.get_game_info().getStartRaw().get().getPlayableArea().getP1().toPoint2d();
+		Vector2d min = Game.min_point();
+		Vector2d max = Game.max_point();
 		for (int x = (int) min.getX(); x < max.getX() * 2; x ++) {
 			for (int y = (int) min.getY(); y < max.getY() * 2; y ++) {
-				pathable[x][y] = Game.pathable(Point2d.of((float) (x / 2.0), (float) (y / 2.0)));
-				height[x][y] = Game.height(Point2d.of((float) (x / 2.0), (float) (y / 2.0)));
+				pathable[x][y] = Game.pathable(Vector2d.of((float) (x / 2.0), (float) (y / 2.0)));
+				height[x][y] = Game.height(Vector2d.of((float) (x / 2.0), (float) (y / 2.0)));
 			}
 		}
 		for (int x = (int) min.getX(); x < max.getX() * 2; x ++) {
@@ -47,8 +47,8 @@ public class MapAnalysis {
 							if (!air_safe[x + x_offset][y + y_offset]) continue inner;
 						}
 					}
-					for (Point2d p : overlord_spots) {
-						if (p.distance(Point2d.of((float) (x / 2.0), (float) (y / 2.0))) < 5) {
+					for (Vector2d p : overlord_spots) {
+						if (p.distance(Vector2d.of((float) (x / 2.0), (float) (y / 2.0))) < 5) {
 							continue inner;
 						}
 					}
@@ -56,7 +56,7 @@ public class MapAnalysis {
 						for (int y_offset = -2; y_offset <= 2; y_offset += 4) {
 							if (x + x_offset > 0 && y + y_offset > 0) {
 								if (pathable[x + x_offset][y + y_offset]) {
-									overlord_spots.add(Point2d.of((float) (x / 2.0), (float) (y / 2.0)));
+									overlord_spots.add(Vector2d.of((float) (x / 2.0), (float) (y / 2.0)));
 									continue inner;
 								}
 							}

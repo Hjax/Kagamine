@@ -49,15 +49,15 @@ class Kagamine extends S2Agent {
 		BaseManager.start_game();
 		BuildPlanner.decide_build();
 		UpgradeManager.start_game();
-		Chat.sendMessage("Hey I'm Kagamine! But now that we know each other a bit better you can call me Rin");
+		//Chat.sendMessage("Hey I'm Kagamine! But now that we know each other a bit better you can call me Rin");
 
 		try {
 			InputStream is = this.getClass().getResourceAsStream("commit.txt");
 			Scanner dateScanner = new Scanner(is);
 			String date = dateScanner.nextLine();
 			dateScanner.close();
-			Chat.sendMessage("This version of Kagamine was built on:");
-			Chat.sendMessage(date);
+			//Chat.sendMessage("This version of Kagamine was built on:");
+			//Chat.sendMessage(date);
 		} catch (Exception ignored) {}
 
 

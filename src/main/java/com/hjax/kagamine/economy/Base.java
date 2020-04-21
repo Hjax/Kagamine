@@ -2,15 +2,15 @@ package com.hjax.kagamine.economy;
 
 import java.util.ArrayList;
 
-import com.github.ocraft.s2client.protocol.spatial.Point2d;
 import com.github.ocraft.s2client.protocol.unit.Alliance;
 import com.hjax.kagamine.Constants;
+import com.hjax.kagamine.Vector2d;
 import com.hjax.kagamine.game.Game;
 import com.hjax.kagamine.game.GameInfoCache;
 import com.hjax.kagamine.game.HjaxUnit;
 
 public class Base {
-	public Point2d location;
+	public Vector2d location;
 	public ArrayList<HjaxUnit> gases;
 	public ArrayList<HjaxUnit> minerals;
 	
@@ -22,7 +22,7 @@ public class Base {
 	
 	public long last_seen_frame = (long) (Constants.FPS * -60);
 	
-	public Base(Point2d l) {
+	public Base(Vector2d l) {
 		location = l;
 		minerals =  new ArrayList<>();
 		gases =  new ArrayList<>();
