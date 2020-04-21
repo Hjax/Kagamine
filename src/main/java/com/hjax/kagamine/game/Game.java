@@ -674,7 +674,7 @@ public class Game {
 	}
 	
 	public static boolean is_gas_structure(UnitType u) {
-		return u == Units.PROTOSS_ASSIMILATOR || u == Units.TERRAN_REFINERY || u == Units.ZERG_EXTRACTOR;
+		return u == Units.PROTOSS_ASSIMILATOR || u == Units.TERRAN_REFINERY || u == Units.ZERG_EXTRACTOR || u == Units.from(1957) || u == Units.from(1956);
 	}
 	
 	public static boolean is_spellcaster(UnitType u) {
