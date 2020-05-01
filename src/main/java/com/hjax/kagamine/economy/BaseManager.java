@@ -100,7 +100,7 @@ public class BaseManager {
 		for (HjaxUnit unit: GameInfoCache.get_units()) {
 			if (unit.is_command()) {
 				for (Base base: bases) {
-					if (unit.distance(base) < 7) {
+					if (unit.distance(base) < 5 && !unit.flying()) {
 						Game.draw_line(base.location, unit.location(), Color.RED);
 						base.set_command_structure(unit);
 						base.set_walking_drone(null);
