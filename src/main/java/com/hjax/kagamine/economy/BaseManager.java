@@ -56,10 +56,18 @@ public class BaseManager {
 				Vector2d second = bases.get(j).location;
 				float dist = Game.pathing_distance(first, second);
 				if (i != j) {
-					while (Math.abs(dist) < 0.1) {
-						first = Vector2d.of(first.getX() + 1, first.getY());
-						second = Vector2d.of(second.getX() + 1, second.getY());
-						dist = Game.pathing_distance(first, second);
+					//offset positions to account for a structure blocking the position
+					int offsetX = 1;
+					while (Math.abs(dist) < 0.1 && offsetX <= 5) {
+						Vector2d offsetFirst = Vector2d.of(first.getX() + offsetX, first.getY());
+						Vector2d offsetSecond = Vector2d.of(second.getX() + offsetX, second.getY());
+						dist = Game.pathing_distance(offsetFirst, offsetSecond);
+						offsetX++;
+					}
+
+					//base is unreachable (eg island)
+					if (Math.abs(dist) < 0.1) {
+						dist = 1000 + (float)first.distance(second);
 					}
 				}
 				distances.put(new ImmutablePair<>(i, j), dist);
